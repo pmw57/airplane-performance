@@ -1991,85 +1991,86 @@ function aircraftFormulas(constants, solvePoly) {
                     var ewgd = ew * kgd;
                     return ewgd;
                 }
-            ],
-            g: [ // Drag analysis
-                [ // Appendix G.1
-                    function adFromCdfAfCdwSw(cdf, af, cdw, sw) {
-                        var ad = cdf * af + cdw * sw;
-                        return ad;
-                    },
-                    function cdfFromAdAfCdwSw(ad, af, cdw, sw) {
-                        var cdf = (ad - cdw * sw) / af;
-                        return cdf;
-                    },
-                    function afFromAdCdfCdwSw(ad, cdf, cdw, sw) {
-                        var af = (ad - cdw * sw) / cdf;
-                        return af;
-                    },
-                    function CdwFromAdCdfAfSw(ad, cdf, af, sw) {
-                        var cdw = (ad - cdf * af) / sw;
-                        return cdw;
-                    },
-                    function swFromAdCdfAfCdw(ad, cdf, af, cdw) {
-                        var sw = (ad - cdf * af) / cdw;
-                        return sw;
-                    }
-                ],
-                [ // Appendix G.2
-                    function cdwFromRel(rel) {
-                        // default behaviour is for laminar airflow
-                        // alpha source: J.P.Boyd from http://hal.archives-ouvertes.fr/docs/00/26/92/82/PDF/BrighiFruchardSariHAL.pdf
-                        var alpha = 1.32822934486;
-                        var cdw = alpha / Math.sqrt(rel);
-                        return cdw;
-                    }
-                ]
-            ],
-            h: [], // Appendix H
-            i: [ // Appendix I
-                [
-                    function muFromF(f) {
-                        // μ = 2.270 * (T^(3/2) / T + 198.6) * 10^-8
-                        var rankine = f + constants.FAHRENHEIT_TO_RANKINE;
-                        var mu = 2.270 * Math.pow(rankine, 3 / 2) /
-                            (rankine + 198.6) * 1e-8;
-                        return mu;
-                    },
-                    function relFromRhoVMuC(rho, v, mu, c) {
-                        var vfs = v * constants.MPH_TO_FPS;
-                        var inertia = rho * vfs * vfs;
-                        var viscous = mu * vfs / c;
-                        var rel = inertia / viscous;
-                        return rel;
-                    }
-                ]
-            ],
-            j: [ // Appendix J
-                [
-                    function pFromRhoR(rho, r) {
-                        var p = rho * constants.UNIVERSAL_GAS_CONSTANT * r;
-                        return p;
-                    },
-                    function rhoFromPR(p, r) {
-                        var rho = p / (constants.UNIVERSAL_GAS_CONSTANT * r);
-                        return rho;
-                    },
-                    function rFromPRho(p, rho) {
-                        var r = p / (rho * constants.UNIVERSAL_GAS_CONSTANT);
-                        return r;
-                    },
-                    function sigmaFromRho(rho) {
-                        var sigma = rho / constants.SEALEVEL_DENSITY;
-                        return sigma;
-                    },
-                    function rhoFromSigma(sigma) {
-                        var rho = sigma * constants.SEALEVEL_DENSITY;
-                        return rho;
-                    }
-
-                ]
             ]
-        };
+        ],
+        g: [ // Drag analysis
+            [ // Appendix G.1
+                function adFromCdfAfCdwSw(cdf, af, cdw, sw) {
+                    var ad = cdf * af + cdw * sw;
+                    return ad;
+                },
+                function cdfFromAdAfCdwSw(ad, af, cdw, sw) {
+                    var cdf = (ad - cdw * sw) / af;
+                    return cdf;
+                },
+                function afFromAdCdfCdwSw(ad, cdf, cdw, sw) {
+                    var af = (ad - cdw * sw) / cdf;
+                    return af;
+                },
+                function CdwFromAdCdfAfSw(ad, cdf, af, sw) {
+                    var cdw = (ad - cdf * af) / sw;
+                    return cdw;
+                },
+                function swFromAdCdfAfCdw(ad, cdf, af, cdw) {
+                    var sw = (ad - cdf * af) / cdw;
+                    return sw;
+                }
+            ],
+            [ // Appendix G.2
+                function cdwFromRel(rel) {
+                    // default behaviour is for laminar airflow
+                    // alpha source: J.P.Boyd from http://hal.archives-ouvertes.fr/docs/00/26/92/82/PDF/BrighiFruchardSariHAL.pdf
+                    var alpha = 1.32822934486;
+                    var cdw = alpha / Math.sqrt(rel);
+                    return cdw;
+                }
+            ]
+        ],
+        h: [], // Appendix H
+        i: [ // Appendix I
+            [
+                function muFromF(f) {
+                    // μ = 2.270 * (T^(3/2) / T + 198.6) * 10^-8
+                    var rankine = f + constants.FAHRENHEIT_TO_RANKINE;
+                    var mu = 2.270 * Math.pow(rankine, 3 / 2) /
+                        (rankine + 198.6) * 1e-8;
+                    return mu;
+                },
+                function relFromRhoVMuC(rho, v, mu, c) {
+                    var vfs = v * constants.MPH_TO_FPS;
+                    var inertia = rho * vfs * vfs;
+                    var viscous = mu * vfs / c;
+                    var rel = inertia / viscous;
+                    return rel;
+                }
+            ]
+        ],
+        j: [ // Appendix J
+            [
+                function pFromRhoR(rho, r) {
+                    var p = rho * constants.UNIVERSAL_GAS_CONSTANT * r;
+                    return p;
+                },
+                function rhoFromPR(p, r) {
+                    var rho = p / (constants.UNIVERSAL_GAS_CONSTANT * r);
+                    return rho;
+                },
+                function rFromPRho(p, rho) {
+                    var r = p / (rho * constants.UNIVERSAL_GAS_CONSTANT);
+                    return r;
+                },
+                function sigmaFromRho(rho) {
+                    var sigma = rho / constants.SEALEVEL_DENSITY;
+                    return sigma;
+                },
+                function rhoFromSigma(sigma) {
+                    var rho = sigma * constants.SEALEVEL_DENSITY;
+                    return rho;
+                }
+
+            ]
+        ]
+    };
     return {
         formulas: formulas,
         appendicies: appendicies
