@@ -2,15 +2,22 @@
 /*globals aircraftFormulas, describe, describe, beforeEach, it, xit, expect */
 (function () {
     'use strict';
-    var smaller = function (num) {
-        return num * (1 - Math.random() / 5);
+    var random = function (low, high) {
+        return Math.random() * (high - low) + low;
     },
+        smaller = function (num) {
+            return num * (1 - Math.random() / 5);
+        },
         larger = function (num) {
             return num * (1 + Math.random() / 5);
         },
+        w = random(500, 2000),
+        g = random(1, 15),
+        s = random(10, 30) * random(3, 7),
         rho = 0.002377,
         m = 970,
-        v = 67,
+        v = random(50, 100),
+        vfs = v * 5280 / 3600,
         v3 = larger(v),
         pd = larger(v),
         p1 = smaller(pd),
@@ -19,7 +26,7 @@
         dp = 6,
         ap = Math.TAU * (dp / 2),
         eta = smaller(1),
-        sigma = smaller(1),
+        sigma = 1,
         rpm = 2700,
         n = 60,
         bhp = 150;
@@ -41,6 +48,150 @@
         });
         it('has an overall formulas object to contain all solutions', function () {
             expect(aircraftFormulas.all).toBeDefined();
+        });
+    });
+    describe('Formula 1: A force balanced along the flight path', function () {
+        var d;
+        beforeEach(function () {
+            d = aircraftFormulas[1].d(w, g);
+        });
+        it('solves for weight', function () {
+            expect(aircraftFormulas[1].w(d, g)).toBeCloseTo(w);
+        });
+        it('solves for glide angle', function () {
+            expect(aircraftFormulas[1].g(d, w)).toBeCloseTo(g);
+        });
+    });
+    describe('Formula 2: Lift is a similar normal to the flight path', function () {
+        var l;
+        beforeEach(function () {
+            l = aircraftFormulas[2].l(w, g);
+        });
+        it('is equivalent to drag times cos/sin of the glide angle', function () {
+            var angle = g * Math.TAU / 360,
+                actual = aircraftFormulas[1].d(w, g) * Math.cos(angle) / Math.sin(angle);
+            expect(aircraftFormulas[2].l(w, g)).toBeCloseTo(actual);
+        });
+        it('solves for weight', function () {
+            expect(aircraftFormulas[2].w(l, g)).toBe(w);
+        });
+        it('solves for glide angle', function () {
+            expect(aircraftFormulas[2].g(l, w)).toBeCloseTo(g);
+        });
+    });
+    describe('Formula 3: Coefficient of lift from dynamic pressure and wing area', function () {
+        var dynamicPressure, l, cl;
+        beforeEach(function () {
+            dynamicPressure = 0.5 * rho * vfs * vfs;
+            l = aircraftFormulas[2].l(w, g);
+            cl = aircraftFormulas[3].cl(l, rho, vfs, s);
+        });
+        it('is lift over dynamic pressure and wing area', function () {
+            expect(cl).toBe(l / (dynamicPressure * s));
+        });
+        it('solves for air density', function () {
+            expect(aircraftFormulas[3].rho(cl, l, vfs, s)).toBeCloseTo(rho);
+        });
+        it('solves for lift', function () {
+            expect(aircraftFormulas[3].l(cl, rho, vfs, s)).toBeCloseTo(l);
+        });
+        it('solves for velocity (ft/sec)', function () {
+            expect(aircraftFormulas[3].vfs(cl, l, rho, s)).toBeCloseTo(vfs);
+        });
+        it('solves for wing area', function () {
+            expect(aircraftFormulas[3].s(cl, l, rho, vfs)).toBeCloseTo(s);
+        });
+    });
+    describe('Formula 4: Coefficient of drag is from dynamic pressure and wing area', function () {
+        var d, l, cl, cd;
+        beforeEach(function () {
+            d = aircraftFormulas[1].d(w, g);
+            l = aircraftFormulas[2].l(w, g);
+            cl = aircraftFormulas[3].cl(l, rho, vfs, s);
+            cd = aircraftFormulas[4].cd(d, rho, vfs, s);
+        });
+        it('has the same ratio between lift and drag, as for their coefficients', function () {
+            expect(cl / cd).toBeCloseTo(l / d);
+        });
+        it('solves for air density', function () {
+            expect(aircraftFormulas[4].rho(cd, d, vfs, s)).toBeCloseTo(rho);
+        });
+        it('solves for drag', function () {
+            expect(aircraftFormulas[4].d(cd, rho, vfs, s)).toBeCloseTo(d);
+        });
+        it('solves for velocity (ft/sec)', function () {
+            expect(aircraftFormulas[4].vfs(cd, d, rho, s)).toBeCloseTo(vfs);
+        });
+        it('solves for wing area', function () {
+            expect(aircraftFormulas[4].s(cd, d, rho, vfs)).toBeCloseTo(s);
+        });
+    });
+    describe('Formula 5: Drag from velocity as mph using density ratio', function () {
+        var d, cd;
+        beforeEach(function () {
+            d = aircraftFormulas[1].d(w, g);
+            cd = aircraftFormulas[4].cd(d, rho, vfs, s);
+            d = aircraftFormulas[4].d(rho, cd, vfs, s);
+        });
+        it('is equivalent to Formula 4', function () {
+            expect(aircraftFormulas[5].d(sigma, cd, s, v)).toBeCloseTo(w * Math.sin(g / 360 * Math.TAU));
+        });
+        it('solves for density ratio', function () {
+            expect(aircraftFormulas[5].sigma(d, cd, s, v)).toBeCloseTo(sigma);
+        });
+        it('solves for coefficient of drag', function () {
+            expect(aircraftFormulas[5].cd(d, sigma, s, v)).toBeCloseTo(cd);
+        });
+        it('solves for wing area', function () {
+            expect(aircraftFormulas[5].s(d, sigma, cd, v)).toBeCloseTo(s);
+        });
+        it('solves for velocity (mph)', function () {
+            expect(aircraftFormulas[5].v(d, sigma, cd, s)).toBeCloseTo(v);
+        });
+    });
+    describe('Formula 6: Lift from velocity as mph using density ratio', function () {
+        var l, cl;
+        beforeEach(function () {
+            l = aircraftFormulas[2].l(w, g);
+            cl = aircraftFormulas[3].cl(l, rho, vfs, s);
+            l = aircraftFormulas[3].l(rho, cl, vfs, s);
+        });
+        it('is equivalent to Formula 5', function () {
+            expect(aircraftFormulas[6].l(sigma, cl, s, v)).toBeCloseTo(w * Math.cos(g / 360 * Math.TAU));
+        });
+        it('solves for density ratio', function () {
+            expect(aircraftFormulas[6].sigma(l, cl, s, v)).toBeCloseTo(sigma);
+        });
+        it('solves for coefficient of drag', function () {
+            expect(aircraftFormulas[6].cl(l, sigma, s, v)).toBeCloseTo(cl);
+        });
+        it('solves for wing area', function () {
+            expect(aircraftFormulas[6].s(l, sigma, cl, v)).toBeCloseTo(s);
+        });
+        it('solves for velocity (mph)', function () {
+            expect(aircraftFormulas[6].v(l, sigma, cl, s)).toBeCloseTo(v);
+        });
+    });
+    describe('Formula 7: Using the small angle approximation to get wing loading', function () {
+        var l, cl, ws;
+        beforeEach(function () {
+            g = 1; // using a small angle
+            l = aircraftFormulas[2].l(w, g);
+            cl = aircraftFormulas[3].cl(l, rho, vfs, s);
+            l = aircraftFormulas[6].l(sigma, cl, s, v);
+            ws = aircraftFormulas[7].ws(sigma, cl, v);
+        });
+        it('should be close to formula 6 about lift from velocity as mph', function () {
+            expect(w / s).toBeCloseTo(l / s);
+        });
+        it('solves for density ratio', function () {
+            expect(aircraftFormulas[7].sigma(ws, cl, v)).toBeCloseTo(sigma);
+        });
+        it('solves for coefficient of lift', function () {
+            expect(aircraftFormulas[7].cl(ws, sigma, v)).toBeCloseTo(cl);
+        });
+        it('solves for velocity', function () {
+            expect(aircraftFormulas[7].v(ws, sigma, cl)).toBeCloseTo(v);
         });
     });
     describe('Formula 40: change in momentum vs pressure jump', function () {

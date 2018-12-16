@@ -56,130 +56,130 @@ var formulas = (function () {
                 }
             ],
             [ // Formula 3
-                function (l, rho, v, s) {
-                    var cl = l / (0.5 * rho * v * v * s);
+                function (l, rho, vfs, s) {
+                    var cl = l / (0.5 * rho * vfs * vfs * s);
                     return cl;
                 },
-                function (cl, rho, v, s) {
-                    var l = 0.5 * cl * rho * v * v * s;
+                function (cl, rho, vfs, s) {
+                    var l = 0.5 * cl * rho * vfs * vfs * s;
                     return l;
                 },
-                function (cl, l, v, s) {
-                    var rho = 2 * l / (cl * v * v * s);
+                function (cl, l, vfs, s) {
+                    var rho = 2 * l / (cl * vfs * vfs * s);
                     return rho;
                 },
                 function (cl, l, rho, s) {
-                    var v = Math.sqrt(2 * l / (cl * rho * s));
-                    return v;
+                    var vfs = Math.sqrt(2 * l / (cl * rho * s));
+                    return vfs;
                 },
-                function (cl, l, rho, v) {
-                    var s = 2 * l / (cl * rho * v * v);
+                function (cl, l, rho, vfs) {
+                    var s = 2 * l / (cl * rho * vfs * vfs);
                     return s;
                 }
             ],
             [ // Formula 4
-                function (d, rho, v, s) {
-                    var cd = d / (0.5 * rho * v * v * s);
+                function (d, rho, vfs, s) {
+                    var cd = d / (0.5 * rho * vfs * vfs * s);
                     return cd;
                 },
-                function (rho, cd, v, s) {
-                    var d = 0.5 * rho * cd * v * v * s;
+                function (cd, rho, vfs, s) {
+                    var d = 0.5 * rho * cd * vfs * vfs * s;
                     return d;
                 },
-                function (d, cd, v, s) {
-                    var rho = d / (0.5 * cd * v * v * s);
+                function (cd, d, vfs, s) {
+                    var rho = d / (0.5 * cd * vfs * vfs * s);
                     return rho;
                 },
-                function (d, rho, cd, s) {
-                    var v = Math.sqrt(d / (0.5 * rho * cd * s));
-                    return v;
+                function (cd, d, rho, s) {
+                    var vfs = Math.sqrt(d / (0.5 * rho * cd * s));
+                    return vfs;
                 },
-                function (d, rho, cd, v) {
-                    var s = d / (0.5 * rho * cd * v * v);
+                function (cd, d, rho, vfs) {
+                    var s = d / (0.5 * rho * cd * vfs * vfs);
                     return s;
                 }
             ],
             [ // Formula 5
-                function (dr, cd, s, v) {
-                    var d = dr * cd * s * v * v * dynamic_mph_pressure;
+                function (sigma, cd, s, v) {
+                    var d = sigma * cd * s * v * v * dynamic_mph_pressure;
                     return d;
                 },
                 function (d, cd, s, v) {
-                    var dr = d / (cd * s * v * v * dynamic_mph_pressure);
-                    return dr;
+                    var sigma = d / (cd * s * v * v * dynamic_mph_pressure);
+                    return sigma;
                 },
-                function (d, dr, s, v) {
-                    var cd = d / (dr * s * v * v * dynamic_mph_pressure);
+                function (d, sigma, s, v) {
+                    var cd = d / (sigma * s * v * v * dynamic_mph_pressure);
                     return cd;
                 },
-                function (d, dr, cd, v) {
-                    var s = d / (dr * cd * v * v * dynamic_mph_pressure);
+                function (d, sigma, cd, v) {
+                    var s = d / (sigma * cd * v * v * dynamic_mph_pressure);
                     return s;
                 },
-                function (d, dr, cd, s) {
-                    var v = Math.sqrt(d / (dr * cd * s * dynamic_mph_pressure));
+                function (d, sigma, cd, s) {
+                    var v = Math.sqrt(d / (sigma * cd * s * dynamic_mph_pressure));
                     return v;
                 }
             ],
             [ // Formula 6
-                function (dr, cl, s, v) {
-                    var l = dr * cl * s * v * v * dynamic_mph_pressure;
+                function (sigma, cl, s, v) {
+                    var l = sigma * cl * s * v * v * dynamic_mph_pressure;
                     return l;
                 },
                 function (l, cl, s, v) {
-                    var dr = l / (cl * s * v * v * dynamic_mph_pressure);
-                    return dr;
+                    var sigma = l / (cl * s * v * v * dynamic_mph_pressure);
+                    return sigma;
                 },
-                function (l, dr, s, v) {
-                    var cl = l / (dr * s * v * v * dynamic_mph_pressure);
+                function (l, sigma, s, v) {
+                    var cl = l / (sigma * s * v * v * dynamic_mph_pressure);
                     return cl;
                 },
-                function (l, dr, cl, v) {
-                    var s = l / (dr * cl * v * v * dynamic_mph_pressure);
+                function (l, sigma, cl, v) {
+                    var s = l / (sigma * cl * v * v * dynamic_mph_pressure);
                     return s;
                 },
-                function (l, dr, cl, s) {
-                    var v = Math.sqrt(l / (dr * cl * s * dynamic_mph_pressure));
+                function (l, sigma, cl, s) {
+                    var v = Math.sqrt(l / (sigma * cl * s * dynamic_mph_pressure));
                     return v;
                 }
             ],
             [ // Formula 7
-                function (dr, cl, v) {
-                    var w_s = dr * cl * v * v * dynamic_mph_pressure;
-                    return w_s;
+                function (sigma, cl, v) {
+                    var ws = sigma * cl * v * v * dynamic_mph_pressure;
+                    return ws;
                 },
-                function (w_s, cl, v) {
-                    var dr = w_s / (cl * v * v * dynamic_mph_pressure);
-                    return dr;
+                function (ws, cl, v) {
+                    var sigma = ws / (cl * v * v * dynamic_mph_pressure);
+                    return sigma;
                 },
-                function (w_s, dr, v) {
-                    var cl = w_s / (dr * v * v * dynamic_mph_pressure);
+                function (ws, sigma, v) {
+                    var cl = ws / (sigma * v * v * dynamic_mph_pressure);
                     return cl;
                 },
-                function (w_s, dr, cl) {
-                    var v = Math.sqrt(w_s / (dr * cl * dynamic_mph_pressure));
+                function (ws, sigma, cl) {
+                    var v = Math.sqrt(ws / (sigma * cl * dynamic_mph_pressure));
                     return v;
                 }
             ],
             [ // Formula 8
-                function (dr, cd, s, v) {
-                    var g = 360 / Math.TAU * dr * cd * s * v * v * dynamic_mph_pressure;
+                function (sigma, cd, s, v) {
+                    var g = 360 / Math.TAU * sigma * cd * s * v * v * dynamic_mph_pressure;
                     return g;
                 },
                 function (g, cd, s, v) {
-                    var dr = Math.TAU / 360 * g / (cd * s * v * v * dynamic_mph_pressure);
-                    return dr;
+                    var sigma = Math.TAU / 360 * g / (cd * s * v * v * dynamic_mph_pressure);
+                    return sigma;
                 },
-                function (g, dr, s, v) {
-                    var cd = Math.TAU / 360 * g / (dr * s * v * v * dynamic_mph_pressure);
+                function (g, sigma, s, v) {
+                    var cd = Math.TAU / 360 * g / (sigma * s * v * v * dynamic_mph_pressure);
                     return cd;
                 },
-                function (g, dr, cd, v) {
-                    var s = Math.TAU / 360 * g / (dr * cd * v * v * dynamic_mph_pressure);
+                function (g, sigma, cd, v) {
+                    var s = Math.TAU / 360 * g / (sigma * cd * v * v * dynamic_mph_pressure);
                     return s;
                 },
-                function (g, dr, cd, s) {
-                    var v = Math.sqrt(Math.TAU / 360 * g / (dr * cd * s * dynamic_mph_pressure));
+                function (g, sigma, cd, s) {
+                    var v = Math.sqrt(Math.TAU / 360 * g / (sigma * cd * s * dynamic_mph_pressure));
                     return v;
                 }
             ],
@@ -198,28 +198,28 @@ var formulas = (function () {
                 }
             ],
             [ // Formula 10
-                function (dr, cd, s, v, w) {
-                    var rs = 60 / 5280 * v * dr * cd * s * v * v / dynamic_mph_pressure * w;
+                function (sigma, cd, s, v, w) {
+                    var rs = 60 / 5280 * v * sigma * cd * s * v * v / dynamic_mph_pressure * w;
                     return rs;
                 },
                 function (rs, cd, s, v, w) {
-                    var dr = 60 / 5280 * rs / (v * cd * s * v * v  * w) * dynamic_mph_pressure;
-                    return dr;
+                    var sigma = 60 / 5280 * rs / (v * cd * s * v * v  * w) * dynamic_mph_pressure;
+                    return sigma;
                 },
-                function (rs, dr, s, v, w) {
-                    var cd = 60 / 5280 * rs / (v * dr * s * v * v  * w) * dynamic_mph_pressure;
+                function (rs, sigma, s, v, w) {
+                    var cd = 60 / 5280 * rs / (v * sigma * s * v * v  * w) * dynamic_mph_pressure;
                     return cd;
                 },
-                function (rs, dr, cd, v, w) {
-                    var s = 60 / 5280 * rs / (v * dr * cd * v * v * w) * dynamic_mph_pressure;
+                function (rs, sigma, cd, v, w) {
+                    var s = 60 / 5280 * rs / (v * sigma * cd * v * v * w) * dynamic_mph_pressure;
                     return s;
                 },
-                function (rs, dr, cd, s, w) {
-                    var v = Math.pow(60 / 5280 * rs / (dr * cd * s * w) * dynamic_mph_pressure, 1 / 3);
+                function (rs, sigma, cd, s, w) {
+                    var v = Math.pow(60 / 5280 * rs / (sigma * cd * s * w) * dynamic_mph_pressure, 1 / 3);
                     return v;
                 },
-                function (rs, dr, cd, s, v) {
-                    var  w = 60 / 5280 * rs / (v * dr * cd * s * v * v) * dynamic_mph_pressure;
+                function (rs, sigma, cd, s, v) {
+                    var  w = 60 / 5280 * rs / (v * sigma * cd * s * v * v) * dynamic_mph_pressure;
                     return w;
                 }
             ],
