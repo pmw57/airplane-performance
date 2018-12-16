@@ -35,6 +35,6 @@ function aircraftSolver(Solver, data) {
         return prev;
     }, []);
     solverFormulas.all = new Solver(solverFormulas.all);
-    
+
     return solverFormulas;
 }

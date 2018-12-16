@@ -10,6 +10,11 @@
                 return answer;
             };
         });
+        it('can handle an empty solver array', function () {
+            formulas = [];
+            solver = new Solver(formulas);
+            expect(solver.constructor.name).toBe('Solver');
+        });
         it('stores all variations of a formula in a method called all', function () {
             formulas = [
                 formula,
@@ -46,6 +51,41 @@
                 // no r e t u r n keyword in this function
             };
             expect(new Solver([formula])).not.toThrow();
+        });
+        it('ignores formulas for which no data is present', function () {
+            var data = {},
+                formula = function shouldSkipThisFunc(b) {
+                    var shouldNotReturn = b;
+                    return shouldNotReturn;
+                };
+            solver = new Solver([formula]);
+            data = solver.solve(data);
+            expect(data.hasOwnProperty('shouldNotReturn')).toBe(false);
+        });
+        it("solves for non-existing data", function () {
+            var data = {
+                newData: 'new'
+            };
+            formula = function solveForNonExistingData(newData) {
+                var nonExisting = newData;
+                return nonExisting;
+            };
+            solver = new Solver([formula]);
+            data = solver.solve(data);
+            expect(data.nonExisting).toBe('new');
+        });
+        it("doesn't replace already existing data", function () {
+            var data = {
+                preExisting: 'unchanged',
+                newData: 'changed'
+            };
+            formula = function solveForPreExistingData(newData) {
+                var preExisting = newData;
+                return preExisting;
+            };
+            solver = new Solver([formula]);
+            data = solver.solve(data);
+            expect(data.preExisting).toBe('unchanged');
         });
     });
 }());

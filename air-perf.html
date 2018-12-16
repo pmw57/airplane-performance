@@ -1,90 +1,130 @@
+<!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<title>Air Performance</title>
 <link type="text/css" rel="stylesheet" href="css/air-perf.css">
 </head>
 <body>
-<form id="perf">
-    <p>Aircraft name: <label class="title"><input name="name"></label></p>
-    <p>Stall speed without flaps <span>V<sub>s,1</sub> = </span><label><input type="number" name="vs1"> mph</label></p>
-    <p>Maximum lift coefficient <span>C<sub>L,max</sub> = </span><label><input type="number" step="0.001" name="clmax"></label></p>
-    <p>Maximum lift coeff with flaps <span>C<sub>L,maxF</sub> =</span><label><input type="number" step="0.001" name="clmaxf"></label></p>
-    <p>Gross weight <span>W = </span><label><input type="number" step="1" name="w"> lb</label></p>
-    <p>Useful load <span>W<sub>u</sub> = </span><label><input type="number" step="1" name="wu"> lb</label></p>
-    <p>Wing span <span>b = </span><label><input type="number" step="0.001" name="b"> ft</label></p>
-    <p>Engine brake horsepower <span>BHP = </span><label><input type="number" name="bhp"> hp</label></p>
-    <p>Maximum level speed <span>v<sub>max</sub> = </span><label><input type="number" name="vmax"> mph</label></p>
-    <p>Propeller diameter <span>D<sub>p</sub> = </span><label><input type="number" name="dpin"> in</label></p>
-    <p>Propeller rpm <span>RPM = </span><label><input type="number"  step="100" name="rpm"> RPM</label></p>
-    <p>Propeller efficiency <span>e<sub>p</sub> = </span><label><input step="0.01" type="number" name="eta"> %</label></p>
-    <p>Minimum section drag coefficient <span>C<sub>Dmin</sub> = </span><label><input step="0.001" type="number" name="cdmin"></label></p>
-    <p>Aerodynamic centre <span>x/c = </span><label><input type="number" step="0.001" name="aerodynamic_centre"></label></p>
-    <p>Wing shape <span>
-        <select>
-            <option value="rectangular">Rectangular</option>
-            <option value="tapered">Tapered</option>
-            <option value="delta">Delta</option>
-        </select>
-    </span></p>
-    <p>Fuselage shape <span>
-        <select>
-            <option value="rectangular">Rectangular</option>
-            <option value="round">Round</option>
-        </select>
-    </span></p>
-    <p>Fuselage area <span>S<sub>fuse</sub> = </span><label><input type="number" step="0.1" name="sfuse"></label></p>
-    <p>Altitude <span>h = </span><label><input type="number" step="1000" name="altitude_ft"> ft</label></p>
-    <p><label><input type="submit"></label></p>
+<p class="showall"><input type="checkbox"> <a href="#">Show all</a></p>
+<form class="perf">
+    <p>Aircraft <span>name =</span><label><select name="name">
+        <option value="thorp" selected="selected">Thorp</option>
+        <option value="henry">Henry</option>
+    </select></label></p>
+    <div class="relation relation1">
+        <p>Altitude <span>h = </span><label><input type="number" step="500" name="h"> ft</label><input type="checkbox" rel="h"></p>
+        <p>Maximum lift coefficient <span>C<sub>L,max</sub> = </span><label><input type="number" step="0.001" name="clmax"></label><input type="checkbox" rel="clmax"></p>
+        <p>Stall speed without flaps <span>V<sub>s,1</sub> = </span><label><input type="number" name="vs1"> mph</label><input type="checkbox" rel="vs1"></p>
+        <p>Wing loading <span>W/S</span> <label class="result"><input type="number" name="ws" step="0.1"> lb/ft<sup>2</sup></label><input type="checkbox" rel="ws"></p>
+        <p>Maximum lift coeff with flaps <span>C<sub>L,maxF</sub> =</span><label><input type="number" step="0.001" name="clmaxf"></label><input type="checkbox" rel="clmaxf"></p>
+        <p>Stall speed with flaps <span>V<sub>s,0</sub></span> <label class="result"><input name="vs0"> mph</label><input type="checkbox" rel="vs0"></p>
+        <p>Maximum level speed <span>v<sub>max</sub> = </span><label><input type="number" name="vmax"> mph</label><input type="checkbox" rel="vmax"></p>
+        <p>Maximum speed lift coefficient <span>C<sub>LmaxV</sub></span> <label class="result"><input name="cl"></label><input type="checkbox" rel="cl"></p>
+    </div>
+    <div class="relation relation2">
+        <p>Gross weight <span>W = </span><label><input type="number" step="1" name="w"> lb</label><input type="checkbox" rel="w"></p>
+        <p>Useful load <span>W<sub>u</sub> = </span><label><input type="number" step="1" name="wu"> lb</label><input type="checkbox" rel="wu"></p>
+        <p>Empty weight <span>W<sub>e</sub> = </span><label class="result"><input name="we"> lb</label><input type="checkbox" rel="we"></p>
+        <p>Wing area <span>S</span> <label class="result"><input name="s"> ft<sup>2</sup></label><input type="checkbox" rel="s"></p>
+        <p>Wing span <span>b = </span><label><input type="number" step="0.1" name="b"> ft</label><input type="checkbox" rel="b"></p>
+        <p>Aspect ratio <span>AR</span> <label class="result"><input name="ar"></label><input type="checkbox" rel="ar"></p>
+        <p>Chord <span>C</span> <label class="result"><input name="c"> ft</label><input type="checkbox" rel="c"></p>
+    </div>
+    <div class="relation relation3">
+        <p>Wing shape <label>
+            <select name="wing_shape" rel="ewing">
+                <option value="elliptical">Elliptical</option>
+                <option value="tapered">Tapered</option>
+                <option value="rectangular" selected="selected">Rectangular</option>
+                <option value="delta">Delta</option>
+                <option value="other">Other</option>
+            </select>
+        </label><input type="checkbox" rel="wing_shape"></p>
+        <p>Wing efficiency <span>e<sub>w</sub></span> <label class="result"><input type="number" name="ewing"></label><input type="checkbox" rel="ewing"></p>
+        <p>Fuselage shape <label>
+            <select name="fuselage_shape" rel="fuselageCorrection">
+                <option value="rectangular">Rectangular</option>
+                <option value="round">Round</option>
+                <option value="other">Other</option>
+            </select>
+        </label><input type="checkbox" rel="fuselage_shape"></p>
+        <p>Fuselage efficiency <span>e<sub>fuse</sub></span> <label class="result"><input type="number" name="fuselageCorrection"></label><input type="checkbox" rel="fuselageCorrection"></p>
+        <p>Fuselage area <span>S<sub>fuse</sub> = </span><label><input type="number" step="0.1" name="sfuse"></label><input type="checkbox" rel="sfuse"></p>
+        <p>Airplane efficiency factor <span>e</span> <label class="result"><input name="e"></label><input type="checkbox" rel="e"></p>
+        <p>Effective aspect ratio <span>eAR</span> <label class="result"><input name="ear"></label><input type="checkbox" rel="ear"></p>
+        <p>Effective chord <span>c<sub>e</sub></span> <label class="result"><input name="ce"> ft</label><input type="checkbox" rel="ce"></p>
+    </div>
+    <div class="relation relation4">
+        <p>Effective span <span>b<sub>e</sub></span> <label class="result"><input name="be"> ft</label><input type="checkbox" rel="be"></p>
+        <p>Effective span loading <span>w/b<sub>e</sub></span> <label class="result"><input name="wbe"> lb/ft</label><input type="checkbox" rel="wbe"></p>
+    </div>
+    <div class="relation relation5">
+        <p>Engine brake horsepower <span>BHP = </span><label><input type="number" name="bhp"> hp</label><input type="checkbox" rel="bhp"></p>
+        <p>Propeller efficiency <span>e<sub>p</sub> = </span><label><input step="0.01" type="number" name="eta"> %</label><input type="checkbox" rel="eta"></p>
+        <p>Available thrust horsepower <span>THP<sub>a</sub></span> <label class="result"><input name="thpa"> hp</label><input type="checkbox" rel="thpa"></p>
+        <p>Drag area <span>AD</span> <label class="result"><input name="ad"> ft<sup>2</sup></label><input type="checkbox" rel="ad"></p>
+    </div>
+    <div class="relation relation6">
+        <p>Zero-lift drag coefficient <span>C<sub>D,0</sub></span> <label class="result"><input name="cd0"></label><input type="checkbox" rel="cd0"></p>
+    </div>
+    <div class="relation relation7">
+        <p>Airspeed for minimum sink <span>V<sub>minS</sub></span> <label class="result"><input name="vmins"> mph</label><input type="checkbox" rel="vmins"></p>
+        <p>Minimum drag <span>D<sub>min</sub></span> <label class="result"><input name="dmin"> lb</label><input type="checkbox" rel="dmin"></p>
+        <p>Minimum power for level flight <span>THP<sub>min</sub></span> <label class="result"><input name="thpmin"> hp</label><input type="checkbox" rel="thpmin"></p>
+    </div>
+    <div class="relation relation8">
+        <p>Minimum sink rate <span>R<sub>S,min</sub></span> <label class="result"><input name="rsmin"> fpm</label><input type="checkbox" rel="rsmin"></p>
+    </div>
+    <div class="relation relation9">
+        <p>Maximum lift-to-drag ratio <span>(L/D)<sub>max</sub></span> <label class="result"><input name="ldmax"></label><input type="checkbox" rel="ldmax"></p>
+    </div>
+    <div class="relation relation10">
+        <p>Lift coefficient at minimum sink <span>C<sub>LminS</sub></span> <label class="result"><input name="clmins"></label><input type="checkbox" rel="clmins"></p>
+    </div>
+    <div class="relation relation11">
+        <p>Maximum ideal climb rate <span>R<sub>C<sup>*</sup>,max</sub></span> <label class="result"><input name="rc"> fpm</label><input type="checkbox" rel="rc"></p>
+        <p>Propeller diameter <span>D<sub>p</sub> = </span><label><input type="number" name="dp"> ft</label><input type="checkbox" rel="dp"></p>
+        <p>Ref. prop airspeed for .74 eff <span>V<sub>prop</sub></span> <label class="result"><input name="vprop"> MPH</label><input type="checkbox" rel="vprop"></p>
+        <p>Idealized static thrust <span>T<sub>s</sub></span> <label class="result"><input name="ts"> lb</label><input type="checkbox" rel="ts"></p>
+    </div>
+    <div class="relation relation12">
+        <p>Propeller rpm <span>RPM = </span><label><input type="number"  step="100" name="rpm"> RPM</label><input type="checkbox" rel="rpm"></p>
+    </div>
+    <div class="relation relation13">
+        <p>Propeller tip mach number <span>M<sub>p</sub></span> <label class="result"><input name="mp"></label><input type="checkbox" rel="mp"></p>
+    </div>
+<!--
+    <p>Minimum section drag coefficient <span>C<sub>Dmin</sub> = </span><label><input step="0.001" type="number" name="cdmin"></label><input type="checkbox" rel="cdmin"></p>
+    <p>Aerodynamic centre <span>x/c = </span><label><input type="number" step="0.001" name="aerodynamic_centre"></label><input type="checkbox" rel="aerodynamic_centre"></p>
+-->
 </form>
 
-<h2>Output Parameters</h2>
-<div id="summary">
-    <p>Wing loading <label>W/S</label> <span class="result"><span id="wing_load_lb_ft"></span> lb/ft<sup>2</sup></span></p>
-    <p>Stall speed with flaps <label>V<sub>s,0</sub></label> <span class="result"><span id="vel_stall_flaps_mph"></span> mph</span></p>
-    <p>Maximum speed lift coefficient <label>C<sub>LmaxV</sub></label> <span class="result"><span id="max_speed_lift_coefficient"></span></span></p>
-    <p>Wing area <label>S</label> <span class="result"><span id="wing_area_ft"></span> ft</span></p>
-    <p>Aspect ratio <label>AR</label> <span class="result"><span id="aspect_ratio"></span></span></p>
-    <p>Chord <label>C</label> <span class="result"><span id="wing_chord_ft"></span> ft</span></p>
-    <p>Airplane efficiency factor <label>e</label> <span class="result"><span id="plane_efficiency"></span></span></p>
-    <p>Effective aspect ratio <label>eAR</label> <span class="result"><span id="aspect_ratio_effective"></span></span></p>
-    <p>Effective span <label>b<sub>e</sub></label> <span class="result"><span id="wing_span_effective"></span> ft</span></p>
-    <p>Effective chord <label>c<sub>e</sub></label> <span class="result"><span id="wing_chord_effective"></span> ft</span></p>
-    <p>Effective span loading <label>w/b<sub>e</sub></label> <span class="result"><span id="wing_load_effective"></span> lb/ft</span></p>
-    <p>Available thrust horsepower <label>THP<sub>a</sub></label> <span class="result"><span id="available_thrust_horsepower"></span> hp</span></p>
-    <p>Drag area <label>AD</label> <span class="result"><span id="drag_area_ft"></span> ft<sup>2</sup></span></p>
-    <p>Zero-lift drag coefficient <label>C<sub>D,0</sub></label> <span class="result"><span id="cd_drag"></span></span></p>
-    <p>Airspeed for minimum sink <label>V<sub>minS</sub></label> <span class="result"><span id="vel_sink_min_ft"></span> mph</span></p>
-    <p>Minimum power for level flight <label>THP<sub>min</sub></label> <span class="result"><span id="pwr_min_req_hp"></span> hp</span></p>
-    <p>Minimum drag <label>D<sub>min</sub></label> <span class="result"><span id="drag_min"></span> lb</span></p>
-    <p>Minimum sink rate <label>R<sub>S,min</sub></label> <span class="result"><span id="rate_sink_min_ft"></span> fpm</span></p>
-    <p>Maximum lift-to-drag ratio <label>(L/D)<sub>max</sub></label> <span class="result"><span id="maximum_lift_to_drag_ratio"></span></span></p>
-    <p>Lift coefficient at minimum sink <label>C<sub>LminS</sub></label> <span class="result"><span id="cl_min_sink"></span></span></p>
-    <p>Maximum ideal climb rate <label>R<sub>C<sup>*</sup>,max</sub></label> <span class="result"><span id="rate_climb_ideal"></span> fpm</span></p>
-    <p>Ref. prop airspeed for .74 eff <label>V<sub>prop</sub></label> <span class="result"><span id="prop_vel_ref"></span> MPH</span></p>
-    <p>Idealized static thrust <label>T<sub>s</sub></label> <span class="result"><span id="static_thrust_ideal"></span> lb</span></p>
-    <p>Propeller tip mach number <label>M<sub>p</sub></label> <span class="result"><span id="prop_tip_mach"></span></span></p>
-    <p>Minimum sink lift-to-drag <label>(L/D)<sub>minS</sub></label> <span class="result"><span id="lift_to_drag_min_sink"></span></span></p>
-    <p>101.6 V<sub>minS</sub>/R<sub>S,min</sub> consistency <label>(L/D)<sub>max</sub></label> <span class="result"><span id="lift_to_drag_ratio_variation"></span></span></p>
-    <p>3.07 <span class="sqrt">(eAR C<sub>D,0</sub>)</span> consistency  <label>C<sub>LminS</sub></label> <span class="result"><span id="lift_coefficient_minimum_sink_variation"></span></span></p>
-    <p>0.886 <span class="sqrt">(eAR/C<sub>D,0</sub>)</span> consistency <label>(L/D)<sub>max</sub></label> <span class="result"><span id="lift_to_drag_ratio_variation_2"></span></span></p>
-    <p>W / D<sub>min</sub></span> consistency <label>(L/D)<sub>max</sub></label> <span class="result"><span id="lift_to_drag_ratio_variation_3"></span></span></p>
-    <p>Minimum glide angle <label>&theta;<sub>g</sub></label> <span class="result"><span id="minimum_glide_angle"></span></span></p>
+<!-- <div>
+    <h2>Consistency checks</h2>
+    <p>Minimum sink lift-to-drag <span>(L/D)<sub>minS</sub></span> <label class="result"><input id="lift_to_drag_min_sink"></label></p>
+    <p>101.6 V<sub>minS</sub>/R<sub>S,min</sub> consistency <span>(L/D)<sub>max</sub></span> <label class="result"><span id="lift_to_drag_ratio_variation"></span></label></p>
+    <p>3.07 <span class="sqrt">(eAR C<sub>D,0</sub>)</span> consistency  <span>C<sub>LminS</sub></span> <label class="result"><span id="lift_coefficient_minimum_sink_variation"></span></label></p>
+    <p>0.886 <span class="sqrt">(eAR/C<sub>D,0</sub>)</span> consistency <span>(L/D)<sub>max</sub></span> <label class="result"><span id="lift_to_drag_ratio_variation_2"></span></label></p>
+    <p>W / D<sub>min</sub> consistency <span>(L/D)<sub>max</sub></span> <label class="result"><span id="lift_to_drag_ratio_variation_3"></span></label></p>
+    <p>Minimum glide angle <span>&theta;<sub>g</sub></span> <label class="result"><input id="minimum_glide_angle"> degrees</label></p>
 </div>
-
-<ul>
-    <li>performance parameter......... fp = <span id="fp"></span></li>
-    <li>kinetic energy parameter...... wv2 = <span id="wv2"></span></li>
-</ul>
-
+ -->
 <div id="charts">
     <div id="airspeedperformance" style="width: 500px; height: 400px;"></div>
     <table id="results">
         <thead>
             <tr><th>airspeed</th><th>climb rate</th><th>prop eff</th><th>sink rate</th><th>reynolds num</th></tr>
-            <tr><td>v(mph)</td><td>rc(fpm)</td><td>eta</td><td>rs(fpm)</td><td>re=rho*v*c/mu</td></tr>
+            <tr><td>v(mph)</td><td>rc(fpm)</td><td>&eta;</td><td>rs(fpm)</td><td>re=rho*v*c/mu</td></tr>
         </thead>
         <tbody>
         </tbody>
     </table>
+    <ul class="summary">
+        <li>performance parameter......... fp = <span id="fp"></span></li>
+        <li>kinetic energy parameter...... wv2 = <span id="wv2"></span></li>
+    </ul>
+
 </div>
 
 <script type="text/javascript" src="lib/jsapi.js"></script>

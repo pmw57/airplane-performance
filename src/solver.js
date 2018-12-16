@@ -56,7 +56,9 @@ function Solver(calcs) {
             args = args.map(function collateArguments(arg) {
                 return data[arg];
             });
-            data[answer] = calcs[index].apply(this, args);
+            if (!data[answer]) {
+                data[answer] = calcs[index].apply(this, args);
+            }
         });
         return data;
     };

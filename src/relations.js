@@ -3,8 +3,12 @@
 var formulas = aircraftFormulas(window.CONSTANTS, solvePoly),
     aircraftFormulas = aircraftSolver(Solver, formulas),
     relation = [
-        aircraftFormulas.d[12],
-        aircraftFormulas[7], // Lift Coefficient, Airspeed, Wing Loading - CL, V, W/S
+        [
+            aircraftFormulas.d[12]
+        ],
+        [ // Lift Coefficient, Airspeed, Wing Loading - CL, V, W/S
+            aircraftFormulas[7]
+        ],
         [ // Relation 2: Wing Area, Wing Loading, Gross Weight - S, W/S, W
             aircraftFormulas[7],
             aircraftFormulas[14]
@@ -12,10 +16,10 @@ var formulas = aircraftFormulas(window.CONSTANTS, solvePoly),
         [ // (3) Relation 3: Wing Area, Effective Span, Effective Aspect Ratio, Effective Chord - S, be, eAR, ce
             aircraftFormulas[14],
             aircraftFormulas.f[9],
-            aircraftFormulas[15]
+            aircraftFormulas[15],
+            aircraftFormulas[19]
         ],
         [ // Relation 4: Effective Span, Effective Span Loading, Gross Weight - be, W/be, W
-            aircraftFormulas[19],
             aircraftFormulas[20],
             aircraftFormulas[21]
         ],

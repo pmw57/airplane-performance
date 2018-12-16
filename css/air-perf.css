@@ -6,24 +6,146 @@ h2 {
 }
 p {
     margin-top: 0;
-    margin-bottom: 0em;
+    margin-bottom: 0;
 }
-#perf .title {
+.showall {
+    position: absolute;
+    left: 26.5em;
+    z-index: 10;
+}
+.perf {
+    width: 27.5em;
+}
+.perf .title {
     left: 14em;
 }
-#perf .title input {
+.perf .title input {
     width: auto;
 }
-#perf span {
+.perf span {
+    display: inline-block;
+    width: 4.2em;
+    text-align: right;
+}
+.perf p>span {
     position: absolute;
+    width: 4em;
     left: 14em;
 }
-#perf label {
+.perf label {
     position: absolute;
-    left: 18em;
+    left: 19em;
 }
-#perf input {
-    width: 4em;
+.perf input {
+    width: 5em;
+    text-align: right;
+}
+input:disabled {
+    border: none;
+    color: black;
+    background: #fff;
+}
+.perf [type=checkbox] {
+    position: absolute;
+    left: 31em;
+    display: none;
+    width: auto;
+    z-index: 10;
+}
+.perf p:hover>[type=checkbox], [type="checkbox"].active {
+    display: inline;
+}
+.relation {
+    position: relative;
+}
+.relation:after {
+    position: absolute;
+    top: 0;
+    left: 13em;
+    color: #fff;
+    font-weight: bold;
+    padding-right: 0.5em;
+}
+[class^="relation"] {
+    z-index: 10;
+}
+.relation1 {
+    background: hsl(0, 100%, 90%);
+}
+.relation1:after {
+    content: "1";
+}
+.relation2 {
+    background: hsl(19.7, 100%, 90%);
+}
+.relation2:after {
+    content: "2";
+}
+.relation3 {
+    background: hsl(39.38, 100%, 90%);
+}
+.relation3:after {
+    content: "3";
+}
+.relation4 {
+    background: hsl(59.08, 100%, 90%);
+}
+.relation4:after {
+    content: "4";
+}
+.relation5 {
+    background: hsl(78.77, 100%, 90%);
+}
+.relation5:after {
+    content: "5";
+}
+.relation6 {
+    background: hsl(98.46, 100%, 90%);
+}
+.relation6:after {
+    content: "6";
+}
+.relation7 {
+    background: hsl(118.15, 100%, 90%);
+}
+.relation7:after {
+    content: "7";
+}
+.relation8 {
+    background: hsl(137.85, 100%, 90%);
+}
+.relation8:after {
+    content: "8";
+}
+.relation9 {
+    background: hsl(157.54, 100%, 90%);
+}
+.relation9:after {
+    content: "9";
+}
+.relation10 {
+    background: hsl(177.23, 100%, 90%);
+}
+.relation10:after {
+    content: "10";
+}
+.relation11 {
+    background: hsl(196.92, 100%, 90%);
+}
+.relation11:after {
+    content: "11";
+}
+.relation12 {
+    background: hsl(216.62, 100%, 90%);
+}
+.relation12:after {
+    content: "12";
+}
+.relation13 {
+    background: hsl(236.31, 100%, 90%);
+}
+.relation13:after {
+    content: "13";
 }
 #summary {
     margin-bottom: 1em;
@@ -47,8 +169,15 @@ p {
 #charts {
     position: absolute;
     top: 0;
-    left: 24em;
+    left: 27em;
+}
+.perf p>span.sqrt {
+    position: static;
+    display: inline;
 }
 span.sqrt:before {
     content: "\00221a"; /* square root radical */
+}
+.summary {
+    margin: 2em 5em;
 }
