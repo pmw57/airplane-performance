@@ -1,76 +1,24 @@
 <html>
 <head>
-<style>
-h2 {
-    font-size: 120%;
-}
-p {
-    margin-top: 0;
-    margin-bottom: 0em;
-}
-#perf .title {
-    left: 14em;
-}
-#perf .title input {
-    width: auto;
-}
-#perf span {
-    position: absolute;
-    left: 14em;
-}
-#perf label {
-    position: absolute;
-    left: 18em;
-}
-#perf input {
-    width: 4em;
-}
-#summary {
-    margin-bottom: 1em;
-}
-#summary label {
-    position: absolute;
-    left: 14em;
-}
-#summary span.result {
-    position: absolute;
-    display: inline-block;
-    left: 18em;
-}
-#results {
-    margin-left: 7em;
-}
-#results tbody td {
-    text-align: right;
-    padding-right: 1em;
-}
-#charts {
-    position: absolute;
-    top: 0;
-    left: 24em;
-}
-span.sqrt:before {
-    content: "\00221a"; /* square root radical */
-}
-</style>
+<link type="text/css" rel="stylesheet" href="css/air-perf.css">
 </head>
 <body>
 <form id="perf">
     <p>Aircraft name: <label class="title"><input name="name"></label></p>
-    <p>Stall speed without flaps <span>V<sub>s,O</sub> = </span><label><input type="number" name="vel_stall_clean_mph"> mph</label></p>
-    <p>Maximum lift coefficient <span>C<sub>L,max</sub> = </span><label><input type="number" step="0.01" name="cl_max_clean"></label></p>
-    <p>Maximum lift coeff with flaps <span>C<sub>L,maxF</sub> =</span><label><input type="number" step="0.1" name="cl_max_flap"></label></p>
-    <p>Gross weight <span>W = </span><label><input type="number" step="10" name="gross_lb"> lb</label></p>
-    <p>Useful load <span>W<sub>u</sub> = </span><label><input type="number" step="10" name="useful_load_lb"> lb</label></p>
-    <p>Wing span <span>b = </span><label><input type="number" step="0.01" name="wing_span_ft"> ft</label></p>
+    <p>Stall speed without flaps <span>V<sub>s,1</sub> = </span><label><input type="number" name="vel_stall_clean_mph"> mph</label></p>
+    <p>Maximum lift coefficient <span>C<sub>L,max</sub> = </span><label><input type="number" step="0.001" name="cl_max_clean"></label></p>
+    <p>Maximum lift coeff with flaps <span>C<sub>L,maxF</sub> =</span><label><input type="number" step="0.001" name="cl_max_flap"></label></p>
+    <p>Gross weight <span>W = </span><label><input type="number" step="1" name="gross_lb"> lb</label></p>
+    <p>Useful load <span>W<sub>u</sub> = </span><label><input type="number" step="1" name="useful_load_lb"> lb</label></p>
+    <p>Wing span <span>b = </span><label><input type="number" step="0.001" name="wing_span_ft"> ft</label></p>
     <p>Engine brake horsepower <span>BHP = </span><label><input type="number" name="bhp"> hp</label></p>
     <p>Maximum level speed <span>v<sub>max</sub> = </span><label><input type="number" name="vel_max_mph"> mph</label></p>
     <p>Propeller diameter <span>D<sub>p</sub> = </span><label><input type="number" name="prop_dia_in"> in</label></p>
-    <p>Propeller rpm <span>RPM = </span><label><input type="number" name="prop_max_rpm"> RPM</label></p>
+    <p>Propeller rpm <span>RPM = </span><label><input type="number"  step="100" name="prop_max_rpm"> RPM</label></p>
     <p>Propeller efficiency <span>e<sub>p</sub> = </span><label><input step="0.01" type="number" name="prop_efficiency"> %</label></p>
-    <p>Chord length <span>ℓ = </span><label><input type="number" name="chord_length"> ft</label></p>
     <p>Minimum section drag coefficient <span>C<sub>Dmin</sub> = </span><label><input step="0.001" type="number" name="minimum_section_drag_coefficient"></label></p>
     <p>Aerodynamic centre <span>x/c = </span><label><input type="number" step="0.001" name="aerodynamic_centre"></label></p>
+    <p>Fuselage area <span>S<sub>fuse</sub> = </span><label><input type="number" step="0.1" name="fuselage_area"></label></p>
     <p>Altitude <span>h = </span><label><input type="number" step="1000" name="altitude_ft"> ft</label></p>
     <p><label><input type="submit"></label></p>
 </form>
@@ -118,7 +66,7 @@ span.sqrt:before {
     <div id="airspeedperformance" style="width: 500px; height: 400px;"></div>
     <table id="results">
         <thead>
-            <tr><th>airspeed</th><th>climb rate</th><th>prop eff</th><th>sink rate</th><th>rennolds num</th></tr>
+            <tr><th>airspeed</th><th>climb rate</th><th>prop eff</th><th>sink rate</th><th>reynolds num</th></tr>
             <tr><td>v(mph)</td><td>rc(fpm)</td><td>eta</td><td>rs(fpm)</td><td>re=rho*v*c/mu</td></tr>
         </thead>
         <tbody>
@@ -126,9 +74,14 @@ span.sqrt:before {
     </table>
 </div>
 
-<script type="text/javascript" src="jsapi.js"></script>
-<script type="text/javascript" src="visualization-corechart.js"></script>
-<!-- google.load('visualization', '1.1', {packages: ['corechart']}); -->
-<script src="air-perf.js"></script>
+<script type="text/javascript" src="lib/jsapi.js"></script>
+<script type="text/javascript" src="lib/visualization-corechart.js"></script>
+<script src="lib/rpoly.js"></script>
+<script src="lib/PolyReCoeffin.js"></script>
+<script src="src/universal-constants.js"></script>
+<script src="src/solver.js"></script>
+<script src="src/aircraftFormulas.js"></script>
+<script src="src/relations.js"></script>
+<script src="src/air-perf.js"></script>
 </body>
 </html>
