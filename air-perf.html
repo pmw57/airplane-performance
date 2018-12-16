@@ -8,101 +8,127 @@ p {
     margin-top: 0;
     margin-bottom: 0em;
 }
-#perf input[name="name"] {
-    width: 9em;
+#perf .title {
+    left: 14em;
+}
+#perf .title input {
+    width: auto;
+}
+#perf span {
+    position: absolute;
+    left: 14em;
+}
+#perf label {
+    position: absolute;
+    left: 18em;
 }
 #perf input {
     width: 4em;
 }
-#perf span {
-    position: absolute;
-    left: 17em;
-}
 #summary {
     margin-bottom: 1em;
 }
-#summary span {
+#summary label {
+    position: absolute;
+    left: 14em;
+}
+#summary span.result {
     position: absolute;
     display: inline-block;
-    left: 17em;
+    left: 18em;
+}
+#results {
+    margin-left: 7em;
 }
 #results tbody td {
     text-align: right;
     padding-right: 1em;
 }
 #charts {
-    position: fixed;
+    position: absolute;
     top: 0;
-    left: 25em;
+    left: 24em;
+}
+span.sqrt:before {
+    content: "\00221a"; /* square root radical */
 }
 </style>
-<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 </head>
 <body>
 <form id="perf">
-    <p><label>Aircraft name: <span><input name="name"></label></span></p>
-    <p>Stall speed without flaps (vs1) <span><input name="vel_stall_clean_mph"></input> mph</span></p>
-    <p>Maximum lift coefficient (clmax) <span><input name="cl_max_clean"></input></span></p>
-    <p>Maximum lift coeff with flaps (clmaxf) <span><input name="cl_max_flap"></input></span></p>
-    <p>Gross weight (w) <span><input name="gross_lb"></input> lb</span></p>
-    <p>Useful load (wu) <span><input name="useful_load_lb"></input> lb</span></p>
-    <p>Wing input (b) <span><input name="wing_span_ft"></input> ft</span></p>
-    <p>Airplane efficiency factor (e) <span><input name="plane_efficiency"></input></span></p>
-    <p>Engine brake horsepower (bhp) <span><input name="bhp"></input> hp</span></p>
-    <p>Maximum level speed (vmax) <span><input name="vel_max_mph"></input> mph</span></p>
-    <p>Propeller diameter (dp) <span><input name="prop_dia_in"></input> inches</span></p>
-    <p>Propeller rpm (rpm) <span><input name="prop_max_rpm"></input> rpm</span></p>
-    <p>Altitude (alt) <span><input name="altitude_ft"></input> ft</span></p>
+    <p>Aircraft name: <label class="title"><input name="name"></label></p>
+    <p>Stall speed without flaps <span>V<sub>s,O</sub> = </span><label><input type="number" name="vel_stall_clean_mph"> mph</label></p>
+    <p>Maximum lift coefficient <span>C<sub>L,max</sub> = </span><label><input type="number" step="0.01" name="cl_max_clean"></label></p>
+    <p>Maximum lift coeff with flaps <span>C<sub>L,maxF</sub> =</span><label><input type="number" step="0.1" name="cl_max_flap"></label></p>
+    <p>Gross weight <span>W = </span><label><input type="number" step="10" name="gross_lb"> lb</label></p>
+    <p>Useful load <span>W<sub>u</sub> = </span><label><input type="number" step="10" name="useful_load_lb"> lb</label></p>
+    <p>Wing span <span>b = </span><label><input type="number" step="0.01" name="wing_span_ft"> ft</label></p>
+    <p>Engine brake horsepower <span>BHP = </span><label><input type="number" name="bhp"> hp</label></p>
+    <p>Maximum level speed <span>v<sub>max</sub> = </span><label><input type="number" name="vel_max_mph"> mph</label></p>
+    <p>Propeller diameter <span>D<sub>p</sub> = </span><label><input type="number" name="prop_dia_in"> in</label></p>
+    <p>Propeller rpm <span>RPM = </span><label><input type="number" name="prop_max_rpm"> RPM</label></p>
+    <p>Propeller efficiency <span>e<sub>p</sub> = </span><label><input step="0.01" type="number" name="prop_efficiency"> %</label></p>
+    <p>Chord length <span>ℓ = </span><label><input type="number" name="chord_length"> ft</label></p>
+    <p>Minimum section drag coefficient <span>C<sub>Dmin</sub> = </span><label><input step="0.001" type="number" name="minimum_section_drag_coefficient"></label></p>
+    <p>Aerodynamic centre <span>x/c = </span><label><input type="number" step="0.001" name="aerodynamic_centre"></label></p>
+    <p>Altitude <span>h = </span><label><input type="number" step="1000" name="altitude_ft"> ft</label></p>
+    <p><label><input type="submit"></label></p>
 </form>
 
 <h2>Output Parameters</h2>
 <div id="summary">
-    <p>Wing&nbsp;loading lb/ft^2 <span id="wing_load_lb_ft">&nbsp;</span></p>
-    <p>Stall speed with flaps mph <span id="vel_stall_flaps_mph">&nbsp;</span></p>
-    <p>Wing area ft<span id="wing_area_ft">&nbsp;</span></p>
-    <p>Aspect ratio<span id="wing_aspect">&nbsp;</span></p>
-    <p>Chord ft<span id="wing_chord_ft">&nbsp;</span></p>
-    <p>Effective aspect ratio<span id="aspect_ratio_effective">&nbsp;</span></p>
-    <p>Effective span ft<span id="wing_span_effective">&nbsp;</span></p>
-    <p>Effective chord ft<span id="wing_chord_effective">&nbsp;</span></p>
-    <p>Effective span loading  lb/ft<span id="wing_load_effective">&nbsp;</span></p>
-    <p>Drag area ft^2<span id="drag_area_ft">&nbsp;</span></p>
-    <p>Zero-lift drag coefficient<span id="cd_drag">&nbsp;</span></p>
-    <p>Airspeed for minimum sink mph<span id="vel_sink_min_ft">&nbsp;</span></p>
-    <p>Minimum power required for level flight hp<span id="pwr_min_req_hp">&nbsp;</span></p>
-    <p>Minimum drag lb<span id="drag_min">&nbsp;</span></p>
-    <p>Minimum sink rate fpm<span id="rate_sink_min_ft">&nbsp;</span></p>
-    <p>Maximum lift-to-drag ratio<span id="ld_max">&nbsp;</span></p>
-    <p>Lift coeffieient at minimum sink<span id="cl_min_sink">&nbsp;</span></p>
-    <p>Maximum ideal climb rate fpm<span id="rate_climb_ideal">&nbsp;</span></p>
-    <p>Reference prop airspeed for .74 eff<span id="prop_vel_ref">&nbsp;</span></p>
-    <p>Idealized static thrust lb<span id="static_thrust_ideal">&nbsp;</span></p>
-    <p>Propeller tip mach number<span id="prop_tip_mach">&nbsp;</span></p>
+    <p>Wing loading <label>W/S</label> <span class="result"><span id="wing_load_lb_ft"></span> lb/ft<sup>2</sup></span></p>
+    <p>Stall speed with flaps <label>V<sub>s,0</sub></label> <span class="result"><span id="vel_stall_flaps_mph"></span> mph</span></p>
+    <p>Maximum speed lift coefficient <label>C<sub>LmaxV</sub></label> <span class="result"><span id="max_speed_lift_coefficient"></span></span></p>
+    <p>Wing area <label>S</label> <span class="result"><span id="wing_area_ft"></span> ft</span></p>
+    <p>Aspect ratio <label>AR</label> <span class="result"><span id="aspect_ratio"></span></span></p>
+    <p>Chord <label>C</label> <span class="result"><span id="wing_chord_ft"></span> ft</span></p>
+    <p>Airplane efficiency factor <label>e</label> <span class="result"><span id="plane_efficiency"></span></span></p>
+    <p>Effective aspect ratio <label>eAR</label> <span class="result"><span id="aspect_ratio_effective"></span></span></p>
+    <p>Effective span <label>b<sub>e</sub></label> <span class="result"><span id="wing_span_effective"></span> ft</span></p>
+    <p>Effective chord <label>c<sub>e</sub></label> <span class="result"><span id="wing_chord_effective"></span> ft</span></p>
+    <p>Effective span loading <label>w/b<sub>e</sub></label> <span class="result"><span id="wing_load_effective"></span> lb/ft</span></p>
+    <p>Available thrust horsepower <label>THP<sub>a</sub></label> <span class="result"><span id="available_thrust_horsepower"></span> hp</span></p>
+    <p>Drag area <label>AD</label> <span class="result"><span id="drag_area_ft"></span> ft<sup>2</sup></span></p>
+    <p>Zero-lift drag coefficient <label>C<sub>D,0</sub></label> <span class="result"><span id="cd_drag"></span></span></p>
+    <p>Airspeed for minimum sink <label>V<sub>minS</sub></label> <span class="result"><span id="vel_sink_min_ft"></span> mph</span></p>
+    <p>Minimum power for level flight <label>THP<sub>min</sub></label> <span class="result"><span id="pwr_min_req_hp"></span> hp</span></p>
+    <p>Minimum drag <label>D<sub>min</sub></label> <span class="result"><span id="drag_min"></span> lb</span></p>
+    <p>Minimum sink rate <label>R<sub>S,min</sub></label> <span class="result"><span id="rate_sink_min_ft"></span> fpm</span></p>
+    <p>Maximum lift-to-drag ratio <label>(L/D)<sub>max</sub></label> <span class="result"><span id="maximum_lift_to_drag_ratio"></span></span></p>
+    <p>Lift coefficient at minimum sink <label>C<sub>LminS</sub></label> <span class="result"><span id="cl_min_sink"></span></span></p>
+    <p>Maximum ideal climb rate <label>R<sub>C<sup>*</sup>,max</sub></label> <span class="result"><span id="rate_climb_ideal"></span> fpm</span></p>
+    <p>Ref. prop airspeed for .74 eff <label>V<sub>prop</sub></label> <span class="result"><span id="prop_vel_ref"></span> MPH</span></p>
+    <p>Idealized static thrust <label>T<sub>s</sub></label> <span class="result"><span id="static_thrust_ideal"></span> lb</span></p>
+    <p>Propeller tip mach number <label>M<sub>p</sub></label> <span class="result"><span id="prop_tip_mach"></span></span></p>
+    <p>Minimum sink lift-to-drag <label>(L/D)<sub>minS</sub></label> <span class="result"><span id="lift_to_drag_min_sink"></span></span></p>
+    <p>101.6 V<sub>minS</sub>/R<sub>S,min</sub> consistency <label>(L/D)<sub>max</sub></label> <span class="result"><span id="lift_to_drag_ratio_variation"></span></span></p>
+    <p>3.07 <span class="sqrt">(eAR C<sub>D,0</sub>)</span> consistency  <label>C<sub>LminS</sub></label> <span class="result"><span id="lift_coefficient_minimum_sink_variation"></span></span></p>
+    <p>0.886 <span class="sqrt">(eAR/C<sub>D,0</sub>)</span> consistency <label>(L/D)<sub>max</sub></label> <span class="result"><span id="lift_to_drag_ratio_variation_2"></span></span></p>
+    <p>W / D<sub>min</sub></span> consistency <label>(L/D)<sub>max</sub></label> <span class="result"><span id="lift_to_drag_ratio_variation_3"></span></span></p>
+    <p>Minimum glide angle <label>&theta;<sub>g</sub></label> <span class="result"><span id="minimum_glide_angle"></span></span></p>
 </div>
 
-<table id="results">
-    <thead>
-        <tr><th>airspeed</th><th>climb rate</th><th>prop eff</th><th>sink rate</th><th>rennolds num</th></tr>
-        <tr><td>v(mph)</td><td>rc(fpm)</td><td>eta</td><td>rs(fpm)</td><td>re=rho*v*c/mu</td></tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
 <ul>
-    <li>performance parameter......... fp    = <span id="fp"></span></li>
-    <li>kinetic energy parameter...... wv2   = <span id="wv2"></span></li>
+    <li>performance parameter......... fp = <span id="fp"></span></li>
+    <li>kinetic energy parameter...... wv2 = <span id="wv2"></span></li>
 </ul>
 
 <div id="charts">
-    <div id="visualization" style="width: 500px; height: 400px;"></div>
+    <div id="airspeedperformance" style="width: 500px; height: 400px;"></div>
+    <table id="results">
+        <thead>
+            <tr><th>airspeed</th><th>climb rate</th><th>prop eff</th><th>sink rate</th><th>rennolds num</th></tr>
+            <tr><td>v(mph)</td><td>rc(fpm)</td><td>eta</td><td>rs(fpm)</td><td>re=rho*v*c/mu</td></tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
 
-</div>
-
-<script type="text/javascript">
-  google.load('visualization', '1', {packages: ['corechart']});
-</script>
+<script type="text/javascript" src="jsapi.js"></script>
+<script type="text/javascript" src="visualization-corechart.js"></script>
+<!-- google.load('visualization', '1.1', {packages: ['corechart']}); -->
 <script src="air-perf.js"></script>
 </body>
 </html>
