@@ -1,0 +1,77 @@
+<html>
+<head>
+<style>
+form p {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+#perf {
+	position: absolute;
+	margin-left: 30em;
+}
+</style>
+</head>
+<body>
+<form id="perf">
+    <p><label>name: <input name="name"></label></p>
+    <p><label>bhp: <input name="bhp"></label></p>
+    <p><label>wing_span_ft: <input name="wing_span_ft"></label></p>
+    <p><label>prop_dia_ft: <input name="prop_dia_ft"></label></p>
+    <p><label>prop_dia_in: <input name="prop_dia_in"></label></p>
+    <p><label>wing_area: <input name="wing_area"></label></p>
+    <p><label>empty_weight_lb: <input name="empty_weight_lb"></label></p>
+    <p><label>gross_lb: <input name="gross_lb"></label></p>
+    <p><label>vel_max_mph: <input name="vel_max_mph"></label></p>
+    <p><label>vel_stall_clean_mph: <input name="vel_stall_clean_mph"></label></p>
+    <p><label>rcmax: <input name="rcmax"></label></p>
+    <p><label>useful_load_lb: <input name="useful_load_lb"></label></p>
+    <p><label>prop_max_rpm: <input name="prop_max_rpm"></label></p>
+    <p><label>cl_max_clean: <input name="cl_max_clean"></label></p>
+    <p><label>cl_max_flap: <input name="cl_max_flap"></label></p>
+    <p><label>plane_efficiency: <input name="plane_efficiency"></label></p>
+    <p><input type="submit"></p>
+</form>
+
+<table id="summary">
+<tr><th>wing_load_lb_ft</th><td id="wing_load_lb_ft">&nbsp;</td></tr>
+<tr><th>vel_stall_flaps_mph</th><td id="vel_stall_flaps_mph">&nbsp;</td></tr>
+<tr><th>wing_area_ft</th><td id="wing_area_ft">&nbsp;</td></tr>
+<tr><th>wing_aspect</th><td id="wing_aspect">&nbsp;</td></tr>
+<tr><th>wing_chord_ft</th><td id="wing_chord_ft">&nbsp;</td></tr>
+<tr><th>wing_span_effective</th><td id="wing_span_effective">&nbsp;</td></tr>
+<tr><th>wing_chord_effective</th><td id="wing_chord_effective">&nbsp;</td></tr>
+<tr><th>wing_load_effective</th><td id="wing_load_effective">&nbsp;</td></tr>
+<tr><th>drag_area_ft</th><td id="drag_area_ft">&nbsp;</td></tr>
+<tr><th>cd_drag</th><td id="cd_drag">&nbsp;</td></tr>
+<tr><th>vel_sink_min_ft</th><td id="vel_sink_min_ft">&nbsp;</td></tr>
+<tr><th>pwr_min_req_hp</th><td id="pwr_min_req_hp">&nbsp;</td></tr>
+<tr><th>rate_sink_min_ft</th><td id="rate_sink_min_ft">&nbsp;</td></tr>
+<tr><th>ld_max</th><td id="ld_max">&nbsp;</td></tr>
+<tr><th>drag_min</th><td id="drag_min">&nbsp;</td></tr>
+<tr><th>cl_min_sink</th><td id="cl_min_sink">&nbsp;</td></tr>
+<tr><th>rate_climb_ideal</th><td id="rate_climb_ideal">&nbsp;</td></tr>
+<tr><th>prop_tip_mach</th><td id="prop_tip_mach">&nbsp;</td></tr>
+<tr><th>prop_vel_ref</th><td id="prop_vel_ref">&nbsp;</td></tr>
+<tr><th>static_thrust_ideal</th><td id="static_thrust_ideal">&nbsp;</td></tr>
+</table>
+
+<table id="results">
+	<thead>
+		<tr><th>airspeed</th><th>climb rate</th><th>prop eff</th><th>sink rate</th><th>rennolds num</th></tr>
+		<tr><td>v(mph)</td><td>rc(fpm)</td><td>eta</td><td>rs(fpm)</td><td>re=rho*v*c/mu</td></tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+
+<ul>
+	<li>performance parameter......... fp    = <span id="fp"></span></li>
+	<li>kinetic energy parameter...... wv2   = <span id="wv2"></span></li>
+	<li>maximum rate of climb......... rcmax = <span id="rcmax"></span></li>
+	<li>maximum speed................. vmax  = <span id="vmax"></span></li>
+	<li>useful load lb....... useful_load_lb = <span id="useful_load_lb"></span></li>
+</ul>
+
+<script src="air-perf.js"></script>
+</body>
+</html>
