@@ -10,6 +10,7 @@
     "src/solver.js",
     "src/aircraftFormulas.js",
     "src/aircraftSolver.js",
-  	"src-test/aircraftFormulas-test.js"
+    "src-test/solver-test.js",
+    "src-test/aircraftFormulas-test.js"
 	]
 }

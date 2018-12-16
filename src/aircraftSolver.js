@@ -15,9 +15,9 @@ function aircraftSolver(Solver, data) {
         appendicies = data.appendicies;
 
     formulas.forEach(function (formulaGroup) {
-        //console.log(formulaGroup);
         solverFormulas.push(new Solver(formulaGroup));
     });
+
     Object.keys(appendicies).forEach(function (appKey) {
         appendicies[appKey].unshift([dummyFunc]);
 
@@ -34,6 +34,7 @@ function aircraftSolver(Solver, data) {
         }
         return prev;
     }, []);
+    solverFormulas.all = new Solver(solverFormulas.all);
 
     return solverFormulas;
 }

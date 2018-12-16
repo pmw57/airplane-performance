@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage{mathtools}
+\begin{document}
+Compare F.2 with F.8
+\[
+\tag{F.2}
+C_D S=C_{D,wing}S(1+K_{wing}C_L^2)+C{D,fuse}S_{fuse}\left(1+K_{fuse}\alpha_{deg}^2\right)
+\]
+...
+\[
+\tag{F.8}
+\frac{1}{e}=(1+\delta)+\pi AR C_{D,wing}K_{wing}+\pi C_{D,fuse}K_{fuse}\frac{(AR+3)^2}{0.12 AR}\frac{S_{fuse}}{S}
+\]
+\[
+\alpha_{deg} = C_L\frac{\mathrm{d}\alpha_{deg}}{\mathrm{d}C_L}
+\]
+Substitute into F.2
+\[
+C_D S=C_{D,wing}S(1+K_{wing}{C_L}^2)+C{D,fuse}S_{fuse}\left(1+K_{fuse}\left({C_L\frac{\mathrm{d}\alpha_{deg}}{\mathrm{d}C_L}}\right)^2\right)
+\]
+Solve F.1 for $C_L^2$ and substitute into formula
+\[
+\tag{F.1}
+C_D S = \left(C_{D,0}+\frac{C_L^2}{\pi eAR}\right)S
+\]
+\[
+\frac{C_D S}{S} = C_{D,0}+\frac{C_L^2}{\pi eAR}
+\]
+\[
+\frac{C_D S}{S}-C_{D,0} = \frac{C_L^2}{\pi eAR}
+\]
+\[
+\frac{C_L^2}{\pi eAR} = \frac{C_D S}{S}-C_{D,0}
+\]
+\[
+C_L^2 = {\pi eAR}\left(\frac{C_D S}{S}-C_{D,0}\right)
+\]
+\end{document}
