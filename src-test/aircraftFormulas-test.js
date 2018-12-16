@@ -1312,7 +1312,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             testAircraftFormula(64, "dp", [mp, rpm], dp);
         });
     });
-    describe("Appendix D", function () {
+    xdescribe("Appendix D", function () {
         function convertToRankine(f) {
             return f + 460;
         }
@@ -1430,7 +1430,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
     });
-    describe("F: Airplane efficiency factor, e; ground effect", function () {
+    xdescribe("F: Airplane efficiency factor, e; ground effect", function () {
         var cdwing;
         var kwing;
         var cdfuse;
@@ -1672,7 +1672,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
     });
-    describe("G: Drag analysis", function () {
+    xdescribe("G: Drag analysis", function () {
         describe("1: Drag area", function () {
             var cdf;
             var af;
@@ -1703,7 +1703,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
     });
-    describe("J: Equation of state", function () {
+    xdescribe("J: Equation of state", function () {
         var r;
         var p;
         beforeEach(function () {
