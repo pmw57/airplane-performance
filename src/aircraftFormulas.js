@@ -8,31 +8,31 @@ function aircraftFormulas(constants, solvePoly) {
         sea_level_density = 0.002377,
         formulas = [
             [ // formula 1
-                function (w, g) {
-                    var d = w * Math.sin(g * Math.TAU / 360);
+                function (w, thetag) {
+                    var d = w * Math.sin(thetag * Math.TAU / 360);
                     return d;
                 },
-                function (d, g) {
-                    var w = d / Math.sin(g * Math.TAU / 360);
+                function (d, thetag) {
+                    var w = d / Math.sin(thetag * Math.TAU / 360);
                     return w;
                 },
                 function (d, w) {
-                    var g = Math.asin(d / w) * 360 / Math.TAU;
-                    return g;
+                    var thetag = Math.asin(d / w) * 360 / Math.TAU;
+                    return thetag;
                 }
             ],
             [ // Formula 2
-                function (w, g) {
-                    var l = w * Math.cos(g * Math.TAU / 360);
+                function (w, thetag) {
+                    var l = w * Math.cos(thetag * Math.TAU / 360);
                     return l;
                 },
-                function (l, g) {
-                    var w = l / Math.cos(g * Math.TAU / 360);
+                function (l, thetag) {
+                    var w = l / Math.cos(thetag * Math.TAU / 360);
                     return w;
                 },
                 function (l, w) {
-                    var g = Math.acos(l / w) / Math.TAU * 360;
-                    return g;
+                    var thetag = Math.acos(l / w) / Math.TAU * 360;
+                    return thetag;
                 }
             ],
             [ // Formula 3
@@ -55,6 +55,14 @@ function aircraftFormulas(constants, solvePoly) {
                 function (cl, l, rho, vfs) {
                     var s = 2 * l / (cl * rho * vfs * vfs);
                     return s;
+                },
+                function (vfs) {
+                    var v = vfs * window.CONSTANTS.MPH_TO_FPS;
+                    return v;
+                },
+                function (v) {
+                    var vfs = v * window.CONSTANTS.FPS_TO_MPH;
+                    return vfs;
                 }
             ],
             [ // Formula 4
@@ -124,6 +132,18 @@ function aircraftFormulas(constants, solvePoly) {
                 }
             ],
             [ // Formula 7
+                function (w, s) {
+                    var ws = w / s;
+                    return ws;
+                },
+                function (ws, s) {
+                    var w = ws * s;
+                    return w;
+                },
+                function (ws, w) {
+                    var s = w / ws;
+                    return s;
+                },
                 function (sigma, cl, v) {
                     var ws = sigma * cl * v * v * dynamic_mph_pressure;
                     return ws;
@@ -139,53 +159,41 @@ function aircraftFormulas(constants, solvePoly) {
                 function (ws, sigma, cl) {
                     var v = Math.sqrt(ws / (sigma * cl * dynamic_mph_pressure));
                     return v;
-                },
-                function (w, s) {
-                    var ws = w / s;
-                    return ws;
-                },
-                function (ws, s) {
-                    var w = ws * s;
-                    return w;
-                },
-                function (ws, w) {
-                    var s = w / ws;
-                    return s;
                 }
             ],
             [ // Formula 8
                 function (sigma, cd, s, v) {
-                    var g = 360 / Math.TAU * sigma * cd * s * v * v * dynamic_mph_pressure;
-                    return g;
+                    var thetag = 360 / Math.TAU * sigma * cd * s * v * v * dynamic_mph_pressure;
+                    return thetag;
                 },
-                function (g, cd, s, v) {
-                    var sigma = Math.TAU / 360 * g / (cd * s * v * v * dynamic_mph_pressure);
+                function (thetag, cd, s, v) {
+                    var sigma = Math.TAU / 360 * thetag / (cd * s * v * v * dynamic_mph_pressure);
                     return sigma;
                 },
-                function (g, sigma, s, v) {
-                    var cd = Math.TAU / 360 * g / (sigma * s * v * v * dynamic_mph_pressure);
+                function (thetag, sigma, s, v) {
+                    var cd = Math.TAU / 360 * thetag / (sigma * s * v * v * dynamic_mph_pressure);
                     return cd;
                 },
-                function (g, sigma, cd, v) {
-                    var s = Math.TAU / 360 * g / (sigma * cd * v * v * dynamic_mph_pressure);
+                function (thetag, sigma, cd, v) {
+                    var s = Math.TAU / 360 * thetag / (sigma * cd * v * v * dynamic_mph_pressure);
                     return s;
                 },
-                function (g, sigma, cd, s) {
-                    var v = Math.sqrt(Math.TAU / 360 * g / (sigma * cd * s * dynamic_mph_pressure));
+                function (thetag, sigma, cd, s) {
+                    var v = Math.sqrt(Math.TAU / 360 * thetag / (sigma * cd * s * dynamic_mph_pressure));
                     return v;
                 }
             ],
             [ // Formula 9
                 function (cd, cl) {
-                    var g = 360 / Math.TAU * cd / cl;
-                    return g;
+                    var thetag = 360 / Math.TAU * cd / cl;
+                    return thetag;
                 },
-                function (g, cl) {
-                    var cd = Math.TAU / 360 * g * cl;
+                function (thetag, cl) {
+                    var cd = Math.TAU / 360 * thetag * cl;
                     return cd;
                 },
-                function (g, cd) {
-                    var cl = 360 / Math.TAU * cd / g;
+                function (thetag, cd) {
+                    var cl = 360 / Math.TAU * cd / thetag;
                     return cl;
                 }
             ],
@@ -369,6 +377,30 @@ function aircraftFormulas(constants, solvePoly) {
                 function (clmins, ad) {
                     var ce = Math.sqrt(3 * Math.PI) / clmins * Math.sqrt(ad);
                     return ce;
+                },
+                function (c, e) {
+                    var ce = c / Math.sqrt(e);
+                    return ce;
+                },
+                function (ce, e) {
+                    var c = ce * Math.sqrt(e);
+                    return c;
+                },
+                function (ce, c) {
+                    var e = Math.pow(c / ce, 2);
+                    return e;
+                },
+                function (cd0, s) {
+                    var ad = cd0 * s;
+                    return ad;
+                },
+                function (ad, s) {
+                    var cd0 = ad / s;
+                    return cd0;
+                },
+                function (ad, cd0) {
+                    var s = ad / cd0;
+                    return s;
                 }
             ],
             [ // Formula 20
@@ -391,6 +423,18 @@ function aircraftFormulas(constants, solvePoly) {
                 function (rsmin, w, sigma, ad) {
                     var be = Math.pow(5280 / 60 * 4 / Math.pow(3 * Math.PI, 3 / 4) / (Math.sqrt(dynamic_mph_pressure) * rsmin) * Math.sqrt(w / sigma) * Math.pow(ad, 1 / 4), 2 / 3);
                     return be;
+                },
+                function (b, e) {
+                    var be = b * Math.sqrt(e);
+                    return be;
+                },
+                function (be, e) {
+                    var b = be / Math.sqrt(e);
+                    return b;
+                },
+                function (be, b) {
+                    var e = Math.pow(be / b, 2);
+                    return e;
                 }
             ],
             [ // Formula 21
@@ -413,6 +457,18 @@ function aircraftFormulas(constants, solvePoly) {
                 function (vmins, w, be, sigma) {
                     var ad = Math.pow(1 / (dynamic_mph_pressure * sigma * Math.sqrt(3 * Math.PI) * Math.pow(vmins, 2)) * w / be, 2);
                     return ad;
+                },
+                function (w, be) {
+                    var wbe = w / be;
+                    return wbe;
+                },
+                function (wbe, be) {
+                    var w = wbe * be;
+                    return w;
+                },
+                function (wbe, w) {
+                    var be = w / wbe;
+                    return be;
                 }
             ],
             [ // Formula 22
@@ -424,7 +480,7 @@ function aircraftFormulas(constants, solvePoly) {
                     var a = 5280 / 60 * ad * Math.pow(v, 3) * dynamic_mph_pressure / w,
                         b = -rs,
                         c = 5280 / 60 * w / (dynamic_mph_pressure * Math.PI * v * be * be),
-                        sigma = solvePoly([a, b, c])[0];
+                        sigma = solvePoly([a, b, c])[1];
                     return sigma;
                 },
                 function (rs, sigma, v, w, be) {
@@ -432,14 +488,23 @@ function aircraftFormulas(constants, solvePoly) {
                     return ad;
                 },
                 function (rs, sigma, ad, w, be) {
-                    var a = 5280 / 60 * sigma * ad * dynamic_mph_pressure / w,
-                        c = -rs,
-                        d = 5280 / 60 * w / (dynamic_mph_pressure * Math.PI * sigma * be * be),
-                        v = solvePoly([a, 0, c, d])[0];
+                    var coeffs = [
+                        sigma * ad * dynamic_mph_pressure / w,
+                        0,
+                        0,
+                        -60 / 5280 * rs,
+                        w / (dynamic_mph_pressure * Math.PI * sigma * be * be)
+                    ],
+                        v = solvePoly(coeffs)[1];
                     return v;
                 },
                 function (rs, sigma, ad, v, be) {
-                    var w = solvePoly([5280 / 60 / (dynamic_mph_pressure * Math.PI * sigma * v * be * be), -rs, 5280 / 60 * sigma * ad * Math.pow(v, 3) * dynamic_mph_pressure])[1];
+                    var coeffs = [
+                        1 / (dynamic_mph_pressure * Math.PI * sigma * v * be * be),
+                        -60 / 5280 * rs,
+                        sigma * ad * Math.pow(v, 3) * dynamic_mph_pressure
+                    ],
+                        w = solvePoly(coeffs)[0];
                     return w;
                 },
                 function (rs, sigma, ad, v, w) {
@@ -494,69 +559,75 @@ function aircraftFormulas(constants, solvePoly) {
             ],
             [ // Formula 25
                 function (vhat) {
-                    var rshat = Math.pow(vhat, 3) / 4 + 3 / 4 * vhat;
+                    var rshat = (Math.pow(vhat, 4) + 3) / (4 * vhat);
                     return rshat;
                 },
-                function (rshat) {
-                    var coeffs = [1, 0, 3, -4 * rshat],
-                        vhat = solvePoly(coeffs)[0];
+                function (rshat, vhat) {
+                    var coeffs = [
+                        1,
+                        0,
+                        0,
+                        -rshat * 4,
+                        3
+                    ],
+                        vhat = solvePoly(coeffs)[1];
                     return vhat;
                 }
             ],
             [ // Formula 26
                 function (cl, cd0, ear) {
-                    var dg_dcl = 180 / Math.PI * (cd0 / (cl * cl) + 1 / (Math.PI * ear));
+                    var dg_dcl = 360 / Math.TAU * (cd0 / (cl * cl) + 1 / (Math.PI * ear));
                     return dg_dcl;
                 },
                 function (dg_dcl, cd0, ear) {
-                    var cl = Math.sqrt(cd0 / (dg_dcl / 180 * Math.PI - 1 / (Math.PI * ear)));
+                    var cl = Math.sqrt(cd0 / (dg_dcl / 360 * Math.TAU - 1 / (Math.PI * ear)));
                     return cl;
                 },
                 function (dg_dcl, cl, ear) {
-                    var cd0 = (dg_dcl / 180 * Math.PI - 1 / (Math.PI * ear)) * cl * cl;
+                    var cd0 = (dg_dcl / 360 * Math.TAU - 1 / (Math.PI * ear)) * cl * cl;
                     return cd0;
                 },
                 function (dg_dcl, cl, cd0) {
-                    var ear = 1 / (Math.PI * (dg_dcl * Math.PI / 180 - cd0 / (cl * cl)));
+                    var ear = 1 / (Math.PI * (dg_dcl * Math.TAU / 360 - cd0 / (cl * cl)));
                     return ear;
                 }
             ],
             [ // Formula 27
                 function (ear, cd0) {
-                    var clmaxld1 = Math.sqrt(Math.PI * ear * cd0);
-                    return clmaxld1;
+                    var clmaxld = Math.sqrt(Math.PI * ear * cd0);
+                    return clmaxld;
                 },
-                function (clmaxld1, cd0) {
-                    var ear = Math.pow(clmaxld1, 2) / (Math.PI * cd0);
+                function (clmaxld, cd0) {
+                    var ear = Math.pow(clmaxld, 2) / (Math.PI * cd0);
                     return ear;
                 },
-                function (clmaxld1, ear) {
-                    var cd0 = Math.pow(clmaxld1, 2) / (Math.PI * ear);
+                function (clmaxld, ear) {
+                    var cd0 = Math.pow(clmaxld, 2) / (Math.PI * ear);
                     return cd0;
                 }
             ],
             [ // Formula 28
-                function (clmins) {
-                    var clmaxld2 = clmins / Math.sqrt(3);
-                    return clmaxld2;
+                function (ear, cd0) {
+                    var ldmax = Math.sqrt(Math.PI) / 2 * Math.sqrt(ear / cd0);
+                    return ldmax;
                 },
-                function (clmaxld2) {
-                    var clmins = clmaxld2 * Math.sqrt(3);
-                    return clmins;
+                function (ldmax, cd0) {
+                    var ear = Math.pow(2 / Math.sqrt(Math.PI) * ldmax, 2) * cd0;
+                    return ear;
                 }
             ],
             [ // Formula 29
-                function (ad, be) {
-                    var ldmax = be * Math.sqrt(Math.PI / 4 / ad);
+                function (be, ad) {
+                    var ldmax = Math.sqrt(Math.PI) / 2 * be / Math.sqrt(ad);
                     return ldmax;
                 },
-                function (ldmax, be) {
-                    var ad = Math.PI / (4 * Math.pow(ldmax / be, 2));
-                    return ad;
-                },
                 function (ldmax, ad) {
-                    var be = ldmax / Math.sqrt(Math.PI / 4 / ad);
+                    var be = 2 / Math.sqrt(Math.PI) * ldmax * Math.sqrt(ad);
                     return be;
+                },
+                function (ldmax, be) {
+                    var ad = Math.PI / 4 * Math.pow(be / ldmax, 2);
+                    return ad;
                 }
             ],
             [ // Formula 30
@@ -578,26 +649,53 @@ function aircraftFormulas(constants, solvePoly) {
                 }
             ],
             [ // Formula 31
-                function (dr, ad, v, w, be) {
-                    var thpal = 5280 / 60 / 33000 * (dr * ad * Math.pow(v, 3) * dynamic_mph_pressure + 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (Math.PI * dr * v));
+                function (sigma, ad, v, w, be) {
+                    var thpal = 5280 / 60 / 33000 * (sigma * ad * Math.pow(v, 3) * dynamic_mph_pressure + 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (Math.PI * sigma * v));
                     return thpal;
                 },
                 function (thpal, ad, v, w, be) {
                     var coeffs = [
-                        ad * Math.pow(v, 3) * dynamic_mph_pressure,
-                        -33000 * 60 / 5280 * thpal,
-                        Math.pow(w / be, 2) / (dynamic_mph_pressure * Math.PI * v)
-                    ],
-                        dr = solvePoly(coeffs)[1];
-                    return dr;
+                            5280 / 60 / 33000 * ad * Math.pow(v, 3) * dynamic_mph_pressure,
+                            -thpal,
+                            5280 / 60 / 33000  / dynamic_mph_pressure * Math.pow(w / be, 2) / (Math.PI * v)
+                        ],
+                        sigma = solvePoly(coeffs)[1];
+                    return sigma;
                 },
-                function (thpal, dr, v, w, be) {
-                    var ad = 1 / (Math.pow(v, 3) * dynamic_mph_pressure * dr) * (33000 * 60 / 5280 * thpal - 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (Math.PI * dr * v));
+                function (thpal, sigma, v, w, be) {
+                    var ad = 1 / (Math.pow(v, 3) * dynamic_mph_pressure * sigma) * (33000 * 60 / 5280 * thpal - 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (Math.PI * sigma * v));
                     return ad;
                 },
-                function (thpal, dr, ad, v, w) {
-                    var be = w / Math.sqrt(dynamic_mph_pressure * Math.PI * dr * v * (33000 * 60 / 5280 * thpal - Math.pow(v, 3) * dynamic_mph_pressure * dr * ad));
+                function (thpal, sigma, ad, w, be) {
+                    var coeffs = [
+                            5280 / 60 / 33000 * sigma * ad * dynamic_mph_pressure,
+                            0,
+                            0,
+                            -thpal,
+                            5280 / 60 / 33000 / dynamic_mph_pressure * Math.pow(w / be, 2) / (Math.PI * sigma)
+                        ],
+                        v = solvePoly(coeffs)[0];
+                    return v;
+                },
+                function (thpal, sigma, ad, v, be) {
+                    var w = Math.sqrt((thpal / 5280 * 60 * 33000 - sigma * ad * Math.pow(v, 3) * dynamic_mph_pressure) * Math.PI * sigma * v * dynamic_mph_pressure * be * be);
+                    return w;
+                },
+                function (thpal, sigma, ad, v, w) {
+                    var be = w / Math.sqrt(dynamic_mph_pressure * Math.PI * sigma * v * (33000 * 60 / 5280 * thpal - Math.pow(v, 3) * dynamic_mph_pressure * sigma * ad));
                     return be;
+                },
+                function (ad, vmax, sigma) {
+                    var thpa = 88 / 33000 * dynamic_mph_pressure * sigma * ad * Math.pow(vmax, 3);
+                    return thpa;
+                },
+                function (thpa, vmax, sigma) {
+                    var ad = 33000 / 88 / dynamic_mph_pressure * sigma * thpa / Math.pow(vmax, 3);
+                    return ad;
+                },
+                function (thpa, ad, sigma) {
+                    var vmax = Math.pow(33000 / 88 / dynamic_mph_pressure * sigma * thpa / ad, 1 / 3);
+                    return vmax;
                 }
             ],
             [ // Formula 32
@@ -615,113 +713,107 @@ function aircraftFormulas(constants, solvePoly) {
                 }
             ],
             [ // Formula 33
-                function (ad, dr, w, be) {
-                    var thpmin = 5280 / 60 * 4 / 33000 * Math.sqrt(1 / dynamic_mph_pressure) / Math.pow(3 * Math.PI, 3 / 4) * Math.pow(ad, 1 / 4) / Math.sqrt(dr) * Math.pow(w / be, 3 / 2);
+                function (ad, sigma, w, be) {
+                    var thpmin = 5280 / 60 * 4 / 33000 * Math.sqrt(1 / dynamic_mph_pressure) / Math.pow(3 * Math.PI, 3 / 4) * Math.pow(ad, 1 / 4) / Math.sqrt(sigma) * Math.pow(w / be, 3 / 2);
                     return thpmin;
                 },
-                function (thpmin, dr, w, be) {
-                    var ad = Math.pow(33000 / 4 * 60 / 5280 * Math.sqrt(dynamic_mph_pressure) * Math.pow(3 * Math.PI, 3 / 4) * thpmin * Math.sqrt(dr) / Math.pow(w / be, 3 / 2), 4);
+                function (thpmin, sigma, w, be) {
+                    var ad = Math.pow(33000 / 4 * 60 / 5280 * Math.sqrt(dynamic_mph_pressure) * Math.pow(3 * Math.PI, 3 / 4) * thpmin * Math.sqrt(sigma) / Math.pow(w / be, 3 / 2), 4);
                     return ad;
                 },
                 function (thpmin, ad, w, be) {
-                    var dr = Math.pow(5280 / 60 * 4 * Math.sqrt(1 / dynamic_mph_pressure) * Math.pow(ad, 1 / 4) * Math.pow(w / be, 3 / 2) / (33000 * Math.pow(3 * Math.PI, 3 / 4) * thpmin), 2);
-                    return dr;
+                    var sigma = Math.pow(5280 / 60 * 4 * Math.sqrt(1 / dynamic_mph_pressure) * Math.pow(ad, 1 / 4) * Math.pow(w / be, 3 / 2) / (33000 * Math.pow(3 * Math.PI, 3 / 4) * thpmin), 2);
+                    return sigma;
                 },
-                function (thpmin, ad, dr, be) {
-                    var w = Math.pow(60 / 5280 * 33000 * Math.pow(3 * Math.PI, 3 / 4) * thpmin * Math.sqrt(dr) / (4 * Math.sqrt(1 / dynamic_mph_pressure) * Math.pow(ad, 1 / 4)), 2 / 3) * be;
+                function (thpmin, ad, sigma, be) {
+                    var w = Math.pow(60 / 5280 * 33000 * Math.pow(3 * Math.PI, 3 / 4) * thpmin * Math.sqrt(sigma) / (4 * Math.sqrt(1 / dynamic_mph_pressure) * Math.pow(ad, 1 / 4)), 2 / 3) * be;
                     return w;
                 },
-                function (thpmin, ad, dr, w) {
-                    var be = Math.pow(5280 / 60 * 4 / 33000 * Math.sqrt(1 / dynamic_mph_pressure) / Math.pow(3 * Math.PI, 3 / 4) * Math.pow(ad, 1 / 4) / (thpmin * Math.sqrt(dr)), 2 / 3) * w;
+                function (thpmin, ad, sigma, w) {
+                    var be = Math.pow(5280 / 60 * 4 / 33000 * Math.sqrt(1 / dynamic_mph_pressure) / Math.pow(3 * Math.PI, 3 / 4) * Math.pow(ad, 1 / 4) / (thpmin * Math.sqrt(sigma)), 2 / 3) * w;
                     return be;
                 }
             ],
             [ // Formula 34
-                function (d, w, c) {
-                    var t = d + w * Math.sin(c / 360 * Math.TAU);
+                function (d, w, thetac) {
+                    var t = d + w * Math.sin(thetac / 360 * Math.TAU);
                     return t;
                 },
-                function (t, w, c) {
-                    var d = t - w * Math.sin(c / 360 * Math.TAU);
+                function (t, w, thetac) {
+                    var d = t - w * Math.sin(thetac / 360 * Math.TAU);
                     return d;
                 },
-                function (t, d, c) {
-                    var w = (t - d) / Math.sin(c / 360 * Math.TAU);
+                function (t, d, thetac) {
+                    var w = (t - d) / Math.sin(thetac / 360 * Math.TAU);
                     return w;
                 },
                 function (t, d, w) {
-                    var c = 360 / Math.TAU * Math.asin((t - d) / w);
-                    return c;
+                    var thetac = 360 / Math.TAU * Math.asin((t - d) / w);
+                    return thetac;
                 }
             ],
             [ // Formula 35
-                function (w, c) {
-                    var l = w * Math.cos(c / 360 * Math.TAU);
+                function (w, thetac) {
+                    var l = w * Math.cos(thetac / 360 * Math.TAU);
                     return l;
                 },
-                function (l, c) {
-                    var w = l / Math.cos(c / 360 * Math.TAU);
+                function (l, thetac) {
+                    var w = l / Math.cos(thetac / 360 * Math.TAU);
                     return w;
                 },
                 function (l, w) {
-                    var c = 360 / Math.TAU * Math.acos(l / w);
-                    return c;
+                    var thetac = 360 / Math.TAU * Math.acos(l / w);
+                    return thetac;
                 }
             ],
             [ // Formula 36
-                function (c, dr, ad, v, w, be) {
-                    var t = w * Math.sin(c / 360 * Math.TAU) + dr * ad * v * v * dynamic_mph_pressure + 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (dr * v * v);
+                function (thetac, sigma, ad, v, w, be) {
+                    var t = w * Math.sin(thetac / 360 * Math.TAU) + sigma * ad * v * v * dynamic_mph_pressure + 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (sigma * v * v);
                     return t;
                 },
-                function (t, dr, ad, v, w, be) {
-                    var c = Math.asin((t - dr * ad * v * v * dynamic_mph_pressure - 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (dr * v * v)) / w) / Math.TAU * 360;
-                    return c;
+                function (t, sigma, ad, v, w, be) {
+                    var thetac = Math.asin((t - sigma * ad * v * v * dynamic_mph_pressure - 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (sigma * v * v)) / w) / Math.TAU * 360;
+                    return thetac;
                 },
-                function (t, c, ad, v, w, be, dr) {
+                function (t, thetac, ad, v, w, be, sigma) {
                     var coeffs = [
                         ad * v * v * dynamic_mph_pressure,
-                        w * Math.sin(c / 360 * Math.TAU) - t,
+                        w * Math.sin(thetac / 360 * Math.TAU) - t,
                         1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (v * v)
                     ];
-                    dr = solvePoly(coeffs)[1];
-                    return dr;
+                    sigma = solvePoly(coeffs)[1];
+                    return sigma;
                 },
-                function (t, c, dr, v, w, be) {
-                    var ad = (t - w * Math.sin(c / 360 * Math.TAU) - 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (dr * v * v)) / (dr * v * v * dynamic_mph_pressure);
+                function (t, thetac, sigma, v, w, be) {
+                    var ad = (t - w * Math.sin(thetac / 360 * Math.TAU) - 1 / dynamic_mph_pressure * Math.pow(w / be, 2) / (sigma * v * v)) / (sigma * v * v * dynamic_mph_pressure);
                     return ad;
                 },
-                function (t, c, dr, ad, v, be) {
+                function (t, thetac, sigma, ad, w, be) {
                     var coeffs = [
-                        1 / dynamic_mph_pressure * Math.pow(1 / be, 2) / (dr * v * v),
-                        Math.sin(c / 360 * Math.TAU),
-                        dr * ad * v * v * dynamic_mph_pressure - t
+                        sigma * ad * dynamic_mph_pressure,
+                        0,
+                        w * Math.sin(thetac / 360 * Math.TAU) - t,
+                        0,
+                        1 / dynamic_mph_pressure * Math.pow(w / be, 2) / sigma
+                    ],
+                        v = Math.abs(solvePoly(coeffs)[3]);
+                    return v;
+                },
+                function (t, thetac, sigma, ad, v, be) {
+                    var coeffs = [
+                        1 / dynamic_mph_pressure * Math.pow(1 / be, 2) / (sigma * v * v),
+                        Math.sin(thetac / 360 * Math.TAU),
+                        sigma * ad * v * v * dynamic_mph_pressure - t
                     ],
                         w = solvePoly(coeffs)[0];
                     return w;
                 },
-                function (t, c, dr, ad, v, w) {
-                    var be = w / Math.sqrt((t - w * Math.sin(c / 360 * Math.TAU) - dynamic_mph_pressure * dr * ad * v * v) * dynamic_mph_pressure * dr * v * v);
+                function (t, thetac, sigma, ad, v, w) {
+                    var be = w / Math.sqrt((t - w * Math.sin(thetac / 360 * Math.TAU) - dynamic_mph_pressure * sigma * ad * v * v) * dynamic_mph_pressure * sigma * v * v);
                     return be;
                 }
             ],
-            [ // Formula 37
-                function (w, rc, thpal) {
-                    var thpa = w * rc / 33000 + thpal;
-                    return thpa;
-                },
-                function (thpa, rc, thpal) {
-                    var w = 33000 * (thpa - thpal) / rc;
-                    return w;
-                },
-                function (thpa, w, thpal) {
-                    var rc = 33000 * (thpa - thpal) / w;
-                    return rc;
-                },
-                function (thpa, w, rc) {
-                    var thpal = thpa - w * rc / 33000;
-                    return thpal;
-                }
-            ],
+            [], // Formula 37 - theoretical, allowing us to obtain rate of climb
             [ // Formula 38
                 function (bhp, w, eta, rs) {
                     // eta is the efficiency: THPa / BHP
@@ -747,35 +839,35 @@ function aircraftFormulas(constants, solvePoly) {
             ],
             [ // Formula 39
                 function (rho, ap, vp) {
-                    var mp = rho * ap * vp;
-                    return mp;
+                    var mdot = rho * ap * vp;
+                    return mdot;
                 },
-                function (mp, ap, vp) {
-                    var rhop = mp / (ap * vp);
-                    return rhop;
+                function (mdot, ap, vp) {
+                    var rho = mdot / (ap * vp);
+                    return rho;
                 },
-                function (mp, rho, vp) {
-                    var ap = mp / (rho * vp);
+                function (mdot, rho, vp) {
+                    var ap = mdot / (rho * vp);
                     return ap;
                 },
-                function (mp, rho, ap) {
-                    var vp = mp / (rho * ap);
+                function (mdot, rho, ap) {
+                    var vp = mdot / (rho * ap);
                     return vp;
                 },
                 function (rho, a3, v3) {
-                    var ms = rho * a3 * v3;
-                    return ms;
+                    var mdot = rho * a3 * v3;
+                    return mdot;
                 },
-                function (ms, a3, v3) {
-                    var rhos = ms / (a3 * v3);
+                function (mdot, a3, v3) {
+                    var rhos = mdot / (a3 * v3);
                     return rhos;
                 },
-                function (ms, rho, v3) {
-                    var a3 = ms / (rho * v3);
+                function (mdot, rho, v3) {
+                    var a3 = mdot / (rho * v3);
                     return a3;
                 },
-                function (ms, rho, a3) {
-                    var v3 = ms / (rho * a3);
+                function (mdot, rho, a3) {
+                    var v3 = mdot / (rho * a3);
                     return v3;
                 }
             ],
@@ -1185,10 +1277,43 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         appendicies = {
             d: [
-                [], // D.1: Differential of vertical momentum equation
-                [], // D.2: Hydrostatic variation for water
-                [], // D.3: Equation of state
-                [], // D.4: Substituting into D.1
+                [ // D.1: Differential of vertical momentum equation
+                    function (rho, dh) {
+                        var dp = -rho * constants.G * dh;
+                        return dp;
+                    },
+                    function (dp, rho) {
+                        var dh = dp / (-rho * constants.G);
+                        return dh;
+                    },
+                    function (dp, dh) {
+                        var rho = -dp / (constants.G * dh);
+                        return rho;
+                    }
+                ],
+                [ // D.2: Hydrostatic variation for water
+                    function (p0, h) {
+                        var p = p0 - Math.pow(p0, constants.G * h);
+                        return p;
+                    }
+                ],
+                [ // D.3: Equation of state
+                    function (rho, f) {
+                        var rankine = f + window.CONSTANTS.FAHRENHEIT_TO_RANKINE,
+                            p = rho * constants.UNIVERSAL_GAS_CONSTANT * rankine;
+                        return p;
+                    },
+                    function (f) {
+                        var r = f + window.CONSTANTS.FAHRENHEIT_TO_RANKINE;
+                        return r;
+                    },
+                    function (r) {
+                        var f = r - window.CONSTANTS.FAHRENHEIT_TO_RANKINE;
+                        return f;
+                    }
+                ],
+                [ // D.4: Substituting into D.1
+                ],
                 [], // D.5: Integrate for isothermal atmosphere
                 [   // D.6: Expressed as a solution for p
                     function (p0, h, t0) {
@@ -1236,41 +1361,73 @@ function aircraftFormulas(constants, solvePoly) {
                 [], // D.10: Take the integral of the D.9 formula
                 [], // D.11: Remove log terms from D20 formula
                 [   // D.12: Variation of density ratio with altitude (by substituting into D.3)
-                    function (h) {
-                        var tsl = constants.TSL + constants.FAHRENHEIT_TO_RANKIN,
-                            temperatureDecreaseRatio = constants.BETA / tsl,
-                            sigma = Math.pow(1 - temperatureDecreaseRatio * h, constants.G / (constants.R * constants.BETA) - 1);
+                    function (h, f) {
+                        var densityRatioRankine, sigma, rankine;
+                        densityRatioRankine = function (h, tsl_r) {
+                            var temperatureDecreaseRatio = constants.BETA / tsl_r,
+                                sigma = Math.pow(1 - temperatureDecreaseRatio * h, constants.G / (constants.R * constants.BETA) - 1);
+                            return sigma;
+                        };
+                        rankine = f + constants.FAHRENHEIT_TO_RANKINE;
+                        if (h >= 36240) {
+                            rankine = -70 + constants.FAHRENHEIT_TO_RANKINE;
+                        }
+                        sigma = densityRatioRankine(h, rankine);
                         return sigma;
                     },
-                    function (sigma) {
-                        var tsl = constants.TSL + constants.FAHRENHEIT_TO_RANKIN,
-                            temperatureDecreaseRatio = constants.BETA / tsl,
-                            h = (1 - Math.pow(sigma, 1 / (constants.G / (constants.R * constants.BETA) - 1))) / temperatureDecreaseRatio;
+                    function (sigma, f) {
+                        var h;
+                        function ratioHeight() {
+                            var tsl = f + constants.FAHRENHEIT_TO_RANKINE,
+                                temperatureDecreaseRatio = constants.BETA / tsl,
+                                height = (1 - Math.pow(sigma, 1 / (constants.G / (constants.R * constants.BETA) - 1))) / temperatureDecreaseRatio;
+                            return height;
+                        }
+                        h = ratioHeight(sigma, f);
                         return h;
+                    },
+                    function (sigma, h) {
+                        var temperatureDecreaseRatio = (1 - Math.pow(sigma, 1 / (constants.G / (constants.R * constants.BETA) - 1))) / h,
+                            tsl = constants.BETA / temperatureDecreaseRatio,
+                            f = tsl - constants.FAHRENHEIT_TO_RANKINE;
+                        return f;
                     }
                 ],
                 [], // D.13: estimated values for variation of density using estimated values
                 [] // D.14: estimated values for variation of density from 36240 ft to 82000 ft
             ],
-            f: [
+            f: [ // Airplane efficiency factor e, and ground effect
                 [
                     function (cd0, cl, ear, s) {
                         var cds = (cd0 + cl * cl / (Math.PI * ear)) * s;
                         return cds;
+                    },
+                    function (cds, cl, ear, s) {
+                        var cd0 = cds / s - cl * cl / (Math.PI * ear);
+                        return cd0;
+                    },
+                    function (cds, cd0, ear, s) {
+                        var cl = Math.sqrt((cds / s - cd0) * (Math.PI * ear));
+                        return cl;
+                    },
+                    function (cds, cd0, cl, s) {
+                        var ear = (cl * cl) / (cds / s - cd0) / Math.PI;
+                        return ear;
+                    },
+                    function (cds, cd0, cl, ear) {
+                        var s = cds / (cd0 + cl * cl / (Math.PI * ear));
+                        return s;
                     }
                 ],
                 [
-                    function (cdwing, s, kwing, cl, cdfuse, sfuse, kfuse, adeg, cdpart, spart, ar, planformCorrection) {
-                        // Prandtls lifting line theory tells us that an elliptical planform equals 0
-                        var cds =
-                            // paradise drag of the wing
-                            cdwing * s * (1 + kwing * cl * cl) +
-                            // paradise drag of the fuselage
-                            cdfuse * sfuse * (1 + kfuse * adeg) +
-                            // parasite drag of other parts
-                            cdpart * spart +
-                            // induced drag of airfoil
-                            cl * cl / (Math.PI * ar) * (1 + planformCorrection) * s;
+                    function (cdwing, s, kwing, cl, cdfuse, sfuse, kfuse, angleOfAttack, cdcomp, scomp, ar, planformCorrection) {
+                        var cd0 = {
+                                wing: cdwing * s * (1 + kwing * cl * cl),
+                                fuse: cdfuse * sfuse * (1 + kfuse * angleOfAttack * angleOfAttack),
+                                comp: cdcomp * scomp
+                            },
+                            cdi = cl * cl / (Math.PI * ar) * (1 + planformCorrection) * s,
+                            cds = cd0.wing + cd0.fuse + cd0.comp + cdi;
                         return cds;
                     }
                 ],
@@ -1279,56 +1436,246 @@ function aircraftFormulas(constants, solvePoly) {
                 [ // no F.4 in appendix
                 ],
                 [ // Appendix F.5
-                    function (cdwing, s, cdfuse, sfuse, cdpart, spart) {
-                        var ap = cdwing * s + cdfuse * sfuse + cdpart * spart;
-                        return ap;
+                    function (cdwing, s, cdfuse, sfuse, cdcomp, scomp) {
+                        var ad = cdwing * s + cdfuse * sfuse + cdcomp * scomp;
+                        return ad;
                     }
                 ],
                 [ // Appendix F.6
                     function (ar) {
-                        var liftSlopePerDegree = 0.110, // from figure H.3
-                            dcl_dadeg = liftSlopePerDegree * ar / (ar + 3);
-                        return dcl_dadeg;
+                        var radiansToDegrees = window.CONSTANTS.RADIANS_TO_DEGREES,
+                            // from lift equation at http://aancl.snu.ac.kr/aancl/lecture/up_file/_1305606276_11th%20week.pdf
+                            liftSlopePerDegree = Math.PI  / 0.5 * radiansToDegrees,
+                            liftSlope = liftSlopePerDegree * ar / (ar + 3);
+                        return liftSlope;
+                    },
+                    function (liftSlope) {
+                        var radiansToDegrees = window.CONSTANTS.RADIANS_TO_DEGREES,
+                            liftSlopePerDegree = Math.PI / 0.5 * radiansToDegrees,
+                            ar = 3 * liftSlope / (liftSlopePerDegree - liftSlope);
+                        return ar;
                     }
                 ],
                 [ // Appendix F.7
-                    function (dcl, dcl_dadeg, adeg) {
-                        var cl = dcl / dcl_dadeg * adeg;
+                    function (liftSlope, angleOfAttack) {
+                        var cl = liftSlope * angleOfAttack;
                         return cl;
+                    },
+                    function (cl, angleOfAttack) {
+                        var liftSlope = cl / angleOfAttack;
+                        return liftSlope;
+                    },
+                    function (cl, liftSlope) {
+                        var angleOfAttack = cl / liftSlope;
+                        return angleOfAttack;
                     }
                 ],
                 [ // Appendix F.8
                     function (planformCorrection, ar, cdwing, kwing) {
-                        var invew = (1 + planformCorrection) + Math.PI * ar * cdwing * kwing; // 1/ew
+                        var invew = (1 + planformCorrection) + Math.PI * ar * cdwing * kwing;
                         return invew;
                     },
-                    function (cdfuse, kfuse, ar, sfuse, s) {
-                        var invefuse = Math.PI * cdfuse * kfuse * Math.pow(ar + 3, 2) / (0.12 * ar) * sfuse / s; // 1/efuse
-                        // 1.6 * 9/q.s * (0.012*q.ar*q.s)/(Math.pow(q.ar+3, 2) * 9)/ Math.PI / 0.005 = 0.095
+                    function (invew, ar, cdwing, kwing) {
+                        var planformCorrection = invew - Math.PI * ar * cdwing * kwing - 1;
+                        return planformCorrection;
+                    },
+                    function (invew, planformCorrection, cdwing, kwing) {
+                        var ar = (invew - (1 + planformCorrection)) / (Math.PI * cdwing * kwing);
+                        return ar;
+                    },
+                    function (invew, planformCorrection, ar, kwing) {
+                        var cdwing = (invew - (1 + planformCorrection)) / (Math.PI * ar * kwing);
+                        return cdwing;
+                    },
+                    function (invew, planformCorrection, ar, cdwing) {
+                        var kwing = (invew - (1 + planformCorrection)) / (Math.PI * ar * cdwing);
+                        return kwing;
+                    },
+                    function (ar, cdfuse, kfuse, sfuse, s) {
+                        var liftSlopePerDegree = Math.PI  / 0.5 * window.CONSTANTS.RADIANS_TO_DEGREES,
+                            invefuse = Math.PI * cdfuse * kfuse * Math.pow((ar + 3) / liftSlopePerDegree, 2) / ar * sfuse / s;
                         return invefuse;
+                    },
+                    function (invefuse, ar, kfuse, sfuse, s) {
+                        var liftSlopePerDegree = Math.PI  / 0.5 * window.CONSTANTS.RADIANS_TO_DEGREES,
+                            cdfuse = invefuse * ar / (Math.PI * kfuse * Math.pow((ar + 3) / liftSlopePerDegree, 2)) / (sfuse / s);
+                        return cdfuse;
+                    },
+                    function (invefuse, ar, cdfuse, sfuse, s) {
+                        var liftSlopePerDegree = Math.PI  / 0.5 * window.CONSTANTS.RADIANS_TO_DEGREES,
+                            kfuse = invefuse * ar / (Math.PI * cdfuse * Math.pow((ar + 3) / liftSlopePerDegree, 2) * sfuse / s);
+                        return kfuse;
+                    },
+                    function (invefuse, ar, cdfuse, kfuse, s) {
+                        var liftSlopePerDegree = Math.PI  / 0.5 * window.CONSTANTS.RADIANS_TO_DEGREES,
+                            sfuse = invefuse / (Math.PI * cdfuse * kfuse * Math.pow((ar + 3) / liftSlopePerDegree, 2) / ar) * s;
+                        return sfuse;
+                    },
+                    function (invefuse, ar, cdfuse, kfuse, sfuse) {
+                        var liftSlopePerDegree = Math.PI  / 0.5 * window.CONSTANTS.RADIANS_TO_DEGREES,
+                            s = Math.PI * cdfuse * kfuse * Math.pow((ar + 3) / liftSlopePerDegree, 2) / (invefuse * ar) * sfuse;
+                        return s;
                     },
                     function (invew, invefuse) {
                         var inve = invew + invefuse;
                         return inve;
+                    },
+                    function (inve, invefuse) {
+                        var invew = inve - invefuse;
+                        return invew;
+                    },
+                    function (inve, invew) {
+                        var invefuse = inve - invew;
+                        return invefuse;
                     }
                 ],
-                [
-                    function (d_inve_fuse, sfuse, s) {
-                        var e = d_inve_fuse / (sfuse / s);
-                        return e;
+                [ // Appendix F charts
+                    function (ar) {
+                        var wingEfficiencyFactor = {
+                            // y = -1.299978216·10-4 x4 + 4.834347856·10-3 x3 - 6.620280841·10-2 x2 + 3.637235757·10-1 x + 1.852971495·10-1
+                            rectangular: (ar < 1 || ar > 20) ? undefined
+                                : -0.0001299978216 * Math.pow(ar, 4) + 0.004834347856 * Math.pow(ar, 3) - 0.06620280841 * Math.pow(ar, 2) + 0.3637235757 * ar + 0.1852971495,
+                            // y = -3.880517128·10-5 x4 + 1.96650416·10-3 x3 - 3.706755805·10-2 x2 + 2.647194811·10-1 x + 2.944072497·10-1
+                            tapered: (ar < 1 || ar > 20) ? undefined
+                                : -0.00003880517128 * Math.pow(ar, 4) + 0.00196650416 * Math.pow(ar, 3) - 0.03706755805 * Math.pow(ar, 2) + 0.2647194811 * ar + 0.2944072497,
+                            // y = 5.303030303·10-4 x4 - 1.136363636·10-2 x3 + 9.189393939·10-2 - 3.853896104·10-1 x + 1.000822511
+                            delta: (ar < 0 || ar > 6) ? undefined
+                                : 0.0005303030303 * Math.pow(ar, 4) - 0.01136363636 * Math.pow(ar, 3) + 0.09189393939 * Math.pow(ar, 2) - 0.3853896104 * ar + 1.000822511
+                        };
+                        return wingEfficiencyFactor;
                     },
-                    function (e, sfuse, s) {
-                        var d_inve_fuse = e * (sfuse / s);
-                        return d_inve_fuse;
+                    function (ar) {
+                        // values from http://www.xuru.org/rt/PR.asp
+                        var dragDependenceEffect = {
+                            rectangular: 0.0009810583609 * Math.pow(ar, 3) - 0.0152240777 * Math.pow(ar, 2) + 0.1597429943 * ar + 1.047025734,
+                            round: 0.001669860442 * Math.pow(ar, 2) + 0.01325063838 * ar + 0.5558606027
+                        };
+                        return dragDependenceEffect;
                     },
-                    function (e, d_inve_fuse, s) {
-                        var sfuse = d_inve_fuse * s / e;
+                    function (fuselageCorrection, sfuse, s) {
+                        var invefuse = fuselageCorrection * (sfuse / s);
+                        return invefuse;
+                    },
+                    function (invefuse, sfuse, s) {
+                        var fuselageCorrection = invefuse / (sfuse / s);
+                        return fuselageCorrection;
+                    },
+                    function (invefuse, fuselageCorrection, s) {
+                        var sfuse = invefuse / fuselageCorrection * s;
                         return sfuse;
                     },
-                    function (e, d_inve_fuse, sfuse) {
-                        var s = e * sfuse / d_inve_fuse;
+                    function (invefuse, fuselageCorrection, sfuse) {
+                        var s = fuselageCorrection / invefuse * sfuse;
                         return s;
+                    },
+                    function (invew, invefuse) {
+                        var inve = invew + invefuse;
+                        return inve;
+                    },
+                    function (inve, invefuse) {
+                        var invew = inve - invefuse;
+                        return invew;
+                    },
+                    function (inve, invew) {
+                        var invefuse = inve - invew;
+                        return invefuse;
+                    },
+                    function (inve) {
+                        var e = 1 / inve;
+                        return e;
+                    },
+                    function (e) {
+                        var inve = 1 / e;
+                        return inve;
+                    },
+                    function (ew, h, b) {
+                        // from a DataAnalysis app that results in the following Logistics formula
+                        function logistics(A, B, k, x) {
+                            return A / (1 + B * Math.pow(Math.E, -k * x));
+                        }
+                        var A = 1.0869,
+                            B = -0.9337,
+                            k = 7.6391,
+                            kgd = logistics(A, B, k, h / b),
+                            ewgd = ew * kgd;
+                        return ewgd;
                     }
+                ]
+            ],
+            g: [ // Drag analysis
+                [ // Appendix G.1
+                    function (cdf, af, cdw, sw) {
+                        var ad = cdf * af + cdw * sw;
+                        return ad;
+                    },
+                    function (ad, af, cdw, sw) {
+                        var cdf = (ad - cdw * sw) / af;
+                        return cdf;
+                    },
+                    function (ad, cdf, cdw, sw) {
+                        var af = (ad - cdw * sw) / cdf;
+                        return af;
+                    },
+                    function (ad, cdf, af, sw) {
+                        var cdw = (ad - cdf * af) / sw;
+                        return cdw;
+                    },
+                    function (ad, cdf, af, cdw) {
+                        var sw = (ad - cdf * af) / cdw;
+                        return sw;
+                    }
+                ],
+                [ // Appendix G.2
+                    function (rel) {
+                        // default behaviour is for laminar airflow
+                        // alpha source: J.P.Boyd from http://hal.archives-ouvertes.fr/docs/00/26/92/82/PDF/BrighiFruchardSariHAL.pdf
+                        var alpha = 1.32822934486,
+                            cdw = alpha / Math.sqrt(rel);
+                        return cdw;
+                    }
+                ]
+            ],
+            h: [], // Appendix H
+            i: [ // Appendix I
+                [
+                    function (f) {
+                        // μ = 2.270 * (T^(3/2) / T + 198.6) * 10^-8
+                        var rankine = f + window.CONSTANTS.FAHRENHEIT_TO_RANKINE,
+                            mu = 2.270 * Math.pow(rankine, 3 / 2) / (rankine + 198.6) * 1e-8;
+                        return mu;
+                    },
+                    function (rho, v, mu, c) {
+                        var vfs = v * window.CONSTANTS.MPH_TO_FPS,
+                            inertia = rho * vfs * vfs,
+                            viscous = mu * vfs / c,
+                            rel = inertia / viscous;
+                        return rel;
+                    }
+                ]
+            ],
+            j: [ // Appendix J
+                [
+                    function (rho, r) {
+                        var p = rho * constants.UNIVERSAL_GAS_CONSTANT * r;
+                        return p;
+                    },
+                    function (p, r) {
+                        var rho = p / (constants.UNIVERSAL_GAS_CONSTANT * r);
+                        return rho;
+                    },
+                    function (p, rho) {
+                        var r = p / (rho * constants.UNIVERSAL_GAS_CONSTANT);
+                        return r;
+                    },
+                    function (rho) {
+                        var sigma = rho / constants.SEALEVEL_DENSITY;
+                        return sigma;
+                    },
+                    function (sigma) {
+                        var rho = sigma * constants.SEALEVEL_DENSITY;
+                        return rho;
+                    }
+
                 ]
             ]
         };

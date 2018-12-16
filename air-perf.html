@@ -5,20 +5,33 @@
 <body>
 <form id="perf">
     <p>Aircraft name: <label class="title"><input name="name"></label></p>
-    <p>Stall speed without flaps <span>V<sub>s,1</sub> = </span><label><input type="number" name="vel_stall_clean_mph"> mph</label></p>
-    <p>Maximum lift coefficient <span>C<sub>L,max</sub> = </span><label><input type="number" step="0.001" name="cl_max_clean"></label></p>
-    <p>Maximum lift coeff with flaps <span>C<sub>L,maxF</sub> =</span><label><input type="number" step="0.001" name="cl_max_flap"></label></p>
-    <p>Gross weight <span>W = </span><label><input type="number" step="1" name="gross_lb"> lb</label></p>
-    <p>Useful load <span>W<sub>u</sub> = </span><label><input type="number" step="1" name="useful_load_lb"> lb</label></p>
-    <p>Wing span <span>b = </span><label><input type="number" step="0.001" name="wing_span_ft"> ft</label></p>
+    <p>Stall speed without flaps <span>V<sub>s,1</sub> = </span><label><input type="number" name="vs1"> mph</label></p>
+    <p>Maximum lift coefficient <span>C<sub>L,max</sub> = </span><label><input type="number" step="0.001" name="clmax"></label></p>
+    <p>Maximum lift coeff with flaps <span>C<sub>L,maxF</sub> =</span><label><input type="number" step="0.001" name="clmaxf"></label></p>
+    <p>Gross weight <span>W = </span><label><input type="number" step="1" name="w"> lb</label></p>
+    <p>Useful load <span>W<sub>u</sub> = </span><label><input type="number" step="1" name="wu"> lb</label></p>
+    <p>Wing span <span>b = </span><label><input type="number" step="0.001" name="b"> ft</label></p>
     <p>Engine brake horsepower <span>BHP = </span><label><input type="number" name="bhp"> hp</label></p>
-    <p>Maximum level speed <span>v<sub>max</sub> = </span><label><input type="number" name="vel_max_mph"> mph</label></p>
-    <p>Propeller diameter <span>D<sub>p</sub> = </span><label><input type="number" name="prop_dia_in"> in</label></p>
-    <p>Propeller rpm <span>RPM = </span><label><input type="number"  step="100" name="prop_max_rpm"> RPM</label></p>
-    <p>Propeller efficiency <span>e<sub>p</sub> = </span><label><input step="0.01" type="number" name="prop_efficiency"> %</label></p>
-    <p>Minimum section drag coefficient <span>C<sub>Dmin</sub> = </span><label><input step="0.001" type="number" name="minimum_section_drag_coefficient"></label></p>
+    <p>Maximum level speed <span>v<sub>max</sub> = </span><label><input type="number" name="vmax"> mph</label></p>
+    <p>Propeller diameter <span>D<sub>p</sub> = </span><label><input type="number" name="dpin"> in</label></p>
+    <p>Propeller rpm <span>RPM = </span><label><input type="number"  step="100" name="rpm"> RPM</label></p>
+    <p>Propeller efficiency <span>e<sub>p</sub> = </span><label><input step="0.01" type="number" name="eta"> %</label></p>
+    <p>Minimum section drag coefficient <span>C<sub>Dmin</sub> = </span><label><input step="0.001" type="number" name="cdmin"></label></p>
     <p>Aerodynamic centre <span>x/c = </span><label><input type="number" step="0.001" name="aerodynamic_centre"></label></p>
-    <p>Fuselage area <span>S<sub>fuse</sub> = </span><label><input type="number" step="0.1" name="fuselage_area"></label></p>
+    <p>Wing shape <span>
+        <select>
+            <option value="rectangular">Rectangular</option>
+            <option value="tapered">Tapered</option>
+            <option value="delta">Delta</option>
+        </select>
+    </span></p>
+    <p>Fuselage shape <span>
+        <select>
+            <option value="rectangular">Rectangular</option>
+            <option value="round">Round</option>
+        </select>
+    </span></p>
+    <p>Fuselage area <span>S<sub>fuse</sub> = </span><label><input type="number" step="0.1" name="sfuse"></label></p>
     <p>Altitude <span>h = </span><label><input type="number" step="1000" name="altitude_ft"> ft</label></p>
     <p><label><input type="submit"></label></p>
 </form>
