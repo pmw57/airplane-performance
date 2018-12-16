@@ -674,6 +674,10 @@ function aircraftFormulas(constants, solvePoly) {
                 function (ldmax, cd0) {
                     var ear = Math.pow(2 / Math.sqrt(Math.PI) * ldmax, 2) * cd0;
                     return ear;
+                },
+                function (ldmax, ear) {
+                    var cd0 = ear / Math.pow(2 * ldmax / Math.sqrt(Math.PI), 2);
+                    return cd0;
                 }
             ],
             [ // Formula 29
@@ -718,8 +722,8 @@ function aircraftFormulas(constants, solvePoly) {
                             5280 / 60 / 33000 * ad * Math.pow(v, 3) * dynamic_mph_pressure,
                             -thpal,
                             5280 / 60 / 33000  / dynamic_mph_pressure * Math.pow(w / be, 2) / (Math.PI * v)
-                        ],
-                        sigma = solvePoly(coeffs)[1];
+                        ];
+                    var sigma = solvePoly(coeffs)[1];
                     return sigma;
                 },
                 function (thpal, sigma, v, w, be) {
@@ -727,15 +731,16 @@ function aircraftFormulas(constants, solvePoly) {
                     return ad;
                 },
                 function (thpal, sigma, ad, w, be) {
-                    var coeffs = [
-                            5280 / 60 / 33000 * sigma * ad * dynamic_mph_pressure,
-                            0,
-                            0,
-                            -thpal,
-                            5280 / 60 / 33000 / dynamic_mph_pressure * Math.pow(w / be, 2) / (Math.PI * sigma)
-                        ],
-                        v = solvePoly(coeffs)[0];
-                    return v;
+                var mph_pressure = 1 / 391.15;
+                var coeffs = [
+                    ad * mph_pressure * sigma,
+                    0,
+                    0,
+                    33000 / (5280 / 60) * thpal,
+                    Math.pow(w / be, 2) / (mph_pressure * Math.PI)
+                ];
+                var v = -solvePoly(coeffs)[1];
+                return v;
                 },
                 function (thpal, sigma, ad, v, be) {
                     var w = Math.sqrt((thpal / 5280 * 60 * 33000 - sigma * ad * Math.pow(v, 3) * dynamic_mph_pressure) * Math.PI * sigma * v * dynamic_mph_pressure * be * be);
@@ -1100,9 +1105,41 @@ function aircraftFormulas(constants, solvePoly) {
                 }
             ],
             [ // Formula 48: Engine power at shaft
-                function (pthrust, pshaft) {
+                function pthrustFromTV(t, v) {
+                    var pthrust = t * v;
+                    return pthrust;
+                },
+                function tFromPthrustFromV(pthrust, v) {
+                    var t = pthrust / v;
+                    return t;
+                },
+                function vFromPthrustT(pthrust, t) {
+                    var v = pthrust / t;
+                    return v;
+                },
+                function pshaftFromTVp(t, vp) {
+                    var pshaft = t * vp;
+                    return pshaft;
+                },
+                function tFromPshaftVp(pshaft, vp) {
+                    var t = pshaft / vp;
+                    return t;
+                },
+                function vpFromPshaftT(pshaft, t) {
+                    var vp = pshaft / t;
+                    return vp;
+                },
+                function etaFromPthrustPshaft(pthrust, pshaft) {
                     var eta = pthrust / pshaft;
                     return eta;
+                },
+                function pthrustFromEtaPshaft(eta, pshaft) {
+                    var pthrust = eta * pshaft;
+                    return pthrust;
+                },
+                function pshaftFromEtaPthrust(eta, pthrust) {
+                    var pshaft = pthrust / eta;
+                    return pshaft;
                 }
             ],
             [ // Formula 49: Engine power
