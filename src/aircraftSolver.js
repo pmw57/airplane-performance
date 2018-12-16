@@ -2,7 +2,7 @@
 /*globals Solver, aircraftFormulas, CONSTANTS, solvePoly */
 
 function aircraftSolver(Solver, data) {
-    'use strict';
+    "use strict";
 
     function dummyFunc(dummy) {
         return dummy;
@@ -10,9 +10,9 @@ function aircraftSolver(Solver, data) {
 
     var solverFormulas = [
         dummyFunc
-    ],
-        formulas = data.formulas,
-        appendicies = data.appendicies;
+    ];
+    var formulas = data.formulas;
+    var appendicies = data.appendicies;
 
     formulas.forEach(function (formulaGroup) {
         solverFormulas.push(new Solver(formulaGroup));
@@ -30,7 +30,7 @@ function aircraftSolver(Solver, data) {
 
     solverFormulas.all = solverFormulas.reduce(function (prev, next) {
         if (next.all) {
-            [].push.apply(prev, next.all);
+            prev = prev.concat(next.all);
         }
         return prev;
     }, []);
