@@ -1,10 +1,19 @@
 /*jslint browser:true */
-/*globals aircraftFormulas, describe, describe, beforeEach, it, xit, expect */
+/*globals solvePoly, Solver, aircraftFormulas, aircraftSolver, describe, describe, beforeEach, it, xit, expect */
+var formulas = aircraftFormulas(window.CONSTANTS, solvePoly),
+    aircraftFormulas = aircraftSolver(Solver, formulas);
+
+/* TODO: Assumptions
+s = b * c
+ear = e * ar
+ce = c / Math.sqrt(e)
+be = b * Math.sqrt(e)
+*/
 (function () {
     'use strict';
     var random = function (low, high) {
-        return Math.random() * (high - low) + low;
-    },
+            return Math.random() * (high - low) + low;
+        },
         smaller = function (num) {
             return num * (1 - Math.random() / 5);
         },
@@ -13,7 +22,16 @@
         },
         w = random(500, 2000),
         g = random(1, 15),
-        s = random(10, 30) * random(3, 7),
+        e = random(0.8, 1),
+        b = random(20, 40),
+        c = random(3, 7),
+        s = b * c,
+        ar = b / c,
+        ear = e * ar,
+        ce = c / Math.sqrt(e),
+        be = b * Math.sqrt(e),
+        cd0 = random(0, 2),
+        ad = cd0 * s,
         rho = 0.002377,
         m = 970,
         v = random(50, 100),
@@ -31,6 +49,9 @@
         n = 60,
         bhp = 150;
     describe('Formulas are provided as an aircraftFormulas object', function () {
+        // beforeEach(function () {
+        //     aircraftFormulas = aircraftSolver(Solver, formulas);
+        // });
         it('has an object called aircraftFormulas', function () {
             expect(aircraftFormulas).toBeDefined();
         });
@@ -42,6 +63,9 @@
         });
         it('has a solve method on its array items', function () {
             expect(aircraftFormulas[1].solve).toBeDefined();
+        });
+        it('is accessible as an object property', function () {
+            expect(typeof aircraftFormulas[1].d).toBe('function');
         });
         it('has a formula object to contain other solutions, called all', function () {
             expect(aircraftFormulas[1].all[0]).toBeDefined();
@@ -73,9 +97,9 @@
             expect(aircraftFormulas[2].l(w, g)).toBeCloseTo(actual);
         });
         it('solves for weight', function () {
-            expect(aircraftFormulas[2].w(l, g)).toBe(w);
+            expect(aircraftFormulas[2].w(l, g)).toBeCloseTo(w);
         });
-        it('solves for glide angle', function () {
+        it('solves for glide a-ngle', function () {
             expect(aircraftFormulas[2].g(l, w)).toBeCloseTo(g);
         });
     });
@@ -175,11 +199,11 @@
     describe('Formula 7: Using the small angle approximation to get wing loading', function () {
         var l, cl, ws;
         beforeEach(function () {
-            g = 1; // using a small angle
+            g = random(0, 20 * Math.TAU / 360); // no more than 20 degrees
             l = aircraftFormulas[2].l(w, g);
             cl = aircraftFormulas[3].cl(l, rho, vfs, s);
             l = aircraftFormulas[6].l(sigma, cl, s, v);
-            ws = aircraftFormulas[7].ws(sigma, cl, v);
+            ws = w / s;
         });
         it('should be close to formula 6 about lift from velocity as mph', function () {
             expect(w / s).toBeCloseTo(l / s);
@@ -193,23 +217,373 @@
         it('solves for velocity', function () {
             expect(aircraftFormulas[7].v(ws, sigma, cl)).toBeCloseTo(v);
         });
+        it('solves for wingloading from weight and wing span', function () {
+            expect(aircraftFormulas[7].solve({w: w, s: s}).ws).toBeCloseTo(ws);
+        });
+        it('solves for weight from wingloading', function () {
+            expect(aircraftFormulas[7].w(ws, s)).toBeCloseTo(w);
+        });
+        it('solves for wingloading from weight and wing span', function () {
+            expect(aircraftFormulas[7].s(ws, w)).toBeCloseTo(s);
+        });
     });
-    describe('Formula 40: change in momentum vs pressure jump', function () {
+    describe('Formula 8: Glide angle using small angle approximation', function () {
+        var cd, d;
+        beforeEach(function () {
+            cd = 1.2;
+            d = aircraftFormulas[5].d(sigma, cd, s, v);
+            g = aircraftFormulas[8].g(sigma, cd, s, v);
+        });
+        it('should be close to drag * 360/TAU', function () {
+            expect(g).toBeCloseTo(d * 360 / Math.TAU);
+        });
+        it('should solve for sigma', function () {
+            expect(aircraftFormulas[8].sigma(g, cd, s, v)).toBeCloseTo(sigma);
+        });
+        it('should solve for coefficient of lift', function () {
+            expect(aircraftFormulas[8].cd(g, sigma, s, v)).toBeCloseTo(cd);
+        });
+        it('should solve for coefficient of lift', function () {
+            expect(aircraftFormulas[8].s(g, sigma, cd, v)).toBeCloseTo(s);
+        });
+        it('should solve for velocity', function () {
+            expect(aircraftFormulas[8].v(g, sigma, cd, s)).toBeCloseTo(v);
+        });
+    });
+    describe('Formula 9: Glide angle from lift & drag coefficient ratios', function () {
+        var cd, cl, g8;
+        beforeEach(function () {
+            cd = random(0.05, 2);
+            cl = random(0.05, 2);
+            g = aircraftFormulas[9].g(cd, cl);
+        });
+        it('has the same glide angle result as for Formula 8', function () {
+            v = aircraftFormulas[8].v(g, sigma, cd, s);
+            g8 = aircraftFormulas[8].g(sigma, cd, s, v);
+            expect(aircraftFormulas[9].g(cd, cl)).toBeCloseTo(g8);
+        });
+        it('solves for coefficient of drag', function () {
+            expect(aircraftFormulas[9].cd(g, cl)).toBeCloseTo(cd);
+        });
+        it('solves for coefficient of lift', function () {
+            expect(aircraftFormulas[9].cl(g, cd)).toBeCloseTo(cl);
+        });
+    });
+    describe('Formula 10: Rate of sink (ft/min)', function () {
+        var cd, d5, rs;
+        beforeEach(function () {
+            cd = random(1, 1.5);
+            g = aircraftFormulas[8].g(cd, sigma, s, v);
+            d5 = aircraftFormulas[5].d(sigma, cd, s, v);
+            rs = aircraftFormulas[10].rs(sigma, cd, s, v, w);
+        });
+        it('is velocity * (drag / weight) * (5280 / 60)', function () {
+            expect(rs / 88).toBeCloseTo(d5 / w * v);
+        });
+        it('solves for sigma', function () {
+            expect(aircraftFormulas[10].sigma(rs, cd, s, v, w)).toBeCloseTo(sigma);
+        });
+        it('solves for coefficient of drag', function () {
+            expect(aircraftFormulas[10].cd(rs, sigma, s, v, w)).toBeCloseTo(cd);
+        });
+        it('solves for wing area', function () {
+            expect(aircraftFormulas[10].s(rs, sigma, cd, v, w)).toBeCloseTo(s);
+        });
+        it('solves for velocity', function () {
+            expect(aircraftFormulas[10].v(rs, sigma, cd, s, w)).toBeCloseTo(v);
+        });
+        it('solves for weight', function () {
+            expect(aircraftFormulas[10].w(rs, sigma, cd, s, v)).toBeCloseTo(w);
+        });
+    });
+    describe('Formula 11: Rate of sink without velocity', function () {
+        var cd, cl, rs;
+        beforeEach(function () {
+            cd = random(1, 1.5);
+            cl = aircraftFormulas[7].cl(w / s, sigma, v);
+            rs = aircraftFormulas[11].rs(sigma, w, s, cd, cl);
+        });
+        it('has the same answer as for formula 10', function () {
+            expect(rs).toBeCloseTo(aircraftFormulas[10].rs(sigma, cd, s, v, w));
+        });
+        it('solves for sigma', function () {
+            expect(aircraftFormulas[11].sigma(rs, w, s, cd, cl)).toBeCloseTo(sigma);
+        });
+        it('solves for weight', function () {
+            expect(aircraftFormulas[11].w(rs, sigma, s, cd, cl)).toBeCloseTo(w);
+        });
+        it('solves for wing area', function () {
+            expect(aircraftFormulas[11].s(rs, sigma, w, cd, cl)).toBeCloseTo(s);
+        });
+        it('solves for coefficient of drag', function () {
+            expect(aircraftFormulas[11].cd(rs, sigma, w, s, cl)).toBeCloseTo(cd);
+        });
+        it('solves for coefficient of lift', function () {
+            expect(aircraftFormulas[11].cl(rs, sigma, w, s, cd)).toBeCloseTo(cl);
+        });
+    });
+    describe('Formula 12: Parasite and induced drag', function () {
+        var cdi, cd;
+        beforeEach(function () {
+            cdi = random(0, 2);
+            cd = aircraftFormulas[12].cd(cd0, cdi);
+        });
+        it('follows basic principles of total drag = parasite plus induced drag', function () {
+            expect(cd).toBe(cd0 + cdi);
+        });
+        it('solves for parasite drag', function () {
+            expect(aircraftFormulas[12].cd0(cd, cdi)).toBe(cd0);
+        });
+        it('solves for induced drag', function () {
+            expect(aircraftFormulas[12].cdi(cd, cd0)).toBe(cdi);
+        });
+    });
+    describe('Formula 13: Coefficient of induced drag from Coefficient of lift', function () {
+        var cl, cdi;
+        beforeEach(function () {
+            cl = random(1, 2);
+            cdi = aircraftFormulas[13].solve({cl: cl, e: e, ar: ar}).cdi;
+        });
+        it('follows lifting line theory', function () {
+            var area = 0.5 * Math.TAU * ar;
+            expect(cdi).toBeCloseTo(cl * cl / (e * area));
+        });
+        it('solves for coefficient of lift', function () {
+            expect(aircraftFormulas[13].solve({cdi: cdi, e: e, ar: ar}).cl).toBeCloseTo(cl);
+        });
+        it('solves for airplane efficiency', function () {
+            expect(aircraftFormulas[13].e(cdi, cl, ar)).toBeCloseTo(e);
+        });
+        it('solves for ar', function () {
+            expect(aircraftFormulas[13].ar(cdi, cl, e)).toBeCloseTo(ar);
+        });
+        it('solves for coefficient of induced drag with eAR', function () {
+            expect(aircraftFormulas[13].solve({cl: cl, ear: ear}).cdi).toBeCloseTo(cdi);
+        });
+        it('solves for coefficient of lift from eAR', function () {
+            expect(aircraftFormulas[13].solve({cdi: cdi, ear: ear}).cl).toBeCloseTo(cl);
+        });
+        it('solves for effective aspect ratio', function () {
+            expect(aircraftFormulas[13].ear(cdi, cl)).toBeCloseTo(ear);
+        });
+    });
+    describe('Formulas 14: Aspect ratio relationships', function () {
+        it('is related to the span and wing area', function () {
+            expect(ar).toBeCloseTo(b * b / s);
+        });
+        it('solves for wing span from wing area', function () {
+            expect(aircraftFormulas[14].solve({ar: ar, s: s}).b).toBeCloseTo(b);
+        });
+        it('solves for wing area', function () {
+            expect(aircraftFormulas[14].s(ar, b)).toBeCloseTo(s);
+        });
+        it('is related to wing span and average chord', function () {
+            ar = aircraftFormulas[14].solve({b: b, c: c}).ar;
+            expect(ar).toBeCloseTo(ar);
+        });
+        it('solves for wing span from average chord', function () {
+            expect(aircraftFormulas[14].solve({ar: ar, c: c}).b).toBeCloseTo(b);
+        });
+        it('solves for average chord', function () {
+            expect(aircraftFormulas[14].c(ar, b)).toBeCloseTo(c);
+        });
+    });
+    describe('Formula 15: Parabolic drag polar', function () {
+        var cl, cdi, cd;
+        beforeEach(function () {
+            cl = random(1, 2);
+            cd = aircraftFormulas[15].cd(cd0, cl, ear);
+            cdi = aircraftFormulas[12].cdi(cd, cd0);
+        });
+        it('can be checked by using CDi formula in formula 12', function () {
+            expect(cd).toBeCloseTo(aircraftFormulas[12].cd(cd0, cdi));
+        });
+        it('solves for parasite drag coefficient', function () {
+            expect(aircraftFormulas[15].cd0(cd, cl, ear)).toBeCloseTo(cd0);
+        });
+        it('solves for coefficient of lift', function () {
+            expect(aircraftFormulas[15].cl(cd, cd0, ear)).toBeCloseTo(cl);
+        });
+        it('solves for effective aspect ratio', function () {
+            expect(aircraftFormulas[15].solve({cd: cd, cd0: cd0, cl: cl}).ear).toBeCloseTo(ear);
+        });
+        it('solves for effective aspect ratio from airplane efficiency and aspect ratio', function () {
+            expect(aircraftFormulas[15].solve({e: e, ar: ar}).ear).toBeCloseTo(ear);
+        });
+        it('solves for airplane efficiency', function () {
+            expect(aircraftFormulas[15].solve({ear: ear, ar: ar}).e).toBeCloseTo(e);
+        });
+        it('solves for aspect artio', function () {
+            expect(aircraftFormulas[15].ar(ear, e)).toBeCloseTo(ar);
+        });
+    });
+    describe('Formula 18: Coefficient of lift for minimum sink', function () {
+        var clmins;
+        beforeEach(function () {
+            clmins = aircraftFormulas[18].clmins(ear, cd0);
+        });
+        it('should be sqrt(3 * CL^2 / CDi * CD0)', function () {
+            var cl = random(1, 2),
+                cdi = aircraftFormulas[13].cdi(cl, ear),
+                expected = Math.sqrt(3 * (cl * cl / cdi) * cd0);
+            expect(clmins).toBeCloseTo(expected);
+        });
+        it('solves for effective aspect ratio', function () {
+            expect(aircraftFormulas[18].ear(clmins, cd0)).toBeCloseTo(ear);
+        });
+        it('solves for parasitic drag', function () {
+            expect(aircraftFormulas[18].cd0(clmins, ear)).toBeCloseTo(cd0);
+        });
+    });
+
+
+    describe('Formula 19: Minimum sink using drag area and effective chord', function () {
+        var clmins18, clmins;
+
+        it('should have the same answer as from formula 18', function () {
+            clmins18 = aircraftFormulas[18].clmins(ear, cd0);
+            clmins = aircraftFormulas[19].clmins(ad, ce);
+
+            expect(clmins18).toBeCloseTo(Math.sqrt(3 * Math.PI) * Math.sqrt(e * ar) * Math.sqrt(ad / s));
+            expect(clmins18).toBeCloseTo(Math.sqrt(3 * Math.PI) * Math.sqrt(e * ar) * Math.sqrt(ad) * Math.sqrt(1 / s));
+            expect(clmins18).toBeCloseTo(Math.sqrt(3 * Math.PI) * Math.sqrt(e) * Math.sqrt(ad) * Math.sqrt(b * b) * Math.sqrt(1 / s) * Math.sqrt(1 / s));
+            expect(clmins18).toBeCloseTo(Math.sqrt(3 * Math.PI) * Math.sqrt(e) * Math.sqrt(ad) * Math.sqrt(b * b) * Math.sqrt(1 / s) * Math.sqrt(1 / s));
+            expect(clmins18).toBeCloseTo(Math.sqrt(3 * Math.PI) * Math.sqrt(e) * Math.sqrt(ad) * Math.sqrt(b * b) * Math.sqrt(1 / b) * Math.sqrt(1 / c) * Math.sqrt(1 / b) * Math.sqrt(1 / c));
+            expect(clmins18).toBeCloseTo(Math.sqrt(3 * Math.PI) * Math.sqrt(e) * Math.sqrt(ad) * Math.sqrt(1 / c) * Math.sqrt(1 / c));
+            expect(clmins18).toBeCloseTo(Math.sqrt(3 * Math.PI) * Math.sqrt(ad) * Math.sqrt(e / (c * c)));
+            expect(clmins18).toBeCloseTo(Math.sqrt(3 * Math.PI) * Math.sqrt(ad) / ce);
+            expect(clmins).toBeCloseTo(clmins18);
+        });
+        it('solves for ad', function () {
+            expect(aircraftFormulas[19].ad(clmins, ce)).toBeCloseTo(ad);
+        });
+        it('solves for ce', function () {
+            expect(aircraftFormulas[19].ce(clmins, ad)).toBeCloseTo(ce);
+        });
+    });
+    describe('Formula 20: Minimum rate of sink', function () {
+        var cl, cd, rsmin;
+        beforeEach(function () {
+            cl = aircraftFormulas[19].clmins(ad, ce);
+            cd = aircraftFormulas[15].cd(cd0, cl, ear);
+            rsmin = aircraftFormulas[20].rsmin(w, sigma, ad, be);
+        });
+        it('is similar to the sink rate', function () {
+            expect(rsmin).toBeCloseTo(aircraftFormulas[11].rs(sigma, w, s, cd, cl));
+        });
+        it('solves for weight', function () {
+            expect(aircraftFormulas[20].w(rsmin, sigma, ad, be)).toBeCloseTo(w);
+        });
+        it('solves for sigma', function () {
+            expect(aircraftFormulas[20].sigma(rsmin, w, ad, be)).toBeCloseTo(sigma);
+        });
+        it('solves for ad', function () {
+            expect(aircraftFormulas[20].ad(rsmin, w, sigma, be)).toBeCloseTo(ad);
+        });
+        it('solves for be', function () {
+            expect(aircraftFormulas[20].be(rsmin, w, sigma, ad)).toBeCloseTo(be);
+        });
+    });
+    describe('Formula 21: Velocity for minimum sink', function () {
+        var clmins, ws, vmins;
+        beforeEach(function () {
+            vmins = aircraftFormulas[21].vmins(w, be, sigma, ad);
+        });
+        it('is the same as formula 7 when solved for velocity', function () {
+            clmins = aircraftFormulas[19].clmins(ad, ce);
+            ws = w / s;
+            expect(vmins).toBeCloseTo(aircraftFormulas[7].v(ws, sigma, clmins));
+        });
+        it('solves for weight', function () {
+            expect(aircraftFormulas[21].w(vmins, be, sigma, ad)).toBeCloseTo(w);
+        });
+        it('solves for effective span', function () {
+            expect(aircraftFormulas[21].be(vmins, w, sigma, ad)).toBeCloseTo(be);
+        });
+        it('solves for density ratio', function () {
+            expect(aircraftFormulas[21].sigma(vmins, w, be, ad)).toBeCloseTo(sigma);
+        });
+        it('solves for drag area', function () {
+            expect(aircraftFormulas[21].ad(vmins, w, be, sigma)).toBeCloseTo(ad);
+        });
+    });
+    describe('Formula 22: Rate of sink from drag area and effective span', function () {
+        var rs, cd, ws, cl;
+        beforeEach(function () {
+            rs = aircraftFormulas[22].rs(sigma, ad, v, w, be);
+        });
+        it('has the same answer as for formula 11', function () {
+            ws = w / s;
+            cl = aircraftFormulas[7].cl(ws, sigma, v);
+            cd = aircraftFormulas[15].cd(cd0, cl, ear);
+            expect(rs).toBeCloseTo(aircraftFormulas[11].rs(sigma, w, s, cd, cl));
+        });
+        it('solves for density ratio', function () {
+            expect(aircraftFormulas[22].sigma(rs, ad, v, w, be)).toBeCloseTo(sigma);
+        });
+        it('solves for drag area', function () {
+            expect(aircraftFormulas[22].ad(rs, sigma, v, w, be)).toBeCloseTo(ad);
+        });
+        it('solves for velocity', function () {
+            expect(aircraftFormulas[22].v(rs, sigma, ad, w, be)).toBeCloseTo(v);
+        });
+        it('solves for weight', function () {
+            expect(aircraftFormulas[22].w(rs, sigma, ad, v, be, w)).toBeCloseTo(w);
+        });
+        it('solves for effective span', function () {
+            expect(aircraftFormulas[22].be(rs, sigma, ad, v, w, be)).toBeCloseTo(be);
+        });
+    });
+    describe('Formula 25: Dimensionless sink rate in terms of dimensionless velocity', function () {
+        var rs, rsmin, rshat, vmins, vhat, rshat1, rshat2, dynamic_mph_pressure;
+        it('is equivalent to rate of sink over minimum sink rate', function () {
+            // using standard defaults
+            sigma = 1;
+            cd0 = 0.0375;
+            b = 20 + 10 / 12;
+            c = 4.1;
+            s = b * c;
+            ad = cd0 * s;
+            v = 67;
+            w = 1500;
+            e = 0.743;
+            be = b * Math.sqrt(e);
+
+            rs = aircraftFormulas[22].rs(sigma, ad, v, w, be);
+            rsmin = aircraftFormulas[20].rsmin(w, sigma, ad, be);
+
+            vmins = aircraftFormulas[21].vmins(w, be, sigma, ad);
+            vhat = v / vmins;
+            rshat1 = (Math.pow(vhat, 3) + 3) / 4 * vhat;
+            rshat2 = Math.pow(vhat, 3) / 4 + 3 / 4 * vhat;
+            rshat = aircraftFormulas[25].rshat(vhat);
+
+            dynamic_mph_pressure = 0.5 * 0.002377 * Math.pow(5280 / 3600, 2);
+            console.log(rshat * rsmin,
+                5280 / 60 * (
+                    sigma * ad * Math.pow(v, 3) * dynamic_mph_pressure / w
+                    + Math.sqrt(3) / Math.sqrt(Math.PI) * v * Math.sqrt(ad) / be
+                )
+            );
+            expect(rshat).toBeCloseTo(rs / rsmin);
+        });
+    });
+    describe('Formula 40: Change in momentum vs pressure jump', function () {
         var t;
         beforeEach(function () {
             t = aircraftFormulas[40].t(m, v3, v);
         });
         it('solves for thrust from velocity', function () {
-            expect(aircraftFormulas[40].t(m, v3, v)).toBe(t);
+            expect(aircraftFormulas[40].t(m, v3, v)).toBeCloseTo(t);
         });
         it('solves for mass flow rate', function () {
             expect(aircraftFormulas[40].m(t, v3, v)).toBeCloseTo(m);
         });
         it('solves for slipstream velocity', function () {
-            expect(aircraftFormulas[40].v3(t, m, v)).toBe(v3);
+            expect(aircraftFormulas[40].v3(t, m, v)).toBeCloseTo(v3);
         });
         it('solves for freestream velocity', function () {
-            expect(aircraftFormulas[40].v(t, m, v3)).toBe(v);
+            expect(aircraftFormulas[40].v(t, m, v3)).toBeCloseTo(v);
         });
     });
     describe('Formula 41: Upstream propeller pressure increase', function () {
@@ -598,7 +972,7 @@
                 beforeEach(function () {
                     h = Math.random() * 1000;
                     t0 = 519; // average at sealevel
-                    h0 = window.R * t0 / window.G;
+                    h0 = 27713; // characteristic altitude: R * t0 / G
                     sigma = aircraftFormulas.d[8].sigma(h, h0);
                 });
                 it('is equivalent to formulas D.7', function () {
@@ -615,7 +989,7 @@
                 var h;
                 beforeEach(function () {
                     h = Math.random() * 36240;
-                        sigma = aircraftFormulas.d[12].sigma(h);
+                    sigma = aircraftFormulas.d[12].sigma(h);
                 });
                 it('is a ratio of 1 at sealevel', function () {
                     expect(aircraftFormulas.d[12].sigma(0)).toBe(1);

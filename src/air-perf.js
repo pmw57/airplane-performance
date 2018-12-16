@@ -1,5 +1,6 @@
 /*jslint browser:true */
-/*globals relation, google */
+/*globals solvePoly, Solver, aircraftFormulas, aircraftSolver, relation, google */
+
 /*
     --------------------------------------------------------------------
     PROGRAM: index.html Ver: 1.0 Rev: 03/01/2010
@@ -546,12 +547,12 @@
 
         // Power required relationships
         // Relation 1
-        data.wing_load_lb_ft = relation[1].w_s(data.density_ratio, data.cl_max_clean, data.vel_stall_clean_mph);
+        data.wing_load_lb_ft = relation[1].ws(data.density_ratio, data.cl_max_clean, data.vel_stall_clean_mph);
         data.vel_stall_flaps_mph = relation[1].v(data.wing_load_lb_ft, data.density_ratio, data.cl_max_flap); // VS0
         data.max_speed_lift_coefficient = relation[1].cl(data.wing_load_lb_ft, data.density_ratio, data.vel_max_mph);
         // Relation 2
-        data.wing_area_ft = relation[2].ar_c(data.gross_lb, data.wing_load_lb_ft);
-        data.aspect_ratio = relation[2].ar_s(data.wing_span_ft, data.wing_area_ft);
+        data.wing_area_ft = data.gross_lb / data.wing_load_lb_ft; // wingload = w/s, therefore s = w/wingload
+        data.aspect_ratio = relation[2].solve({b: data.wing_span_ft, s: data.wing_area_ft}).ar;
         // Relation 3
         data.wing_chord_ft = aircraftFormulas[14].c(data.aspect_ratio, data.wing_span_ft);
         data.plane_efficiency = efficiencyFactor(data.wing_area_ft, 1 / 0.85, 1.6, data.fuselage_area); // from Appendix F

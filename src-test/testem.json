@@ -1,0 +1,15 @@
+{
+  "framework": "jasmine",
+  "launch_in_dev": ["phantomjs"],
+  "src_files": [
+    "src/utils.js",
+    "src/universal-constants.js",
+    "lib/rpoly.js",
+    "lib/PolyReCoeffin.js",
+    "src/solvepoly.js",
+    "src/solver.js",
+    "src/aircraftFormulas.js",
+    "src/aircraftSolver.js",
+  	"src-test/aircraftFormulas-test.js"
+	]
+}
