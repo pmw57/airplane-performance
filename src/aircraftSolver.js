@@ -4,13 +4,7 @@
 function aircraftSolver(Solver, data) {
     "use strict";
 
-    function dummyFunc(dummy) {
-        return dummy;
-    }
-
-    var solverFormulas = [
-        dummyFunc
-    ];
+    var solverFormulas = [];
     var formulas = data.formulas;
     var appendicies = data.appendicies;
 
@@ -19,8 +13,6 @@ function aircraftSolver(Solver, data) {
     });
 
     Object.keys(appendicies).forEach(function (appKey) {
-        appendicies[appKey].unshift([dummyFunc]);
-
         var appendix = appendicies[appKey];
         solverFormulas[appKey] = [];
         appendix.forEach(function (appendixGroup) {

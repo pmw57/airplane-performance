@@ -7,6 +7,11 @@ function aircraftFormulas(constants, solvePoly) {
     var sea_level_density = 0.002377;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
     var formulas = [
+        [
+            function dummyFunc(dummy) {
+                return dummy;
+            }
+        ],
         [ // formula 1
             function dFromWThetag(w, thetag) {
                 var d = w * Math.sin(thetag * Math.TAU / 360);
@@ -1587,6 +1592,11 @@ function aircraftFormulas(constants, solvePoly) {
     ];
     var appendicies = {
         d: [
+            [
+                function dummyFunc(dummy) {
+                    return dummy;
+                }
+            ],
             [ // D.1: Differential of vertical momentum equation
                 function dpFromRhoDh(rho, dh) {
                     var dp = -rho * constants.G * dh;
@@ -1720,6 +1730,11 @@ function aircraftFormulas(constants, solvePoly) {
                //       from 36240 ft to 82000 ft
         ],
         f: [ // Airplane efficiency factor e, and ground effect
+            [
+                function dummyFunc(dummy) {
+                    return dummy;
+                }
+            ],
             [
                 function cdsFromCd0ClEarS(cd0, cl, ear, s) {
                     var cds = (cd0 + cl * cl / (Math.PI * ear)) * s;
@@ -1994,6 +2009,11 @@ function aircraftFormulas(constants, solvePoly) {
             ]
         ],
         g: [ // Drag analysis
+            [
+                function dummyFunc(dummy) {
+                    return dummy;
+                }
+            ],
             [ // Appendix G.1
                 function adFromCdfAfCdwSw(cdf, af, cdw, sw) {
                     var ad = cdf * af + cdw * sw;
@@ -2026,8 +2046,19 @@ function aircraftFormulas(constants, solvePoly) {
                 }
             ]
         ],
-        h: [], // Appendix H
+        h: [
+            [
+                function dummyFunc(dummy) {
+                    return dummy;
+                }
+            ],
+        ], // Appendix H
         i: [ // Appendix I
+            [
+                function dummyFunc(dummy) {
+                    return dummy;
+                }
+            ],
             [
                 function muFromF(f) {
                     // μ = 2.270 * (T^(3/2) / T + 198.6) * 10^-8
@@ -2046,6 +2077,11 @@ function aircraftFormulas(constants, solvePoly) {
             ]
         ],
         j: [ // Appendix J
+            [
+                function dummyFunc(dummy) {
+                    return dummy;
+                }
+            ],
             [
                 function pFromRhoR(rho, r) {
                     var p = rho * constants.UNIVERSAL_GAS_CONSTANT * r;
