@@ -1,21 +1,23 @@
 /*jslint browser:true */
-/*globals Solver, formulas, describe, xdescribe, beforeEach, it, xit, expect */
+/*global Solver, formulas, describe, xdescribe, beforeEach, it, xit, expect */
 (function () {
-    'use strict';
-    describe('Formula methods', function () {
-        var formula, formulas, solver;
+    "use strict";
+    describe("Formula methods", function () {
+        var formula;
+        var formulas;
+        var solver;
         beforeEach(function () {
             formula = function () {
-                var answer = '';
+                var answer = "";
                 return answer;
             };
         });
-        it('can handle an empty solver array', function () {
+        it("can handle an empty solver array", function () {
             formulas = [];
             solver = new Solver(formulas);
-            expect(solver.constructor.name).toBe('Solver');
+            expect(solver.constructor.name).toBe("Solver");
         });
-        it('stores all variations of a formula in a method called all', function () {
+        it("stores all variations of a formula in .all method", function () {
             formulas = [
                 formula,
                 formula,
@@ -24,7 +26,7 @@
             solver = new Solver(formulas);
             expect(solver.all).toBeDefined();
         });
-        it('handles underscores in arguments', function () {
+        it("handles underscores in arguments", function () {
             formulas = [
                 function (under_score) {
                     return under_score;
@@ -32,39 +34,35 @@
             ];
             solver = new Solver(formulas);
         });
-        it('uses the last return within a function', function () {
+        it("uses the last return within a function", function () {
             formula = function () {
                 function internalFunction() {
-                    var solverShouldNotSeeThisReturn = 'bad';
+                    var solverShouldNotSeeThisReturn = "bad";
                     return solverShouldNotSeeThisReturn;
                 }
-                var solverShouldSeeThisReturn = 'good';
+                var solverShouldSeeThisReturn = "good";
                 internalFunction();
                 return solverShouldSeeThisReturn;
             };
             solver = new Solver([formula]);
             window.solver = solver;
-            expect(solver.hasOwnProperty('solverShouldSeeThisReturn')).toBeTruthy();
+            expect(solver.hasOwnProperty(
+                "solverShouldSeeThisReturn"
+            )).toBeTruthy();
         });
-        it('handles no return value found in a function', function () {
-            formula = function notFoundHere() {
-                // no r e t u r n keyword in this function
+        it("ignores formulas for which no data is present", function () {
+            var data = {};
+            formula = function shouldSkipThisFunc(b) {
+                var shouldNotReturn = b;
+                return shouldNotReturn;
             };
-            expect(new Solver([formula])).not.toThrow();
-        });
-        it('ignores formulas for which no data is present', function () {
-            var data = {},
-                formula = function shouldSkipThisFunc(b) {
-                    var shouldNotReturn = b;
-                    return shouldNotReturn;
-                };
             solver = new Solver([formula]);
             data = solver.solve(data);
-            expect(data.hasOwnProperty('shouldNotReturn')).toBe(false);
+            expect(data.hasOwnProperty("shouldNotReturn")).toBe(false);
         });
         it("solves for non-existing data", function () {
             var data = {
-                newData: 'new'
+                newData: "new"
             };
             formula = function solveForNonExistingData(newData) {
                 var nonExisting = newData;
@@ -72,12 +70,12 @@
             };
             solver = new Solver([formula]);
             data = solver.solve(data);
-            expect(data.nonExisting).toBe('new');
+            expect(data.nonExisting).toBe("new");
         });
         it("doesn't replace already existing data", function () {
             var data = {
-                preExisting: 'unchanged',
-                newData: 'changed'
+                preExisting: "unchanged",
+                newData: "changed"
             };
             formula = function solveForPreExistingData(newData) {
                 var preExisting = newData;
@@ -85,7 +83,7 @@
             };
             solver = new Solver([formula]);
             data = solver.solve(data);
-            expect(data.preExisting).toBe('unchanged');
+            expect(data.preExisting).toBe("unchanged");
         });
     });
 }());
