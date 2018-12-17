@@ -7,12 +7,10 @@ function Solver(calcs) {
     }
     solver.all = calcs;
     solver.getArgs = function (calc) {
-        var argsRx = /\(([a-zA-Z0-9_,\u0020]+)\)/;
+        var argsRx = /\(([a-zA-Z0-9_,\s]+)\)/;
         var content = calc.toString();
-            // matches = content.match(argsRx);
-        // if (!matches) {
-        //     throw new SyntaxError("Invalid argument search");
-        // }
+        var matches = content.match(argsRx);
+        console.log(content, matches);
         return content.match(argsRx)[1].split(/[,\u0020]+/);
     };
     solver.getAnswer = function (calc) {
@@ -27,7 +25,6 @@ function Solver(calcs) {
     };
     solver.getSolvable = function (calcs, params) {
         var solve = this;
-        console.log(solve);
         var calcsKeys = Object.keys(calcs);
         var paramsKeys = Object.keys(params);
         var solvable = [];
