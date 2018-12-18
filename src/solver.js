@@ -10,8 +10,7 @@ function Solver(calcs) {
         var argsRx = /\(([a-zA-Z0-9_,\s]+)\)/;
         var content = calc.toString();
         var matches = content.match(argsRx);
-        console.log(content, matches);
-        return content.match(argsRx)[1].split(/[,\u0020]+/);
+        return matches[1].split(/[,\u0020]+/);
     };
     solver.getAnswer = function (calc) {
         calc = calc.toString();

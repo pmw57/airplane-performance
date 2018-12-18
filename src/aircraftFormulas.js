@@ -1815,52 +1815,45 @@ function aircraftFormulas(constants, solvePoly) {
             ],
             [ // Appendix F.8
                 // wing efficiency factor
-                function inviewFromPcArCdwindKwing(
-                    planformCorrection, ar, cdwing, kwing) {
+                function inviewFromPcArCdwingKwing(planformCorrection, ar, cdwing, kwing) {
                     var invew = (1 + planformCorrection) +
                         Math.PI * ar * cdwing * kwing;
                     return invew;
                 },
-                function pcFromInviewArCdwingKwing(
-                    invew, ar, cdwing, kwing) {
+                function pcFromInviewArCdwingKwing(invew, ar, cdwing, kwing) {
                     var planformCorrection = invew -
                         Math.PI * ar * cdwing * kwing - 1;
                     return planformCorrection;
                 },
-                function arFromInviewPcCdwingKwing(
-                    invew, planformCorrection, cdwing, kwing) {
+                function arFromInviewPcCdwingKwing(invew, planformCorrection, cdwing, kwing) {
                     var ar = (invew - (1 + planformCorrection)) /
                         (Math.PI * cdwing * kwing);
                     return ar;
                 },
-                function cdwingFromInviewPcArKwing(
-                    invew, planformCorrection, ar, kwing) {
+                function cdwingFromInviewPcArKwing(invew, planformCorrection, ar, kwing) {
                     var cdwing = (invew - (1 + planformCorrection)) /
                         (Math.PI * ar * kwing);
                     return cdwing;
                 },
-                function kwingFromInviewPcACdwing(
-                    invew, planformCorrection, ar, cdwing) {
+                function kwingFromInviewPcACdwing(invew, planformCorrection, ar, cdwing) {
                     var kwing = (invew - (1 + planformCorrection)) /
                         (Math.PI * ar * cdwing);
                     return kwing;
                 },
                 // fuselage correction
-                function deltafuseFromArCdfuseKfuseSfuseS(
-                    ar, cdfuse, kfuse, sfuse, s) {
-                    // TODO: Find a meaningful value for kfuse?
-                    // var liftSlopePerDegree = Math.PI  / 0.5 *
-                    //     constants.RADIANS_TO_DEGREES;
-                    // var deltafuse = Math.PI * cdfuse * kfuse *
-                    //     Math.pow((ar + 3) / liftSlopePerDegree, 2) / ar *
-                    //     sfuse / s;
-                    var deltafuse = Math.PI * cdfuse * kfuse * (
+                function cdfusekfuseFromArSfuseS(ar, sfuse, s) {
+                    var fuselageEffect = chart.efuse.rectangle(ar);
+                    var cdfusekfuse = fuselageEffect / Math.PI *
+                        (0.12 * ar) / Math.pow(ar + 3, 2);
+                    return cdfusekfuse;
+                },
+                function deltafuseFromArCdfuseKfuseSfuseS(ar, cdfusekfuse, sfuse, s) {
+                    var deltafuse = Math.PI * cdfusekfuse * (
                             Math.pow(ar + 3, 2) / 0.12 * sfuse / s
                         );
                     return deltafuse;
                 },
-                function cdfuseFromInvefuseArJfuseSfuseS(
-                    deltafuse, ar, kfuse, sfuse, s) {
+                function cdfuseFromDeltafuseArJfuseSfuseS(deltafuse, ar, kfuse, sfuse, s) {
                     var liftSlopePerDegree = Math.PI  / 0.5 *
                         constants.RADIANS_TO_DEGREES;
                     var cdfuse = deltafuse * ar / (Math.PI * kfuse * Math.pow(
@@ -1868,8 +1861,7 @@ function aircraftFormulas(constants, solvePoly) {
                     ) / (sfuse / s);
                     return cdfuse;
                 },
-                function kfuseFromInvefuseArCdfuseSfuseS(
-                    deltafuse, ar, cdfuse, sfuse, s) {
+                function kfuseFromDeltafuseArCdfuseSfuseS(deltafuse, ar, cdfuse, sfuse, s) {
                     var liftSlopePerDegree = Math.PI  / 0.5 *
                         constants.RADIANS_TO_DEGREES;
                     var kfuse = deltafuse * ar / (Math.PI * cdfuse * Math.pow(
@@ -1877,8 +1869,7 @@ function aircraftFormulas(constants, solvePoly) {
                     ) * sfuse / s);
                     return kfuse;
                 },
-                function sfuseFromInvefuseArCdfuseKfuseS(
-                    deltafuse, ar, cdfuse, kfuse, s) {
+                function sfuseFromDeltafuseArCdfuseKfuseS(deltafuse, ar, cdfuse, kfuse, s) {
                     var liftSlopePerDegree = Math.PI  / 0.5 *
                         constants.RADIANS_TO_DEGREES;
                     var sfuse = deltafuse / (Math.PI * cdfuse * kfuse * Math.pow(
@@ -1886,8 +1877,7 @@ function aircraftFormulas(constants, solvePoly) {
                     ) * s;
                     return sfuse;
                 },
-                function sFromInvefuseArCdfuseKfuseSfuse(
-                    deltafuse, ar, cdfuse, kfuse, sfuse) {
+                function sFromDeltafuseArCdfuseKfuseSfuse(deltafuse, ar, cdfuse, kfuse, sfuse) {
                     var liftSlopePerDegree = Math.PI  / 0.5 *
                         constants.RADIANS_TO_DEGREES;
                     var s = Math.PI * cdfuse * kfuse * Math.pow(
@@ -1895,11 +1885,11 @@ function aircraftFormulas(constants, solvePoly) {
                     ) / (deltafuse * ar) * sfuse;
                     return s;
                 },
-                function inveFromInvewInvefuse(invew, deltafuse) {
+                function inveFromInvewDeltafuse(invew, deltafuse) {
                     var inve = invew + deltafuse;
                     return inve;
                 },
-                function invewFromInveInvefuse(inve, deltafuse) {
+                function invewFromInveDeltafuse(inve, deltafuse) {
                     var invew = inve - deltafuse;
                     return invew;
                 },
@@ -1952,24 +1942,24 @@ function aircraftFormulas(constants, solvePoly) {
                     var deltafuse = fuselageCorrection * (sfuse / s);
                     return deltafuse;
                 },
-                function fcFromInvefuseSfuseS(deltafuse, sfuse, s) {
+                function fcFromDeltafuseSfuseS(deltafuse, sfuse, s) {
                     var fuselageCorrection = deltafuse / (sfuse / s);
                     return fuselageCorrection;
                 },
-                function sfuseFromInvefuseFcS(deltafuse, fuselageCorrection, s) {
+                function sfuseFromDeltafuseFcS(deltafuse, fuselageCorrection, s) {
                     var sfuse = deltafuse / fuselageCorrection * s;
                     return sfuse;
                 },
-                function sFromInvefuseFcSfuse(
+                function sFromDeltafuseFcSfuse(
                     deltafuse, fuselageCorrection, sfuse) {
                     var s = fuselageCorrection / deltafuse * sfuse;
                     return s;
                 },
-                function inveFromInvewInvefuse(invew, deltafuse) {
+                function inveFromInvewDeltafuse(invew, deltafuse) {
                     var inve = invew + deltafuse;
                     return inve;
                 },
-                function invewFromInveInvefuse(inve, deltafuse) {
+                function invewFromInveDeltafuse(inve, deltafuse) {
                     var invew = inve - deltafuse;
                     return invew;
                 },
