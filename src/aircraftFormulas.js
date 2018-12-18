@@ -4,12 +4,21 @@
 function aircraftFormulas(constants, solvePoly) {
     "use strict";
 
-    var sea_level_density = 0.002377;
+    var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
     var formulas = [
         [
-            function dummyFunc(dummy) {
-                return dummy;
+            function wsFromWS(w, s) {
+                console.log(w, s);
+                var ws = w / s;
+                return ws;
+            },
+            function wsFromClV(cl, v) {
+                return airDensity * cl * Math.pow(v, 2);
+            },
+            function clFromWsV(ws, v) {
+                cl = airDensisy * ws / Math.pow(v, 2);
+                return cl;
             }
         ],
         [ // formula 1
