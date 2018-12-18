@@ -7,18 +7,49 @@ function aircraftFormulas(constants, solvePoly) {
     var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
     var formulas = [
-        [
+            [
+            // Relation 1: CL, V, W/S
+            // Lift Coefficient, Airspeed, Wing Loading
+            function wsFromClV(cl, v) {
+                var ws = cl * v * v * airDensity;
+                return ws;
+            },
+            function clFromWsV(ws, v) {
+                var cl = ws / (v * v * airDensity);
+                return cl;
+            },
+            function vFromWsCl(ws, cl) {
+                var v = Math.sqrt(ws / (cl * airDensity));
+                return v;
+            },
+            // Relation 2: S, W/S, W
+            // Wing Area, Wing Loading, Gross Weight
+            function sFromWsW(ws, w) {
+                var s = w / ws;
+                return s;
+            },
             function wsFromWS(w, s) {
-                console.log(w, s);
                 var ws = w / s;
                 return ws;
             },
-            function wsFromClV(cl, v) {
-                return airDensity * cl * Math.pow(v, 2);
+            function wFromWsS(ws, s) {
+                var w = ws * s;
+                return w;
             },
-            function clFromWsV(ws, v) {
-                cl = airDensisy * ws / Math.pow(v, 2);
-                return cl;
+            // Relation 3: S, be, eAR, ce
+            // Wing Area, Effective Span, Effetive Aspect Ratio, Effective Chord
+            // ar function defined in formula 14
+            function cFromSB(b, s) {
+                var c = s / b;
+                return c;
+            },
+            function bFromSC(s, c) {
+                var b = s / c;
+                return b;
+            },
+            function sFromBC(b, c) {
+                var s = b * c;
+                return s;
             }
         ],
         [ // formula 1
@@ -1905,6 +1936,27 @@ function aircraftFormulas(constants, solvePoly) {
                 function deltafuseFromInveInvew(inve, invew) {
                     var deltafuse = inve - invew;
                     return deltafuse;
+                },
+                function eFromArSfuseS(ar, sfuse, s) {
+                    var invew = 1 / chart.ew.rectangle(ar);
+                    var fuselageEffect = chart.efuse.rectangle(ar);
+                    var inve = invew + fuselageEffect * (sfuse / s);
+                    var e = 1 / (invew + fuselageEffect * (sfuse / s));
+                    return e;
+                },
+                function sfuseFromEArS(e, ar, s) {
+                    var invew = 1 / chart.ew.rectangle(ar);
+                    var fuselageEffect = chart.efuse.rectangle(ar);
+                    var inve = invew + fuselageEffect * (sfuse / s);
+                    var sfuse = (1 / e - invew) * s / fuselageEffect;
+                    return sfuse;
+                },
+                function sFromEArSfuse(e, ar, sfuse) {
+                    var invew = 1 / chart.ew.rectangle(ar);
+                    var fuselageEffect = chart.efuse.rectangle(ar);
+                    var inve = invew + fuselageEffect * (sfuse / s);
+                    var s = fuselageEffect * sfuse / (1 / e - invew);
+                    return s;
                 }
             ],
             [ // Appendix F charts
