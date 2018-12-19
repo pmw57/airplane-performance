@@ -31,11 +31,17 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var ear = e * ar;
     var ce = c / Math.sqrt(e);
     var be = b * Math.sqrt(e);
+    // relation 4: be, wbe, w
+    var wbe = w / be;
+    // relation 5: ad, vmax, thpa
+    var sea_level_density = 0.0023769;
+    var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
+    var hpMPH = 33000 * 60 / 5280;
+    var cd0 = random(0, 2);
+    var ad = cd0 * s;
 
     // var w = random(500, 2000);
     var thetag = random(1, 20);
-    var cd0 = random(0, 2);
-    var ad = cd0 * s;
     var rho = 0.0023769;
     var m = 970;
     var vfs = v * 5280 / 3600;
@@ -180,6 +186,31 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
             it("solves chord from efficiency and effective chord", function () {
                 testAircraftFormulaSolve(0, "c", {e, ce}, c);
+            });
+        });
+        describe("4: be, W/be, W", function () {
+            it("solves for effective span loading", function () {
+                testAircraftFormulaSolve(0, "wbe", {w, be}, wbe);
+            });
+            it("solves for effective span", function () {
+                testAircraftFormulaSolve(0, "be", {w, wbe}, be);
+            });
+            it("solves for gross weight", function () {
+                testAircraftFormulaSolve(0, "w", {be, wbe}, w);
+            });
+        });
+        describe("5: Ad, Vmax, THPa", function () {
+            // todo: where does the 146625 come from.
+            // 146625 = 391 * 375
+            // source: http://acversailles.free.fr/documentation/08~Documentation_Generale_M_Suire/Conception/Calculs_de_structure/Long%20wing%20for%20short%20power.pdf
+            // 1hp = 33000 ft lbf/min x 1 mile/5280 ft x 60 min/1 hour
+            // 1hp = force[lbf] x speed[mph] / 375
+            // source: http://craig.backfire.ca/pages/autos/drag
+            // horsepower is 33000 measured in foot pounds per min
+            // convert to miles per hour by multiplying by 60/5280
+            var thpa = ad * Math.pow(vmax, 3) * airDensity / hpMPH;
+            it("solves for available thrust horsepower", function () {
+                testAircraftFormulaSolve(0, "thpa", {ad, vmax}, thpa);
             });
         });
     });
@@ -662,13 +693,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     describe("Formula 21: Effective span loading", function () {
         it("solves for effective span loading", function () {
-            testAircraftFormulaSolve(21, "wbe", {w, be}, w / be);
+            testAircraftFormulaSolve(21, "wbe", {w, be}, wbe);
         });
         it("solves for weight", function () {
-            testAircraftFormulaSolve(21, "w", {be, wbe: w / be}, w);
+            testAircraftFormulaSolve(21, "w", {be, wbe}, w);
         });
         it("solves for effective span", function () {
-            testAircraftFormulaSolve(21, "be", {w, wbe: w / be}, be);
+            testAircraftFormulaSolve(21, "be", {w, wbe}, be);
         });
     });
     describe("Formula 22: Sink rate from drag area and eff. span", function () {

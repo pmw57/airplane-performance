@@ -6,6 +6,7 @@ function aircraftFormulas(constants, solvePoly) {
 
     var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
+    var hpMPH = 33000 * 60 / 5280;
     var formulas = [
             [
             // Relation 1: CL, V, W/S
@@ -50,6 +51,12 @@ function aircraftFormulas(constants, solvePoly) {
             function sFromBC(b, c) {
                 var s = b * c;
                 return s;
+            },
+            // Relation 5: AD, Vmax, THPa
+            // Drag area, maximum level speed, available thrust horsepower
+            function thpaFromAdVmax(ad, vmax) {
+                var thpa = ad * Math.pow(vmax, 3) * airDensity / hpMPH;
+                return thpa;
             }
         ],
         [ // formula 1
