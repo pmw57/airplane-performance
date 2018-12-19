@@ -37,8 +37,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
     var hpMPH = 33000 * 60 / 5280;
-    var cd0 = random(0, 2);
-    var ad = cd0 * s;
+    var ad = random(5, 15);
+    // relation 6: cd0, ad, s
+    var d = solvedFormulas[0].solve({ad, v}).d;
+    var cd0 = ad / s;
+    var sigma = smaller(1);
+    var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
 
     // var w = random(500, 2000);
     var thetag = random(1, 20);
@@ -53,7 +57,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var dp = 6;
     var ap = Math.TAU * (dp / 2);
     var eta = smaller(1);
-    var sigma = 1;
     var rpm = 2700;
     var n = 60;
     var bhp = 150;
@@ -99,118 +102,108 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         describe("1: CL, V, W/S", function () {
             it("solves lift force from lift coeff. and velocity", function () {
                 testAircraftFormulaSolve(0, "ws", {cl: clmax, v}, ws);
-            });
-            it("solves lift coeff. from lift force and velocity ", function () {
                 testAircraftFormulaSolve(0, "cl", {ws, v}, clmax);
-            });
-            it("solves velocity from lift force and lift coeff.", function () {
                 testAircraftFormulaSolve(0, "v", {ws, cl: clmax}, v);
             });
         });
         describe("2: S, W/S, W", function () {
             it("solves wing area from wing loading and weight", function () {
                 testAircraftFormulaSolve(0, "s", {ws, w}, s);
-            });
-            it("solves wing loading from weight and wing area", function () {
                 testAircraftFormulaSolve(0, "ws", {w, s}, ws);
-            });
-            it("solves gross weight from wing loading and area", function () {
                 testAircraftFormulaSolve(0, "w", {ws, s}, w);
             });
         });
         describe("3: S, be, eAR, ce", function () {
             it("solves chord from wing area and span", function () {
                 testAircraftFormulaSolve(0, "c", {s, b}, c);
-            });
-            it("solves wing area from span and chord", function () {
                 testAircraftFormulaSolve(0, "s", {b, c}, s);
-            });
-            it("solves wing span from area and chord", function () {
                 testAircraftFormulaSolve(0, "b", {s, c}, b);
             });
             it("solves aspect ratio from span and chord", function () {
                 expect(ar).toBeCloseTo(b / c);
                 testAircraftFormulaSolve(0, "ar", {b, c}, ar);
-            });
-            it("solves span from aspect ratio and chord", function () {
                 testAircraftFormulaSolve(0, "b", {ar, c}, b);
-            });
-            it("solves chord from aspect ratio and span", function () {
                 testAircraftFormulaSolve(0, "c", {ar, b}, c);
             });
             it("solves aspect ratio from wing span and area", function () {
                 expect(ar).toBeCloseTo(b *  b / s);
                 testAircraftFormulaSolve(0, "ar", {b, s}, ar);
-            });
-            it("solves span from aspect ratio and wing area", function () {
                 testAircraftFormulaSolve(0, "b", {ar, s}, b);
-            });
-            it("solves wing area from aspect ratio and span", function () {
                 testAircraftFormulaSolve(0, "s", {ar, b}, s);
             });
             it("solves for efficency", function () {
                 expect(solvedFormulas.f[8].solve(
                     {ar, sfuse, s}).e).toBeCloseTo(e);
-            });
-            it("solves for fuselage area from efficiency", function () {
                 expect(solvedFormulas.f[8].solve(
                     {e, ar, s}).sfuse).toBeCloseTo(sfuse);
-            });
-            it("solves for wing area from efficiency", function () {
                 expect(solvedFormulas.f[8].solve(
                     {e, ar, sfuse}).s).toBeCloseTo(s);
             });
             it("solves effective aspect ratio from e and ear", function () {
                 testAircraftFormulaSolve(0, "ear", {e, ar}, ear);
-            });
-            it("solves for efficiency from ear and ar", function () {
                 testAircraftFormulaSolve(0, "e", {ear, ar}, e);
-            });
-            it("solves aspect ratio from efficiency and ear", function () {
                 testAircraftFormulaSolve(0, "ar", {e, ear}, ar);
             });
             it("solves effective span from efficiency and span", function () {
                 testAircraftFormulaSolve(0, "be", {e, b}, be);
-            });
-            it("solves efficiency from effective span and span", function () {
                 testAircraftFormulaSolve(0, "e", {be, b}, e);
-            });
-            it("solves span from efficiency and effective span", function () {
                 testAircraftFormulaSolve(0, "b", {e, be}, b);
             });
             it("solves effective chord from efficiency and chord", function () {
                 testAircraftFormulaSolve(0, "ce", {e, c}, ce);
-            });
-            it("solves efficiency from chord and effective chord", function () {
                 testAircraftFormulaSolve(0, "e", {c, ce}, e);
-            });
-            it("solves chord from efficiency and effective chord", function () {
                 testAircraftFormulaSolve(0, "c", {e, ce}, c);
             });
         });
         describe("4: be, W/be, W", function () {
             it("solves for effective span loading", function () {
                 testAircraftFormulaSolve(0, "wbe", {w, be}, wbe);
-            });
-            it("solves for effective span", function () {
                 testAircraftFormulaSolve(0, "be", {w, wbe}, be);
-            });
-            it("solves for gross weight", function () {
                 testAircraftFormulaSolve(0, "w", {be, wbe}, w);
             });
         });
-        describe("5: Ad, Vmax, THPa", function () {
-            // todo: where does the 146625 come from.
-            // 146625 = 391 * 375
+        describe("5: AD, Vmax, THPa", function () {
+            // 1/146625 = 1/391 * 1/375
             // source: http://acversailles.free.fr/documentation/08~Documentation_Generale_M_Suire/Conception/Calculs_de_structure/Long%20wing%20for%20short%20power.pdf
+            // 1/391 is air density
+
             // 1hp = 33000 ft lbf/min x 1 mile/5280 ft x 60 min/1 hour
             // 1hp = force[lbf] x speed[mph] / 375
             // source: http://craig.backfire.ca/pages/autos/drag
             // horsepower is 33000 measured in foot pounds per min
             // convert to miles per hour by multiplying by 60/5280
+            // 1/375 is hp conversion from ft/min to mph
             var thpa = ad * Math.pow(vmax, 3) * airDensity / hpMPH;
             it("solves for available thrust horsepower", function () {
                 testAircraftFormulaSolve(0, "thpa", {ad, vmax}, thpa);
+                testAircraftFormulaSolve(0, "ad", {thpa, vmax}, ad);
+                testAircraftFormulaSolve(0, "vmax", {thpa, ad}, vmax);
+            });
+        });
+        describe("6: CD0, AD, S", function () {
+            it("solves for drag using drag area", function () {
+                testAircraftFormulaSolve(0, "d", {ad, v}, d);
+                testAircraftFormulaSolve(0, "ad", {d, v}, ad);
+                testAircraftFormulaSolve(0, "v", {d, ad}, v);
+            });
+            it("solves for drag area from zero-lift coefficient", function () {
+                testAircraftFormulaSolve(0, "ad", {cd0, s}, ad);
+                testAircraftFormulaSolve(0, "cd0", {ad, s}, cd0);
+                testAircraftFormulaSolve(0, "s", {ad, cd0}, s);
+            });
+            it("solves for drag assuming sea-level and zero-lift", function () {
+                // assuming sea-level and zero-lift drag
+                testAircraftFormulaSolve(0, "d", {cd0, s, v}, d);
+                testAircraftFormulaSolve(0, "cd0", {d, s, v}, cd0);
+                testAircraftFormulaSolve(0, "s", {d, cd0, v}, s);
+                testAircraftFormulaSolve(0, "v", {d, cd0, s}, v);
+            });
+            it("solves for drag", function () {
+                testAircraftFormulaSolve(0, "d", {sigma, cd, s, v}, d);
+                testAircraftFormulaSolve(0, "sigma", {d, cd, s, v}, sigma);
+                testAircraftFormulaSolve(0, "cd", {d, sigma, s, v}, cd);
+                testAircraftFormulaSolve(0, "s", {d, sigma, cd, v}, s);
+                testAircraftFormulaSolve(0, "v", {d, sigma, cd, s}, v);
             });
         });
     });

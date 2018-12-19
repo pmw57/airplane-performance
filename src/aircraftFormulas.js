@@ -57,6 +57,76 @@ function aircraftFormulas(constants, solvePoly) {
             function thpaFromAdVmax(ad, vmax) {
                 var thpa = ad * Math.pow(vmax, 3) * airDensity / hpMPH;
                 return thpa;
+            },
+            function adFromThpaVmax(thpa, vmax) {
+                var ad = thpa / Math.pow(vmax, 3) * hpMPH / airDensity;
+                return ad;
+            },
+            function vmaxFromThpaAd(thpa, ad) {
+                var vmax = Math.pow(thpa / ad * hpMPH / airDensity, 1 / 3);
+                return vmax;
+            },
+            // Relation 6: CD0, AD, S
+            // Zero-lift drag, drag area, and wing area
+            function dFromAdV(ad, v) {
+                var d = ad * Math.pow(v, 2) * airDensity;
+                return d;
+            },
+            function adFromDV(d, v) {
+                var ad = d / (Math.pow(v, 2) * airDensity);
+                return ad;
+            },
+            function vFromDAD(d, ad) {
+                var v = Math.sqrt(d / (ad * airDensity));
+                return v;
+            },
+            function sFromAdCd0(ad, cd0) {
+                var s = ad / cd0;
+                return s;
+            },
+            function adFromCd0S(cd0, s) {
+                var ad = cd0 * s;
+                return ad;
+            },
+            function cd0FromAdS(ad, s) {
+                var cd0 = ad / s;
+                return cd0;
+            },
+            function dFromCd0SV(cd0, s, v) {
+                var d = cd0 * s * Math.pow(v, 2) * airDensity;
+                return d;
+            },
+            function cd0FromDSV(d, s, v) {
+                var cd0 = d / (s * Math.pow(v, 2) * airDensity);
+                return cd0;
+            },
+            function sFromDCd0V(d, cd0, v) {
+                var s = d / (cd0 * Math.pow(v, 2) * airDensity);
+                return s;
+            },
+            function vFromDCd0S(d, cd0, s) {
+                var v = Math.sqrt(d / (cd0 * s * airDensity));
+                return v;
+            },
+            function dFromRhoCdSV(sigma, cd, s, v) {
+                var d = sigma * airDensity * cd * s * Math.pow(v, 2);
+                return d;
+            },
+            function sigmaFromDCdSV(d, cd, s, v) {
+                var sigma = d / (airDensity * cd * s * Math.pow(v, 2));
+                return sigma;
+            },
+            function cdFromSigmaCdSV(d, sigma, s, v) {
+                var cd = d / (sigma * airDensity * s * Math.pow(v, 2));
+                return cd;
+            },
+            function sFromSigmaCdSV(d, sigma, cd, v) {
+                var s = d / (sigma * airDensity * cd * Math.pow(v, 2));
+                return s;
+            },
+            function vFromSigmaCdSV(d, sigma, cd, s) {
+                var v = Math.sqrt(d / (sigma * airDensity * cd * s));
+                return v;
             }
         ],
         [ // formula 1
@@ -140,26 +210,7 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 5
-            function dFromSigmaCdSV(sigma, cd, s, v) {
-                var d = sigma * cd * s * v * v * airDensity;
-                return d;
-            },
-            function sigmaFromdCdSV(d, cd, s, v) {
-                var sigma = d / (cd * s * v * v * airDensity);
-                return sigma;
-            },
-            function cdFromDSigmaSV(d, sigma, s, v) {
-                var cd = d / (sigma * s * v * v * airDensity);
-                return cd;
-            },
-            function sFromDSigmaCdV(d, sigma, cd, v) {
-                var s = d / (sigma * cd * v * v * airDensity);
-                return s;
-            },
-            function vFromDSigmaCdS(d, sigma, cd, s) {
-                var v = Math.sqrt(d / (sigma * cd * s * airDensity));
-                return v;
-            }
+            // Formulas are in Relation 6
         ],
         [ // Formula 6
             function lFromSigmaClSV(sigma, cl, s, v) {
@@ -525,19 +576,8 @@ function aircraftFormulas(constants, solvePoly) {
             function eFromCeC(ce, c) {
                 var e = Math.pow(c / ce, 2);
                 return e;
-            },
-            function adFromCd0S(cd0, s) {
-                var ad = cd0 * s;
-                return ad;
-            },
-            function cd0FromAdS(ad, s) {
-                var cd0 = ad / s;
-                return cd0;
-            },
-            function sFromAdCd0(ad, cd0) {
-                var s = ad / cd0;
-                return s;
             }
+            // ad/cd0/s formulas are found in Relation 6
         ],
         [ // Formula 20
             function rsminFromWSigmaAdBe(w, sigma, ad, be) {
