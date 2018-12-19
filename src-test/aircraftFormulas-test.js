@@ -14,6 +14,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var larger = function (num) {
         return num * (1 + Math.random() / 5);
     };
+
     // relation 1: cl, v, w/s
     var v = random(50, 100);
     var clmax = random(1, 2);
@@ -33,19 +34,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var be = b * Math.sqrt(e);
     // relation 4: be, wbe, w
     var wbe = w / be;
-    // relation 5: ad, vmax, thpa
-    var sea_level_density = 0.0023769;
-    var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
-    var hpMPH = 33000 * 60 / 5280;
-    var ad = random(5, 15);
-    // relation 6: cd0, ad, s
-    var d = solvedFormulas[0].solve({ad, v}).d;
-    var cd0 = ad / s;
-    var sigma = smaller(1);
-    var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
 
-    // var w = random(500, 2000);
     var thetag = random(1, 20);
+    var cd0 = random(0, 2);
+    var ad = cd0 * s;
     var rho = 0.0023769;
     var m = 970;
     var vfs = v * 5280 / 3600;
@@ -57,6 +49,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var dp = 6;
     var ap = Math.TAU * (dp / 2);
     var eta = smaller(1);
+    var sigma = 1;
     var rpm = 2700;
     var n = 60;
     var bhp = 150;
@@ -99,6 +92,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Relations", function () {
+        // relation 5: ad, vmax, thpa
+        var sea_level_density = 0.0023769;
+        var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
+        var hpMPH = 33000 * 60 / 5280;
+        var ad = random(5, 15);
+        // relation 6: cd0, ad, s
+        var d = solvedFormulas[0].solve({ad, v}).d;
+        var cd0 = ad / s;
+        var sigma = smaller(1);
+        var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
         describe("1: CL, V, W/S", function () {
             it("solves lift force from lift coeff. and velocity", function () {
                 testAircraftFormulaSolve(0, "ws", {cl: clmax, v}, ws);
@@ -298,20 +301,21 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             d = solvedFormulas[4].d(rho, cd, vfs, s);
         });
         it("is equivalent to Formula 4", function () {
+            console.table({sigma, cd, s, v});
             var expected = w * Math.sin(thetag / 360 * Math.TAU);
-            expect(solvedFormulas[5].d(sigma, cd, s, v)).toBeCloseTo(expected);
+            testAircraftFormulaSolve(0, "d", {sigma, cd, s, v}, expected);
         });
         it("solves for density ratio", function () {
-            testAircraftFormula(5, "sigma", [d, cd, s, v], sigma);
+            testAircraftFormulaSolve(0, "sigma", {d, cd, s, v}, sigma);
         });
         it("solves for coefficient of drag", function () {
-            testAircraftFormula(5, "cd", [d, sigma, s, v], cd);
+            testAircraftFormulaSolve(0, "cd", {d, sigma, s, v}, cd);
         });
         it("solves for wing area", function () {
-            testAircraftFormula(5, "s", [d, sigma, cd, v], s);
+            testAircraftFormulaSolve(0, "s", {d, sigma, cd, v}, s);
         });
         it("solves for velocity (mph)", function () {
-            testAircraftFormula(5, "v", [d, sigma, cd, s], v);
+            testAircraftFormulaSolve(0, "v", {d, sigma, cd, s}, v);
         });
     });
     describe("Formula 6: Lift from velocity as mph", function () {
@@ -617,13 +621,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     describe("Formula 19: Drag area relationship", function () {
         it("solves for drag area", function () {
-            expect(solvedFormulas[19].solve({cd0, s}).ad).toBe(ad);
+            expect(solvedFormulas[0].solve({cd0, s}).ad).toBe(ad);
         });
         it("solves for parasite drag", function () {
-            testAircraftFormulaSolve(19, "cd0", {s, ad: cd0 * s}, cd0);
+            testAircraftFormulaSolve(0, "cd0", {s, ad: cd0 * s}, cd0);
         });
         it("solves for wing area", function () {
-            testAircraftFormulaSolve(19, "s", {cd0, ad: cd0 * s}, s);
+            testAircraftFormulaSolve(0, "s", {cd0, ad: cd0 * s}, s);
         });
     });
     describe("Formula 20: Minimum rate of sink", function () {

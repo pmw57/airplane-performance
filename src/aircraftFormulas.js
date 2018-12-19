@@ -108,7 +108,7 @@ function aircraftFormulas(constants, solvePoly) {
                 var v = Math.sqrt(d / (cd0 * s * airDensity));
                 return v;
             },
-            function dFromRhoCdSV(sigma, cd, s, v) {
+            function dFromSigmaCdSV(sigma, cd, s, v) {
                 var d = sigma * airDensity * cd * s * Math.pow(v, 2);
                 return d;
             },
@@ -210,7 +210,26 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 5
-            // Formulas are in Relation 6
+            function dFromSigmaCdSV(sigma, cd, s, v) {
+                var d = sigma * cd * s * v * v * airDensity;
+                return d;
+            },
+            function sigmaFromdCdSV(d, cd, s, v) {
+                var sigma = d / (cd * s * v * v * airDensity);
+                return sigma;
+            },
+            function cdFromDSigmaSV(d, sigma, s, v) {
+                var cd = d / (sigma * s * v * v * airDensity);
+                return cd;
+            },
+            function sFromDSigmaCdV(d, sigma, cd, v) {
+                var s = d / (sigma * cd * v * v * airDensity);
+                return s;
+            },
+            function vFromDSigmaCdS(d, sigma, cd, s) {
+                var v = Math.sqrt(d / (sigma * cd * s * airDensity));
+                return v;
+            }
         ],
         [ // Formula 6
             function lFromSigmaClSV(sigma, cl, s, v) {
@@ -1067,15 +1086,14 @@ function aircraftFormulas(constants, solvePoly) {
                 ) / w) / Math.TAU * 360;
                 return thetac;
             },
-            function sigmaFromTThetacAdVWBeSigma(
-                t, thetac, ad, v, w, be, sigma
-            ) {
+            function sigmaFromTThetacAdVWBeSigma(t, thetac, ad, v, w, be) {
                 var coeffs = [
                     ad * v * v * airDensity,
                     w * Math.sin(thetac / 360 * Math.TAU) - t,
                     1 / airDensity * Math.pow(w / be, 2) / (v * v)
                 ];
-                sigma = solvePoly(coeffs)[1];
+                console.log(solvePoly(coeffs));
+                var sigma = solvePoly(coeffs)[1];
                 return sigma;
             },
             function adFromTThetacSigmaVWBe(t, thetac, sigma, v, w, be) {
