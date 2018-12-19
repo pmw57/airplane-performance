@@ -6,19 +6,127 @@ function aircraftFormulas(constants, solvePoly) {
 
     var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
+    var hpMPH = 33000 * 60 / 5280;
     var formulas = [
-        [
+            [
+            // Relation 1: CL, V, W/S
+            // Lift Coefficient, Airspeed, Wing Loading
+            function wsFromClV(cl, v) {
+                var ws = cl * v * v * airDensity;
+                return ws;
+            },
+            function clFromWsV(ws, v) {
+                var cl = ws / (v * v * airDensity);
+                return cl;
+            },
+            function vFromWsCl(ws, cl) {
+                var v = Math.sqrt(ws / (cl * airDensity));
+                return v;
+            },
+            // Relation 2: S, W/S, W
+            // Wing Area, Wing Loading, Gross Weight
+            function sFromWsW(ws, w) {
+                var s = w / ws;
+                return s;
+            },
             function wsFromWS(w, s) {
-                console.log(w, s);
                 var ws = w / s;
                 return ws;
             },
-            function wsFromClV(cl, v) {
-                return airDensity * cl * Math.pow(v, 2);
+            function wFromWsS(ws, s) {
+                var w = ws * s;
+                return w;
             },
-            function clFromWsV(ws, v) {
-                cl = airDensisy * ws / Math.pow(v, 2);
-                return cl;
+            // Relation 3: S, be, eAR, ce
+            // Wing Area, Effective Span, Effetive Aspect Ratio, Effective Chord
+            // ar function defined in formula 14
+            function cFromSB(b, s) {
+                var c = s / b;
+                return c;
+            },
+            function bFromSC(s, c) {
+                var b = s / c;
+                return b;
+            },
+            function sFromBC(b, c) {
+                var s = b * c;
+                return s;
+            },
+            // Relation 5: AD, Vmax, THPa
+            // Drag area, maximum level speed, available thrust horsepower
+            function thpaFromAdVmax(ad, vmax) {
+                var thpa = ad * Math.pow(vmax, 3) * airDensity / hpMPH;
+                return thpa;
+            },
+            function adFromThpaVmax(thpa, vmax) {
+                var ad = thpa / Math.pow(vmax, 3) * hpMPH / airDensity;
+                return ad;
+            },
+            function vmaxFromThpaAd(thpa, ad) {
+                var vmax = Math.pow(thpa / ad * hpMPH / airDensity, 1 / 3);
+                return vmax;
+            },
+            // Relation 6: CD0, AD, S
+            // Zero-lift drag, drag area, and wing area
+            function dFromAdV(ad, v) {
+                var d = ad * Math.pow(v, 2) * airDensity;
+                return d;
+            },
+            function adFromDV(d, v) {
+                var ad = d / (Math.pow(v, 2) * airDensity);
+                return ad;
+            },
+            function vFromDAD(d, ad) {
+                var v = Math.sqrt(d / (ad * airDensity));
+                return v;
+            },
+            function sFromAdCd0(ad, cd0) {
+                var s = ad / cd0;
+                return s;
+            },
+            function adFromCd0S(cd0, s) {
+                var ad = cd0 * s;
+                return ad;
+            },
+            function cd0FromAdS(ad, s) {
+                var cd0 = ad / s;
+                return cd0;
+            },
+            function dFromCd0SV(cd0, s, v) {
+                var d = cd0 * s * Math.pow(v, 2) * airDensity;
+                return d;
+            },
+            function cd0FromDSV(d, s, v) {
+                var cd0 = d / (s * Math.pow(v, 2) * airDensity);
+                return cd0;
+            },
+            function sFromDCd0V(d, cd0, v) {
+                var s = d / (cd0 * Math.pow(v, 2) * airDensity);
+                return s;
+            },
+            function vFromDCd0S(d, cd0, s) {
+                var v = Math.sqrt(d / (cd0 * s * airDensity));
+                return v;
+            },
+            function dFromSigmaCdSV(sigma, cd, s, v) {
+                var d = sigma * airDensity * cd * s * Math.pow(v, 2);
+                return d;
+            },
+            function sigmaFromDCdSV(d, cd, s, v) {
+                var sigma = d / (airDensity * cd * s * Math.pow(v, 2));
+                return sigma;
+            },
+            function cdFromSigmaCdSV(d, sigma, s, v) {
+                var cd = d / (sigma * airDensity * s * Math.pow(v, 2));
+                return cd;
+            },
+            function sFromSigmaCdSV(d, sigma, cd, v) {
+                var s = d / (sigma * airDensity * cd * Math.pow(v, 2));
+                return s;
+            },
+            function vFromSigmaCdSV(d, sigma, cd, s) {
+                var v = Math.sqrt(d / (sigma * airDensity * cd * s));
+                return v;
             }
         ],
         [ // formula 1
@@ -487,19 +595,8 @@ function aircraftFormulas(constants, solvePoly) {
             function eFromCeC(ce, c) {
                 var e = Math.pow(c / ce, 2);
                 return e;
-            },
-            function adFromCd0S(cd0, s) {
-                var ad = cd0 * s;
-                return ad;
-            },
-            function cd0FromAdS(ad, s) {
-                var cd0 = ad / s;
-                return cd0;
-            },
-            function sFromAdCd0(ad, cd0) {
-                var s = ad / cd0;
-                return s;
             }
+            // ad/cd0/s formulas are found in Relation 6
         ],
         [ // Formula 20
             function rsminFromWSigmaAdBe(w, sigma, ad, be) {
@@ -989,15 +1086,14 @@ function aircraftFormulas(constants, solvePoly) {
                 ) / w) / Math.TAU * 360;
                 return thetac;
             },
-            function sigmaFromTThetacAdVWBeSigma(
-                t, thetac, ad, v, w, be, sigma
-            ) {
+            function sigmaFromTThetacAdVWBeSigma(t, thetac, ad, v, w, be) {
                 var coeffs = [
                     ad * v * v * airDensity,
                     w * Math.sin(thetac / 360 * Math.TAU) - t,
                     1 / airDensity * Math.pow(w / be, 2) / (v * v)
                 ];
-                sigma = solvePoly(coeffs)[1];
+                console.log(solvePoly(coeffs));
+                var sigma = solvePoly(coeffs)[1];
                 return sigma;
             },
             function adFromTThetacSigmaVWBe(t, thetac, sigma, v, w, be) {
@@ -1905,6 +2001,27 @@ function aircraftFormulas(constants, solvePoly) {
                 function deltafuseFromInveInvew(inve, invew) {
                     var deltafuse = inve - invew;
                     return deltafuse;
+                },
+                function eFromArSfuseS(ar, sfuse, s) {
+                    var invew = 1 / chart.ew.rectangle(ar);
+                    var fuselageEffect = chart.efuse.rectangle(ar);
+                    var inve = invew + fuselageEffect * (sfuse / s);
+                    var e = 1 / (invew + fuselageEffect * (sfuse / s));
+                    return e;
+                },
+                function sfuseFromEArS(e, ar, s) {
+                    var invew = 1 / chart.ew.rectangle(ar);
+                    var fuselageEffect = chart.efuse.rectangle(ar);
+                    var inve = invew + fuselageEffect * (sfuse / s);
+                    var sfuse = (1 / e - invew) * s / fuselageEffect;
+                    return sfuse;
+                },
+                function sFromEArSfuse(e, ar, sfuse) {
+                    var invew = 1 / chart.ew.rectangle(ar);
+                    var fuselageEffect = chart.efuse.rectangle(ar);
+                    var inve = invew + fuselageEffect * (sfuse / s);
+                    var s = fuselageEffect * sfuse / (1 / e - invew);
+                    return s;
                 }
             ],
             [ // Appendix F charts
