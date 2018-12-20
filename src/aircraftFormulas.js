@@ -127,6 +127,42 @@ function aircraftFormulas(constants, solvePoly) {
             function vFromSigmaCdSV(d, sigma, cd, s) {
                 var v = Math.sqrt(d / (sigma * airDensity * cd * s));
                 return v;
+            },
+            // Relation 7: AD, VminS, W/be, THPmin, Dmin
+            // Drag Area, Airspeed for Minimum Sink, Effective Span Loading,
+            // Minimum power required for Level Flight, Minimum Drag
+            function vminsFromAdWbe(ad, wbe) {
+                var vmins = 1 / (Math.sqrt(airDensity) *
+                    Math.pow(3 * Math.PI * ad, 1 / 4) / Math.sqrt(wbe));
+                return vmins;
+            },
+            function wbeFromVminsAd(vmins, ad) {
+                var wbe = airDensity * Math.pow(3 * Math.PI * ad, 1 / 2) *
+                    Math.pow(vmins, 2);
+                return wbe;
+            },
+            function adFromVminsWbe(vmins, wbe) {
+                var ad = Math.pow(wbe, 2) / (Math.pow(airDensity, 2) *
+                    3 * Math.PI * Math.pow(vmins, 4));
+                return ad;
+            },
+            function thpminFromAdWbe(ad, wbe) {
+                var thpmin = 5280 / 60 * 4 / 33000 *
+                1 / Math.sqrt(airDensity) * 1 / Math.pow(3 * Math.PI, 3 / 4) *
+                Math.pow(ad, 1 / 4) * Math.pow(wbe, 3 / 2);
+                return thpmin;
+            },
+            function adFromThpminWbe(thpmin, wbe) {
+                var ad = Math.pow(33000 / 4 * 60 / 5280 *
+                    Math.sqrt(airDensity) * Math.pow(3 * Math.PI, 3 / 4) *
+                    thpmin / Math.pow(wbe, 3 / 2), 4);
+                return ad;
+            },
+            function wbeFromThpminAd(thpmin, ad) {
+                var wbe = Math.pow(33000 / 4 * 60 / 5280 *
+                    Math.pow(3 * Math.PI, 3 / 4) * Math.sqrt(airDensity) *
+                    thpmin / Math.pow(ad, 1 / 4), 2 / 3);
+                return wbe;
             }
         ],
         [ // formula 1
@@ -1001,6 +1037,7 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 33
+            // todo, simplify using Relation 7 code
             function thpminFromAdSigmaWBe(ad, sigma, w, be) {
                 var thpmin = 5280 / 60 * 4 / 33000 *
                 Math.sqrt(1 / airDensity) / Math.pow(3 * Math.PI, 3 / 4) *

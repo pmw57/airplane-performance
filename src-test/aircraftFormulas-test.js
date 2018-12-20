@@ -61,7 +61,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var d = solvedFormulas[0].solve({ad, v}).d;
     var sigma = 1; // sealevel
     var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
-
+    // relation 7: AD, VminS, W/be, THPmin, Dmin
+    var vmins = solvedFormulas[0].solve({ad, wbe}).vmins;
+    var thpmin = solvedFormulas[0].solve({ad, wbe}).thpmin;
     var thetag = random(1, 20);
     var rho = 0.0023769;
     var m = 970;
@@ -220,6 +222,22 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormulaSolve(0, "cd", {d, sigma, s, v}, cd);
                 testAircraftFormulaSolve(0, "s", {d, sigma, cd, v}, s);
                 testAircraftFormulaSolve(0, "v", {d, sigma, cd, s}, v);
+            });
+        });
+        describe("7: AD, VminS, W/be, THPmin, Dmin", function () {
+            it("solves for VminS", function () {
+                testAircraftFormulaSolve(0, "vmins", {ad, wbe}, vmins);
+                testAircraftFormulaSolve(0, "wbe", {vmins, ad}, wbe);
+                testAircraftFormulaSolve(0, "ad", {vmins, wbe}, ad);
+            });
+            it("solves for THPmin", function () {
+                testAircraftFormulaSolve(0, "thpmin", {ad, wbe}, thpmin);
+                testAircraftFormulaSolve(0, "ad", {thpmin, wbe}, ad);
+                testAircraftFormulaSolve(0, "wbe", {thpmin, ad}, wbe);
+            });
+            it("solves for Dmin", function () {
+                var dmin = 1.128 * Math.sqrt(ad) * wbe;
+                console.log(dmin);
             });
         });
     });
@@ -919,15 +937,11 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 33: Minimum power for level flight", function () {
-        var thpmin;
-        var rsmin;
-        beforeEach(function () {
-            thpmin = solvedFormulas[33].thpmin(ad, sigma, w, be);
-        });
         it("should be equivalent to formula 32", function () {
-            rsmin = solvedFormulas[20].rsmin(w, sigma, ad, be);
+            var rsmin = solvedFormulas[20].rsmin(w, sigma, ad, be);
             testAircraftFormula(32, "thpal", [rsmin, w], thpmin);
         });
+        // todo simplify formula using wbe and Relation 8 code
         it("solves for drag area", function () {
             testAircraftFormula(33, "ad", [thpmin, sigma, w, be], ad);
         });
