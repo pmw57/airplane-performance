@@ -22,17 +22,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         w: 1500,
         b: 20 + 10 / 12,
         sfuse: 3 * 3,
+        ad: 3
     };
     // relation 1: cl, v, w/s
     var v = t18.vs0 || random(50, 100);
     var clmax = t18.clmax || random(1, 2);
     var ws = solvedFormulas[0].solve({cl: clmax, v}).ws;
     var vmax = t18.vmax || random(80, 120);
-    // console.table({v, clmax, ws, vmax});
     // relation 2: s, w/s, w
     var w = t18.w || random(1000, 2000);
     var s = w / ws;
-    // console.table({w, s});
     // relation 3: S, be, eAR, ce
     var b = t18.b || random(10, 30);
     var ar = b * b / s;
@@ -42,18 +41,27 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var ear = e * ar;
     var ce = c / Math.sqrt(e);
     var be = b * Math.sqrt(e);
-    // console.table({b, ar, c, sfuse, e, ear, ce, be});
     // relation 4: be, wbe, w
     var wbe = w / be;
-    // console.table({wbe});
     // relation 5: ad, vmax, thpa
     var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
     var hpMPH = 33000 * 60 / 5280;
+    var ad = t18.ad || random(5, 15);
     var thpa = solvedFormulas[0].solve({ad, vmax}).thpa;
-    var ad = random(5, 15);
     var cd0 = ad / s;
-    console.table({airDensity, hpMPH, thpa, ad, cd0});
+    console.table({
+        v, clmax, ws, vmax,
+        w, s,
+        b, ar, c, sfuse, e, ear, ce, be,
+        wbe,
+        airDensity, hpMPH, thpa, ad, cd0
+    });
+    // relation 6: cd0, ad, s
+    var d = solvedFormulas[0].solve({ad, v}).d;
+    var sigma = 1; // sealevel
+    var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
+
     var thetag = random(1, 20);
     var rho = 0.0023769;
     var m = 970;
@@ -66,7 +74,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var dp = 6;
     var ap = Math.TAU * (dp / 2);
     var eta = smaller(1);
-    var sigma = 1;
     var rpm = 2700;
     var n = 60;
     var bhp = 150;
@@ -109,11 +116,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Relations", function () {
-        // relation 6: cd0, ad, s
-        var d = solvedFormulas[0].solve({ad, v}).d;
-        var cd0 = ad / s;
-        var sigma = smaller(1);
-        var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
         describe("1: CL, V, W/S", function () {
             it("solves lift force from lift coeff. and velocity", function () {
                 testAircraftFormulaSolve(0, "ws", {cl: clmax, v}, ws);
@@ -188,7 +190,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             // horsepower is 33000 measured in foot pounds per min
             // convert to miles per hour by multiplying by 60/5280
             // 1/375 is hp conversion from ft/min to mph
-            var thpa = ad * Math.pow(vmax, 3) * airDensity / hpMPH;
             it("solves for available thrust horsepower", function () {
                 testAircraftFormulaSolve(0, "thpa", {ad, vmax}, thpa);
                 testAircraftFormulaSolve(0, "ad", {thpa, vmax}, ad);
@@ -463,15 +464,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 11: Rate of sink without velocity", function () {
-        var cd;
         var rs;
         beforeEach(function () {
-            cd = random(1, 1.5);
-            cl = solvedFormulas[7].cl(w / s, sigma, v);
+            cl = solvedFormulas[7].cl(ws, sigma, v);
             rs = solvedFormulas[11].rs(sigma, w, s, cd, cl);
         });
         it("has the same answer as for formula 10", function () {
-            expect(rs).toBeCloseTo(solvedFormulas[10].rs(sigma, cd, s, v, w));
         });
         it("solves for sigma", function () {
             testAircraftFormula(11, "sigma", [rs, w, s, cd, cl], sigma);
