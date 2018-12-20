@@ -1092,7 +1092,6 @@ function aircraftFormulas(constants, solvePoly) {
                     w * Math.sin(thetac / 360 * Math.TAU) - t,
                     1 / airDensity * Math.pow(w / be, 2) / (v * v)
                 ];
-                console.log(solvePoly(coeffs));
                 var sigma = solvePoly(coeffs)[1];
                 return sigma;
             },
