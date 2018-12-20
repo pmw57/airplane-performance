@@ -687,9 +687,10 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Formula 22
             function rsFromSigmaAdVWBe(sigma, ad, v, w, be) {
-                var rs = 5280 / 60 * (sigma * ad * Math.pow(v, 3) *
-                    airDensity / w +
-                    w / (airDensity * Math.PI * sigma * v * be * be));
+                var dragArea = sigma * airDensity * ad * Math.pow(v, 3) / w;
+                var effectiveSpan = w / (Math.PI * sigma * airDensity *
+                    v * Math.pow(be, 2));
+                var rs = (dragArea + effectiveSpan) * 5280 / 60;
                 return rs;
             },
             function sigmaFromRsAdVWBe(rs, ad, v, w, be) {
@@ -1092,7 +1093,6 @@ function aircraftFormulas(constants, solvePoly) {
                     w * Math.sin(thetac / 360 * Math.TAU) - t,
                     1 / airDensity * Math.pow(w / be, 2) / (v * v)
                 ];
-                console.log(solvePoly(coeffs));
                 var sigma = solvePoly(coeffs)[1];
                 return sigma;
             },
