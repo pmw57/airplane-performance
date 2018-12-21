@@ -179,6 +179,18 @@ function aircraftFormulas(constants, solvePoly) {
             // Relation 8: RSmin, THPmin, W
             // Minimum Sink Rate, Minimum Power Required
             // for Level Flight, weight
+            function rsFromThpminW(thp, w) {
+                var rs = 33000 * thp / w;
+                return rs;
+            },
+            function thpFromRsW(rs, w) {
+                var thp = rs * w / 33000;
+                return thp;
+            },
+            function wFromRsThpmin(rs, thp) {
+                var w = 33000 * thp / rs;
+                return w;
+            },
             function rsminFromThpminW(thpmin, w) {
                 var rsmin = 33000 * thpmin / w;
                 return rsmin;
@@ -189,6 +201,36 @@ function aircraftFormulas(constants, solvePoly) {
             },
             function wFromRsminThpmin(rsmin, thpmin) {
                 var w = 33000 * thpmin / rsmin;
+                return w;
+            },
+            function rsminFromThpminW(thp, w) {
+                var rsmin = 33000 * thp / w;
+                return rsmin;
+            },
+            function thpminFromRsminW(rsmin, w) {
+                var thpmin = rsmin * w / 33000;
+                return thpmin;
+            },
+            function wFromRsminThpmin(rsmin, thpmin) {
+                var w = 33000 * thpmin / rsmin;
+                return w;
+            },
+            function rcFromRsThpaW(rs, thpa, w) {
+                var rcPlusRs = 33000 * thpa / w;
+                var rc = rcPlusRs - rs;
+                return rc;
+            },
+            function rsFromRcThpaW(rc, thpa, w) {
+                var rcPlusRs = 33000 * thpa / w;
+                var rs = rcPlusRs - rc;
+                return rs;
+            },
+            function thpaFromRcRsW(rc, rs, w) {
+                var thpa = (rc + rs) * w / 33000;
+                return thpa;
+            },
+            function wFromRcRsThpa(rc, rs, thpa) {
+                var w = 33000 * thpa / (rc + rs);
                 return w;
             }
         ],

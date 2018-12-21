@@ -43,6 +43,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var be = b * Math.sqrt(e);
     // relation 4: be, wbe, w
     var wbe = w / be;
+    console.table({
+        v, clmax, ws, vmax,
+        w, s,
+        b, ar, c, sfuse, e, ear, ce, be,
+        wbe
+    });
     // relation 5: ad, vmax, thpa
     var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
@@ -50,13 +56,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var ad = t18.ad || random(5, 15);
     var thpa = solvedFormulas[0].solve({ad, vmax}).thpa;
     var cd0 = ad / s;
-    console.table({
-        v, clmax, ws, vmax,
-        w, s,
-        b, ar, c, sfuse, e, ear, ce, be,
-        wbe,
-        airDensity, hpMPH, thpa, ad, cd0
-    });
     // relation 6: cd0, ad, s
     var d = solvedFormulas[0].solve({ad, v}).d;
     var sigma = 1; // sealevel
@@ -66,7 +65,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var thpmin = solvedFormulas[0].solve({ad, wbe}).thpmin;
     var dmin = solvedFormulas[0].solve({ad, wbe}).dmin;
     // relation 8: RSmin, THPmin, W
+    var thp = thpmin * 2; // a random increase
+    var rs = solvedFormulas[0].solve({thp, w}).rs;
     var rsmin = solvedFormulas[0].solve({thpmin, w}).rsmin;
+    var rc = solvedFormulas[0].solve({rs, thpa, w}).rc;
+    console.table({
+        airDensity, hpMPH, thpa, ad, cd0,
+        d, sigma, cd,
+        vmins, thpmin, dmin,
+        thp, rs, rsmin
+    });
 
 
     var thetag = random(1, 20);
@@ -243,9 +251,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         describe("8: RSmin, THPmin, W", function () {
             it("solves for RSmin", function () {
+                testAircraftFormula(0, "rs", {thp, w}, rs);
+                testAircraftFormula(0, "thp", {rs, w}, thp);
+                testAircraftFormula(0, "w", {rs, thp}, w);
                 testAircraftFormula(0, "rsmin", {thpmin, w}, rsmin);
                 testAircraftFormula(0, "thpmin", {rsmin, w}, thpmin);
                 testAircraftFormula(0, "w", {rsmin, thpmin}, w);
+                testAircraftFormula(0, "rc", {rs, thpa, w}, rc);
+                testAircraftFormula(0, "rs", {rc, thpa, w}, rs);
+                testAircraftFormula(0, "thpa", {rc, rs, w}, thpa);
+                testAircraftFormula(0, "w", {rc, rs, thpa}, w);
             });
         });
     });
