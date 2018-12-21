@@ -64,6 +64,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // relation 7: AD, VminS, W/be, THPmin, Dmin
     var vmins = solvedFormulas[0].solve({ad, wbe}).vmins;
     var thpmin = solvedFormulas[0].solve({ad, wbe}).thpmin;
+    var dmin = solvedFormulas[0].solve({ad, wbe}).dmin;
+
+
     var thetag = random(1, 20);
     var rho = 0.0023769;
     var m = 970;
@@ -231,8 +234,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "wbe", {thpmin, ad}, wbe);
             });
             it("solves for Dmin", function () {
-                var dmin = 1.128 * Math.sqrt(ad) * wbe;
-                console.log(dmin);
+                testAircraftFormula(0, "dmin", {ad, wbe}, dmin);
+                testAircraftFormula(0, "ad", {dmin, wbe}, ad);
+                testAircraftFormula(0, "wbe", {dmin, ad}, wbe);
             });
         });
     });

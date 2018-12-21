@@ -163,6 +163,18 @@ function aircraftFormulas(constants, solvePoly) {
                     Math.pow(3 * Math.PI, 3 / 4) * Math.sqrt(airDensity) *
                     thpmin / Math.pow(ad, 1 / 4), 2 / 3);
                 return wbe;
+            },
+            function dminFromAdWbe(ad, wbe) {
+                var dmin = 2 / Math.sqrt(Math.PI) * Math.sqrt(ad) * wbe;
+                return dmin;
+            },
+            function adFromDminWbe(dmin, wbe) {
+                var ad = Math.pow(dmin * Math.sqrt(Math.PI) / (2 * wbe), 2);
+                return ad;
+            },
+            function wbeFromDminAd(dmin, ad) {
+                var wbe = Math.sqrt(Math.PI) * dmin / (2 * Math.sqrt(ad));
+                return wbe;
             }
         ],
         [ // formula 1
@@ -922,22 +934,7 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 30
-            function dminFromAdWBe(ad, w, be) {
-                var dmin = 2 / Math.sqrt(Math.PI) * Math.sqrt(ad) * w / be;
-                return dmin;
-            },
-            function adFromDminWBe(dmin, w, be) {
-                var ad = Math.pow(dmin * Math.sqrt(Math.PI) / 2 * be / w, 2);
-                return ad;
-            },
-            function wFromDminAdBe(dmin, ad, be) {
-                var w = Math.sqrt(Math.PI) * dmin * be / (2 * Math.sqrt(ad));
-                return w;
-            },
-            function beFromDminAdW(dmin, ad, w) {
-                var be = 2 * Math.sqrt(ad) * w / (Math.sqrt(Math.PI) * dmin);
-                return be;
-            }
+            // ad/cd0/s formulas are found in Relation 7
         ],
         [ // Formula 31
             function thpalFromSigmaAdVWBe(sigma, ad, v, w, be) {
