@@ -175,6 +175,21 @@ function aircraftFormulas(constants, solvePoly) {
             function wbeFromDminAd(dmin, ad) {
                 var wbe = Math.sqrt(Math.PI) * dmin / (2 * Math.sqrt(ad));
                 return wbe;
+            },
+            // Relation 8: RSmin, THPmin, W
+            // Minimum Sink Rate, Minimum Power Required
+            // for Level Flight, weight
+            function rsminFromThpminW(thpmin, w) {
+                var rsmin = 33000 * thpmin / w;
+                return rsmin;
+            },
+            function thpminFromRsminW(rsmin, w) {
+                var thpmin = rsmin * w / 33000;
+                return thpmin;
+            },
+            function wFromRsminThpmin(rsmin, thpmin) {
+                var w = 33000 * thpmin / rsmin;
+                return w;
             }
         ],
         [ // formula 1

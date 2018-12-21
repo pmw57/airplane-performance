@@ -65,6 +65,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var vmins = solvedFormulas[0].solve({ad, wbe}).vmins;
     var thpmin = solvedFormulas[0].solve({ad, wbe}).thpmin;
     var dmin = solvedFormulas[0].solve({ad, wbe}).dmin;
+    // relation 8: RSmin, THPmin, W
+    var rsmin = solvedFormulas[0].solve({thpmin, w}).rsmin;
 
 
     var thetag = random(1, 20);
@@ -237,6 +239,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "dmin", {ad, wbe}, dmin);
                 testAircraftFormula(0, "ad", {dmin, wbe}, ad);
                 testAircraftFormula(0, "wbe", {dmin, ad}, wbe);
+            });
+        });
+        describe("8: RSmin, THPmin, W", function () {
+            it("solves for RSmin", function () {
+                testAircraftFormula(0, "rsmin", {thpmin, w}, rsmin);
+                testAircraftFormula(0, "thpmin", {rsmin, w}, thpmin);
+                testAircraftFormula(0, "w", {rsmin, thpmin}, w);
             });
         });
     });
