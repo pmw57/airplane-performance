@@ -24,6 +24,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         sfuse: 3 * 3,
         ad: 3
     };
+
+    // TODO: Use formulas for **ALL** formula relationships
+
     // Relation 1: cl, v, w/s
     var v = t18.vs0 || random(50, 100);
     var clmax = t18.clmax || random(1, 2);
@@ -77,8 +80,11 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     // Relation 9: AD, be, (L/D)max
     var ldmax = solvedFormulas[0].solve({ear, cd0}).ldmax;
+    // Relation 10: AD, CLminS, ce
+    var clmins = solvedFormulas[0].solve({ad, ce}).clmins;
     console.table({
-        ldmax
+        ldmax,
+        clmins
     });
 
     var thetag = random(1, 20);
@@ -278,9 +284,15 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "cd0", {ldmax, ear}, cd0);
             });
         });
+        describe("10: AD, CLminS, ce", function () {
+            it("solves for clmins", function () {
+                testAircraftFormula(0, "clmins", {ad, ce}, clmins);
+                testAircraftFormula(0, "ad", {clmins, ce}, ad);
+                testAircraftFormula(0, "ce", {clmins, ad}, ce);
+            });
+        });
     });
     describe("Formula 1: A force balanced along the flight path", function () {
-        var d;
         beforeEach(function () {
             d = solvedFormulas[1].d(w, thetag);
         });
@@ -336,9 +348,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 4: cd is from pressure and wing area", function () {
-        var d;
         var l;
-        var cd;
         beforeEach(function () {
             d = solvedFormulas[1].d(w, thetag);
             l = solvedFormulas[2].l(w, thetag);
@@ -362,8 +372,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 5: Drag from velocity as mph", function () {
-        var d;
-        var cd;
         beforeEach(function () {
             d = solvedFormulas[1].d(w, thetag);
             cd = solvedFormulas[4].cd(d, rho, vfs, s);
@@ -411,7 +419,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 7: Small angle approx. for wing loading", function () {
-        var ws;
         beforeEach(function () {
             cl = solvedFormulas[6].cl(w, sigma, s, v);
             ws = solvedFormulas[7].solve({sigma, cl, v}).ws;
@@ -445,8 +452,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 8: Glide angle using small angle approx.", function () {
-        var cd;
-        var d;
         var g;
         beforeEach(function () {
             cd = 1.2;
@@ -470,7 +475,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 9: Glide angle from lift & drag ratios", function () {
-        var cd;
         var v8;
         var g8;
         beforeEach(function () {
@@ -491,9 +495,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 10: Rate of sink (ft/min)", function () {
-        var cd;
         var d5;
-        var rs;
         beforeEach(function () {
             cd = random(1, 1.5);
             thetag = solvedFormulas[8].thetag(cd, sigma, s, v);
@@ -520,7 +522,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 11: Rate of sink without velocity", function () {
-        var rs;
         beforeEach(function () {
             cl = solvedFormulas[7].cl(ws, sigma, v);
             rs = solvedFormulas[11].rs(sigma, w, s, cd, cl);
@@ -545,7 +546,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     describe("Formula 12: Parasite and induced drag", function () {
         var cdi;
-        var cd;
         beforeEach(function () {
             cdi = random(0, 2);
             cd = solvedFormulas[12].cd(cd0, cdi);
@@ -611,7 +611,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     describe("Formula 15: Parabolic drag polar", function () {
         var cdi;
-        var cd;
         beforeEach(function () {
             cl = random(1, 2);
             cd = solvedFormulas[15].cd(cd0, cl, ear);
@@ -640,10 +639,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 18: Coefficient of lift for minimum sink", function () {
-        var clmins;
-        beforeEach(function () {
-            clmins = solvedFormulas[18].clmins(ear, cd0);
-        });
         it("should be sqrt(3 * CL^2 / CDi * CD0)", function () {
             var cdi = solvedFormulas[13].cdi(cl, ear);
             var expected = Math.sqrt(3 * (cl * cl / cdi) * cd0);
@@ -660,17 +655,14 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
 
     describe("Formula 19: Min sink = drag area and eff. chord", function () {
         it("should have the same answer as from formula 18", function () {
-            var clmins = solvedFormulas[19].clmins(ad, ce);
             var clmins18 = solvedFormulas[18].clmins(ear, cd0);
             expect(clmins).toBeCloseTo(clmins18);
         });
         it("solves for ad", function () {
-            var clmins = solvedFormulas[19].clmins(ad, ce);
-            testAircraftFormula(19, "ad", {clmins, ce}, ad);
+            testAircraftFormula(0, "ad", {clmins, ce}, ad);
         });
         it("solves for ce", function () {
-            var clmins = solvedFormulas[19].clmins(ad, ce);
-            testAircraftFormula(19, "ce", {clmins, ad}, ce);
+            testAircraftFormula(0, "ce", {clmins, ad}, ce);
         });
     });
     describe("Formula 19: effective chord formulas", function () {
@@ -696,12 +688,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 20: Minimum rate of sink", function () {
-        var cd;
-        var rsmin;
         beforeEach(function () {
-            cl = solvedFormulas[19].clmins(ad, ce);
-            cd = solvedFormulas[15].cd(cd0, cl, ear);
-            rsmin = solvedFormulas[20].rsmin(w, sigma, ad, be);
+            cl = solvedFormulas[0].solve(ad, ce).clmins;
         });
         it("is similar to the sink rate", function () {
             testAircraftFormula(11, "w", {sigma, w, s, cd, cl}, w);
@@ -731,13 +719,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 21: Velocity for minimum sink", function () {
-        var vmins;
-        beforeEach(function () {
-            vmins = solvedFormulas[21].vmins(w, be, sigma, ad);
-        });
         it("is the same as formula 7 when solved for velocity", function () {
-            var clmins = solvedFormulas[19].clmins(ad, ce);
-            var ws = w / s;
             expect(vmins).toBeCloseTo(solvedFormulas[7].v(ws, sigma, clmins));
         });
         it("solves for weight", function () {

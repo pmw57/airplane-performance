@@ -246,6 +246,20 @@ function aircraftFormulas(constants, solvePoly) {
             function cd0FromLdmaxEar(ldmax, ear) {
                 var cd0 = Math.pow(2 * ldmax, -2) * Math.PI * ear;
                 return cd0;
+            },
+            // Relation 10: CLminS, ad, ce
+            // Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
+            function clminsFromAdCe(ad, ce) {
+                var clmins = Math.sqrt(3 * Math.PI) * Math.sqrt(ad) / ce;
+                return clmins;
+            },
+            function adFromClminsCe(clmins, ce) {
+                var ad = Math.pow(clmins * ce / Math.sqrt(3 * Math.PI), 2);
+                return ad;
+            },
+            function ceFromClminsAd(clmins, ad) {
+                var ce = Math.sqrt(3 * Math.PI) / clmins * Math.sqrt(ad);
+                return ce;
             }
         ],
         [ // formula 1
@@ -674,8 +688,8 @@ function aircraftFormulas(constants, solvePoly) {
                 return ar;
             }
         ],
-        [], // Formula 16 - working towards Formula 18
-        [], // Formula 17 - working towards Formula 18
+        [], // todo Formula 16 - working towards Formula 18
+        [], // todo Formula 17 - working towards Formula 18
         [ // Formula 18
             function clminsFromEarCd0(ear, cd0) {
                 var clmins = Math.sqrt(3 * Math.PI * ear * cd0);
@@ -691,18 +705,7 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 19
-            function clminsFromAdCe(ad, ce) {
-                var clmins = Math.sqrt(3 * Math.PI) * Math.sqrt(ad) / ce;
-                return clmins;
-            },
-            function adFromClminsCe(clmins, ce) {
-                var ad = Math.pow(clmins * ce / Math.sqrt(3 * Math.PI), 2);
-                return ad;
-            },
-            function ceFromClminsAd(clmins, ad) {
-                var ce = Math.sqrt(3 * Math.PI) / clmins * Math.sqrt(ad);
-                return ce;
-            },
+            // clmins/ad/cd0 formulas are found in Relation 9
             function ceFromCE(c, e) {
                 var ce = c / Math.sqrt(e);
                 return ce;
@@ -1813,7 +1816,6 @@ function aircraftFormulas(constants, solvePoly) {
             [ // D.2: Hydrostatic variation for water
                 function pFromP0H(p0, h) {
                     var p = p0 - Math.pow(p0, constants.G * h);
-                    console.log("d2 p");
                     return p;
                 }
             ],
