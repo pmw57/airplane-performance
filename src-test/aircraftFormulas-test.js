@@ -24,15 +24,15 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         sfuse: 3 * 3,
         ad: 3
     };
-    // relation 1: cl, v, w/s
+    // Relation 1: cl, v, w/s
     var v = t18.vs0 || random(50, 100);
     var clmax = t18.clmax || random(1, 2);
     var ws = solvedFormulas[0].solve({cl: clmax, v}).ws;
     var vmax = t18.vmax || random(80, 120);
-    // relation 2: s, w/s, w
+    // Relation 2: s, w/s, w
     var w = t18.w || random(1000, 2000);
     var s = w / ws;
-    // relation 3: S, be, eAR, ce
+    // Relation 3: S, be, eAR, ce
     var b = t18.b || random(10, 30);
     var ar = b * b / s;
     var c = s / b;
@@ -41,7 +41,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var ear = e * ar;
     var ce = c / Math.sqrt(e);
     var be = b * Math.sqrt(e);
-    // relation 4: be, wbe, w
+    // Relation 4: be, wbe, w
     var wbe = w / be;
     console.table({
         v, clmax, ws, vmax,
@@ -49,22 +49,22 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         b, ar, c, sfuse, e, ear, ce, be,
         wbe
     });
-    // relation 5: ad, vmax, thpa
+    // Relation 5: ad, vmax, thpa
     var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
     var hpMPH = 33000 * 60 / 5280;
     var ad = t18.ad || random(5, 15);
     var thpa = solvedFormulas[0].solve({ad, vmax}).thpa;
     var cd0 = ad / s;
-    // relation 6: cd0, ad, s
+    // Relation 6: cd0, ad, s
     var d = solvedFormulas[0].solve({ad, v}).d;
     var sigma = 1; // sealevel
     var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
-    // relation 7: AD, VminS, W/be, THPmin, Dmin
+    // Relation 7: AD, VminS, W/be, THPmin, Dmin
     var vmins = solvedFormulas[0].solve({ad, wbe}).vmins;
     var thpmin = solvedFormulas[0].solve({ad, wbe}).thpmin;
     var dmin = solvedFormulas[0].solve({ad, wbe}).dmin;
-    // relation 8: RSmin, THPmin, W
+    // Relation 8: RSmin, THPmin, W
     var thp = thpmin * 2; // a random increase
     var rs = solvedFormulas[0].solve({thp, w}).rs;
     var rsmin = solvedFormulas[0].solve({thpmin, w}).rsmin;
@@ -75,7 +75,11 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         vmins, thpmin, dmin,
         thp, rs, rsmin
     });
-
+    // Relation 9: AD, be, (L/D)max
+    var ldmax = solvedFormulas[0].solve({ear, cd0}).ldmax;
+    console.table({
+        ldmax
+    });
 
     var thetag = random(1, 20);
     var rho = 0.0023769;
@@ -250,17 +254,28 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
         describe("8: RSmin, THPmin, W", function () {
-            it("solves for RSmin", function () {
+            it("solves for RS", function () {
                 testAircraftFormula(0, "rs", {thp, w}, rs);
                 testAircraftFormula(0, "thp", {rs, w}, thp);
                 testAircraftFormula(0, "w", {rs, thp}, w);
+            });
+            it("solves for RSmin", function () {
                 testAircraftFormula(0, "rsmin", {thpmin, w}, rsmin);
                 testAircraftFormula(0, "thpmin", {rsmin, w}, thpmin);
                 testAircraftFormula(0, "w", {rsmin, thpmin}, w);
+            });
+            it("solves for rc", function () {
                 testAircraftFormula(0, "rc", {rs, thpa, w}, rc);
                 testAircraftFormula(0, "rs", {rc, thpa, w}, rs);
                 testAircraftFormula(0, "thpa", {rc, rs, w}, thpa);
                 testAircraftFormula(0, "w", {rc, rs, thpa}, w);
+            });
+        });
+        describe("9: AD, be, (L/D)max", function () {
+            it("solves for ldmax", function () {
+                testAircraftFormula(0, "ldmax", {ear, cd0}, ldmax);
+                testAircraftFormula(0, "ear", {ldmax, cd0}, ear);
+                testAircraftFormula(0, "cd0", {ldmax, ear}, cd0);
             });
         });
     });
@@ -757,7 +772,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         xit("has the same answer as for formula 11", function () {
             cl = solvedFormulas[7].cl(ws, sigma, v);
-            console.table({ws, sigma, v, cl, w, s, cd, rs});
             testAircraftFormula(11, "rs", {sigma, w, s, cd, cl}, rs);
         });
         it("solves for density ratio", function () {
@@ -837,20 +851,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 28: Maximum lift-to-drag ratio", function () {
-        var ldmax;
         var clmaxld;
-        beforeEach(function () {
-            ldmax = solvedFormulas[28].ldmax(ear, cd0);
-        });
         it("ldmax is max lift-to-drag ratio divided by drag", function () {
-            clmaxld = solvedFormulas[27].clmaxld(ear, cd0);
+            clmaxld = solvedFormulas[27].solve({ear, cd0}).clmaxld;
             expect(ldmax).toBeCloseTo(clmaxld / (2 * cd0));
-        });
-        it("solves for effective aspect ratio", function () {
-            testAircraftFormula(28, "ear", {ldmax, cd0}, ear);
-        });
-        it("solves for parasite drag", function () {
-            testAircraftFormula(28, "cd0", {ldmax, ear}, cd0);
         });
     });
     describe("Formula 29: Max lift-to-drag ratio", function () {
@@ -860,7 +864,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             ldmax = solvedFormulas[29].ldmax(be, ad);
         });
         it("should have the same value as for formulas 28", function () {
-            ldmax28 = solvedFormulas[28].ldmax(ear, cd0);
+            ldmax28 = solvedFormulas[0].solve({ear, cd0}).ldmax;
             expect(ldmax).toBeCloseTo(ldmax28);
         });
         it("should solve for effective span", function () {
@@ -1309,7 +1313,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             vhat = solvedFormulas[52].vhat(eta);
         });
         it("shows that eta and vhat are solved as close to zero", function () {
-            console.log(eta, vhat);
             testAircraftFormula(53, "zero", {eta, vhat}, 0);
         });
     });

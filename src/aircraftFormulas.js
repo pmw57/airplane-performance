@@ -232,6 +232,20 @@ function aircraftFormulas(constants, solvePoly) {
             function wFromRcRsThpa(rc, rs, thpa) {
                 var w = 33000 * thpa / (rc + rs);
                 return w;
+            },
+            // Relation 9: AD, be, (L/D)max
+            // Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
+            function ldmaxFromEarCd0(ear, cd0) {
+                var ldmax = Math.sqrt(Math.PI) / 2 * Math.sqrt(ear / cd0);
+                return ldmax;
+            },
+            function earFromLdmaxCd0(ldmax, cd0) {
+                var ear = Math.pow(2 / Math.sqrt(Math.PI) * ldmax, 2) * cd0;
+                return ear;
+            },
+            function cd0FromLdmaxEar(ldmax, ear) {
+                var cd0 = Math.pow(2 * ldmax, -2) * Math.PI * ear;
+                return cd0;
             }
         ],
         [ // formula 1
@@ -963,18 +977,7 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 28
-            function ldmaxFromEarCd0(ear, cd0) {
-                var ldmax = Math.sqrt(Math.PI) / 2 * Math.sqrt(ear / cd0);
-                return ldmax;
-            },
-            function earFromLdmaxCd0(ldmax, cd0) {
-                var ear = Math.pow(2 / Math.sqrt(Math.PI) * ldmax, 2) * cd0;
-                return ear;
-            },
-            function cd0FromLdmaxEar(ldmax, ear) {
-                var cd0 = Math.pow(2 * ldmax, -2) * Math.PI * ear;
-                return cd0;
-            }
+            // ldmax/ear/cd0 formulas are found in Relation 9
         ],
         [ // Formula 29
             function ldmaxFromBeAd(be, ad) {
