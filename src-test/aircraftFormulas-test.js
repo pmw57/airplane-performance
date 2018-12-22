@@ -105,7 +105,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var eta = smaller(1);
     var rpm = 2700;
     var n = 60;
-    var bhp = 150;
     var cl = random(1, 2);
     function testAircraftFormula(index, prop, data, expected) {
         if (expected === undefined) {
