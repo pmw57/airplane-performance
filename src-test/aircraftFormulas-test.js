@@ -294,8 +294,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "ce", {clmins, ad}, ce);
             });
             it("crosschecks using wing loading", function () {
-                var crosscheck = ws / (vmins * vmins * airDensity);
-                expect(clmins - crosscheck).toBeCloseTo(0);
+                testAircraftFormula(0, "clmins", {ws, vmins}, clmins);
+                testAircraftFormula(0, "ws", {clmins, vmins}, ws);
+                testAircraftFormula(0, "vmins", {clmins, ws}, vmins);
             });
         });
         describe("11: W, BHP, RCmax", function () {

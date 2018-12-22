@@ -9,6 +9,8 @@ function aircraftFormulas(constants, solvePoly) {
     var hpMPH = 33000 * 60 / 5280;
     var formulas = [
             [
+            // todo: Should formulas only with airDensity not be allowed,
+            // as altitude density ratio needs to be involved too?
             // Relation 1: CL, V, W/S
             // Lift Coefficient, Airspeed, Wing Loading
             function wsFromClV(cl, v) {
@@ -22,6 +24,19 @@ function aircraftFormulas(constants, solvePoly) {
             function vFromWsCl(ws, cl) {
                 var v = Math.sqrt(ws / (cl * airDensity));
                 return v;
+            },
+            // Crosschecks for relation 11
+            function clminsFromWsVmins(ws, vmins) {
+                var clmins = ws / (vmins * vmins * airDensity);
+                return clmins;
+            },
+            function wsFromClminsVmins(clmins, vmins) {
+                var ws = clmins * vmins * vmins * airDensity;
+                return ws;
+            },
+            function vminsFromClminsWs(clmins, ws) {
+                var vmins = Math.sqrt(ws / (clmins * airDensity));
+                return vmins;
             },
             // Relation 2: S, W/S, W
             // Wing Area, Wing Loading, Gross Weight
