@@ -290,6 +290,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "ad", {clmins, ce}, ad);
                 testAircraftFormula(0, "ce", {clmins, ad}, ce);
             });
+            it("crosschecks using wing loading", function () {
+                var crosscheck = ws / (vmins * vmins * airDensity);
+                expect(clmins - crosscheck).toBeCloseTo(0);
+            });
         });
     });
     describe("Formula 1: A force balanced along the flight path", function () {
