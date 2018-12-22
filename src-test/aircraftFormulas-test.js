@@ -22,7 +22,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         w: 1500,
         b: 20 + 10 / 12,
         sfuse: 3 * 3,
-        ad: 3
+        ad: 3,
+        bhp: 150
     };
 
     // TODO: Use formulas for **ALL** formula relationships
@@ -82,6 +83,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var ldmax = solvedFormulas[0].solve({ear, cd0}).ldmax;
     // Relation 10: AD, CLminS, ce
     var clmins = solvedFormulas[0].solve({ad, ce}).clmins;
+    // Relation 11: W, BHP, RCmax
+    var bhp = t18.bhp || random(100, 300);
+    var rcmax = solvedFormulas[0].solve({bhp, w}).rcmax;
     console.table({
         ldmax,
         clmins
@@ -293,6 +297,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             it("crosschecks using wing loading", function () {
                 var crosscheck = ws / (vmins * vmins * airDensity);
                 expect(clmins - crosscheck).toBeCloseTo(0);
+            });
+        });
+        describe("11: W, BHP, RCmax", function () {
+            it("solves for rcmax", function () {
+                testAircraftFormula(0, "bhp", {rcmax, w}, bhp);
+                testAircraftFormula(0, "rcmax", {bhp, w}, rcmax);
+                testAircraftFormula(0, "w", {bhp, rcmax}, w);
             });
         });
     });

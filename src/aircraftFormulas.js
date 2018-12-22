@@ -260,6 +260,20 @@ function aircraftFormulas(constants, solvePoly) {
             function ceFromClminsAd(clmins, ad) {
                 var ce = Math.sqrt(3 * Math.PI) / clmins * Math.sqrt(ad);
                 return ce;
+            },
+            // Relation 11: W, BHP, RCmax
+            // Weight, Engine Brake Horsepower, Ideal Maximum Rate of Climb
+            function bhpFromRcmaxW(rcmax, w) {
+                var bhp = rcmax * w / 33000;
+                return bhp;
+            },
+            function rcmaxFromBhpW(bhp, w) {
+                var rcmax = bhp * 33000 / w;
+                return rcmax;
+            },
+            function wFromBhpRcmax(bhp, rcmax) {
+                var w = bhp * 33000 / rcmax;
+                return w;
             }
         ],
         [ // formula 1
