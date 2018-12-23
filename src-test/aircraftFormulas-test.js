@@ -23,7 +23,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         b: 20 + 10 / 12,
         sfuse: 3 * 3,
         ad: 3,
-        bhp: 150
+        bhp: 150,
+        vprop: 0.741,
+        dp: 6
     };
 
     // TODO: Use formulas for **ALL** formula relationships
@@ -86,9 +88,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 11: W, BHP, RCmax
     var bhp = t18.bhp || random(100, 300);
     var rcmax = solvedFormulas[0].solve({bhp, w}).rcmax;
+    // Relation 12: Ts, BHP, Vprop, Dp
+    var vprop = t18.vprop || random(0.70, 0.75);
+    var dp = t18.dp || random(4, 10);
+    var ts = solvedFormulas[0].solve({dp, bhp}).ts;
     console.table({
         ldmax,
-        clmins
+        clmins,
+        vprop,
+        dp,
+        ts
     });
 
     var thetag = random(1, 20);
@@ -100,7 +109,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var p1 = smaller(pd);
     var p2 = smaller(pd);
     var vp = larger(v);
-    var dp = 6;
     var ap = Math.TAU * (dp / 2);
     var eta = smaller(1);
     var rpm = 2700;
@@ -304,6 +312,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "bhp", {rcmax, w}, bhp);
                 testAircraftFormula(0, "rcmax", {bhp, w}, rcmax);
                 testAircraftFormula(0, "w", {bhp, rcmax}, w);
+            });
+        });
+        describe("12: Ts, BHP, Vprop, Dp", function () {
+            it("solves for ts", function () {
+                testAircraftFormula(0, "ts", {dp, bhp}, ts);
+                testAircraftFormula(0, "dp", {ts, bhp}, dp);
+                testAircraftFormula(0, "bhp", {ts, dp}, bhp);
             });
         });
     });

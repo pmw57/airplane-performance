@@ -4,9 +4,20 @@
 function aircraftFormulas(constants, solvePoly) {
     "use strict";
 
+    Math.TAU = Math.PI * 2;
+    var TAU = Math.TAU;
+    function areaFromRadius(radius) {
+        return 0.5 * TAU * radius * radius;
+    }
+    function radiusFromArea(area) {
+        return Math.sqrt(area * 2 / TAU);
+    }
     var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
-    var hpMPH = 33000 * 60 / 5280;
+    var bhpPerMin = 33000;
+    var bhpPerHour = bhpPerMin * 60;
+    var bhpPerSec = bhpPerMin / 60; // 550
+    var hpMPH = bhpPerHour / 5280;
     var formulas = [
             [
             // todo: Should formulas only with airDensity not be allowed,
@@ -289,6 +300,30 @@ function aircraftFormulas(constants, solvePoly) {
             function wFromBhpRcmax(bhp, rcmax) {
                 var w = bhp * 33000 / rcmax;
                 return w;
+            },
+            // Relation 12: Ts, BHP, Vprop, Dp
+            // Static Thrust, Engine Brake Horsepower, Reference Propeller
+            // Airspeed for 74% Efficiency, Propeller Diameter
+            function tsFromDpBhp(dp, bhp) {
+                var sigma = 1; // assume sea-level
+                var ts = Math.pow(
+                    2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
+                    Math.pow(bhp * bhpPerSec, 2), 1 / 3);
+                return ts;
+            },
+            function dpFromTsBhp(ts, bhp) {
+                var sigma = 1; // assume sea-level
+                var dp = radiusFromArea(Math.pow(ts, 3) /
+                    (2 * sigma * sea_level_density *
+                    Math.pow(bhp * bhpPerSec, 2))) * 2;
+                return dp;
+            },
+            function bhpFromTsDp(ts, dp) {
+                var sigma = 1; // assume sea-level
+                var bhp = Math.sqrt(Math.pow(ts, 3) /
+                    (2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
+                    Math.pow(bhpPerSec, 2)));
+                return bhp;
             }
         ],
         [ // formula 1
@@ -1758,26 +1793,27 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Formula 61: Approximation of static thrust as rpm
             function tsFromSigmaDpBhp(sigma, dp, bhp) {
-                var ts = 10.41 * Math.pow(sigma, 1 / 3) *
-                    Math.pow(dp * bhp, 2 / 3);
+                var ts = Math.pow(
+                    2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
+                    Math.pow(bhp * bhpPerSec, 2), 1 / 3);
                 return ts;
             },
             function sigmaFromTsDpBhp(ts, dp, bhp) {
-                var sigma = Math.pow(
-                    ts / (10.41 * Math.pow(dp * bhp, 2 / 3)), 3
-                );
+                var sigma = Math.pow(ts, 3) /
+                    (2 * sea_level_density * areaFromRadius(dp / 2) *
+                    Math.pow(bhp * bhpPerSec, 2));
                 return sigma;
             },
             function dpFromTsSigmaBhp(ts, sigma, bhp) {
-                var dp = Math.pow(
-                    ts / (10.41 * Math.pow(sigma, 1 / 3)), 3 / 2
-                ) / bhp;
+                var dp = radiusFromArea(Math.pow(ts, 3) /
+                    (2 * sigma * sea_level_density *
+                    Math.pow(bhp * bhpPerSec, 2))) * 2;
                 return dp;
             },
             function bhpFromTsSigmaDp(ts, sigma, dp) {
-                var bhp = Math.pow(
-                    ts / (10.41 * Math.pow(sigma, 1 / 3)), 3 / 2
-                ) / dp;
+                var bhp = Math.sqrt(Math.pow(ts, 3) /
+                    (2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
+                    Math.pow(bhpPerSec, 2)));
                 return bhp;
             }
         ],
