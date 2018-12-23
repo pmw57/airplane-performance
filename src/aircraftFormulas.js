@@ -705,7 +705,7 @@ function aircraftFormulas(constants, solvePoly) {
                 var ce = c / Math.sqrt(e);
                 return ce;
             },
-            function eFromCeE(ce, e) {
+            function cFromCeE(ce, e) {
                 var c = ce * Math.sqrt(e);
                 return c;
             },
@@ -862,9 +862,9 @@ function aircraftFormulas(constants, solvePoly) {
         [ // Formula 23
             function sigmasdvFromSigmaAdVWBe(sigma, ad, v, w, be) {
                 var densityRatio = sigma * airDensity;
-                var sigmas_dv = 5280 / 60 * 3 * densityRatio * ad * v * v / w -
+                var sigmasdv = 5280 / 60 * 3 * densityRatio * ad * v * v / w -
                     w / (Math.PI * densityRatio * v * v * be * be);
-                return sigmas_dv;
+                return sigmasdv;
             },
             function sigmaFromSigmasdvAdVWBe(sigmas_dv, ad, v, w, be) {
                 var sigma = sigmas_dv /
@@ -943,7 +943,7 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 26
-            function dgdclFromClCd0Ear(cl, cd0, ear) {
+            function dg_dclFromClCd0Ear(cl, cd0, ear) {
                 var dg_dcl = 360 / Math.TAU *
                     (cd0 / (cl * cl) + 1 / (Math.PI * ear));
                 return dg_dcl;
@@ -1086,7 +1086,7 @@ function aircraftFormulas(constants, solvePoly) {
                     sigma * thpa / Math.pow(vmax, 3);
                 return ad;
             },
-            function vmaxThpaAdSigma(thpa, ad, sigma) {
+            function vmaxFromThpaAdSigma(thpa, ad, sigma) {
                 var vmax = Math.pow(
                     33000 / 88 / airDensity * sigma * thpa / ad, 1 / 3
                 );
@@ -1356,7 +1356,7 @@ function aircraftFormulas(constants, solvePoly) {
                 var p1i = p1 + 0.5 * rho * vp * vp;
                 return p1i;
             },
-            function p1iFromRhoVp(p1i, rho, vp) {
+            function p1FromRhoVp(p1i, rho, vp) {
                 var p1 = p1i - 0.5 * rho * vp * vp;
                 return p1;
             },
@@ -1484,7 +1484,7 @@ function aircraftFormulas(constants, solvePoly) {
                 var pthrust = t * v;
                 return pthrust;
             },
-            function tFromPthrustFromV(pthrust, v) {
+            function tFromPthrustV(pthrust, v) {
                 var t = pthrust / v;
                 return t;
             },
@@ -1552,7 +1552,7 @@ function aircraftFormulas(constants, solvePoly) {
                     (1 - eta) / Math.pow(eta, 3);
                 return bhp;
             },
-            function SigmaFromBhpDpVEta(bhp, dp, v, eta) {
+            function sigmaFromBhpDpVEta(bhp, dp, v, eta) {
                 var sigma = 2 / Math.PI * 33000 / sea_level_density *
                     Math.pow(60, 2) / Math.pow(5280 / 60, 3) *
                     bhp / (dp * dp * Math.pow(v, 3)) *
@@ -2032,43 +2032,43 @@ function aircraftFormulas(constants, solvePoly) {
                 }
             ],
             [ // Appendix F.7
-                function clFromLiftslopeAoa(liftSlope, angleOfAttack) {
-                    var cl = liftSlope * angleOfAttack;
+                function clFromLiftslopeAlpha(liftSlope, alpha) {
+                    var cl = liftSlope * alpha;
                     return cl;
                 },
-                function liftslopeFromClAoa(cl, angleOfAttack) {
-                    var liftSlope = cl / angleOfAttack;
+                function liftSlopeFromClAlpha(cl, alpha) {
+                    var liftSlope = cl / alpha;
                     return liftSlope;
                 },
-                function aoaFromClLiftslope(cl, liftSlope) {
-                    var angleOfAttack = cl / liftSlope;
-                    return angleOfAttack;
+                function alphaFromClLiftslope(cl, liftSlope) {
+                    var alpha = cl / liftSlope;
+                    return alpha;
                 }
             ],
             [ // Appendix F.8
                 // wing efficiency factor
-                function inviewFromPcArCdwingKwing(planformCorrection, ar, cdwing, kwing) {
-                    var invew = (1 + planformCorrection) +
+                function invewFromKArCdwingKwing(k, ar, cdwing, kwing) {
+                    var invew = (1 + k) +
                         Math.PI * ar * cdwing * kwing;
                     return invew;
                 },
-                function pcFromInviewArCdwingKwing(invew, ar, cdwing, kwing) {
-                    var planformCorrection = invew -
+                function kFromInviewArCdwingKwing(invew, ar, cdwing, kwing) {
+                    var k = invew -
                         Math.PI * ar * cdwing * kwing - 1;
-                    return planformCorrection;
+                    return k;
                 },
-                function arFromInviewPcCdwingKwing(invew, planformCorrection, cdwing, kwing) {
-                    var ar = (invew - (1 + planformCorrection)) /
+                function arFromInviewKCdwingKwing(invew, k, cdwing, kwing) {
+                    var ar = (invew - (1 + k)) /
                         (Math.PI * cdwing * kwing);
                     return ar;
                 },
-                function cdwingFromInviewPcArKwing(invew, planformCorrection, ar, kwing) {
-                    var cdwing = (invew - (1 + planformCorrection)) /
+                function cdwingFromInviewKArKwing(invew, k, ar, kwing) {
+                    var cdwing = (invew - (1 + k)) /
                         (Math.PI * ar * kwing);
                     return cdwing;
                 },
-                function kwingFromInviewPcACdwing(invew, planformCorrection, ar, cdwing) {
-                    var kwing = (invew - (1 + planformCorrection)) /
+                function kwingFromInviewKACdwing(invew, k, ar, cdwing) {
+                    var kwing = (invew - (1 + k)) /
                         (Math.PI * ar * cdwing);
                     return kwing;
                 },
@@ -2152,7 +2152,7 @@ function aircraftFormulas(constants, solvePoly) {
                 }
             ],
             [ // Appendix F charts
-                function ewingFromArWingshape(ar, wing_shape) {
+                function ewFromArWingshape(ar, wing_shape) {
                     var ewing = {
                         rectangular: (ar < 1 || ar > 20) ? undefined
                             : -0.0001299978216 * Math.pow(ar, 4) +
@@ -2172,14 +2172,15 @@ function aircraftFormulas(constants, solvePoly) {
                         elliptical: (ar < 0) ? undefined
                             : 1
                     };
-                    if (wing_shape) {
-                        ewing = ewing[wing_shape];
+                    if (!wing_shape) {
+                        return;
                     }
-                    return ewing;
+                    var ew = ewing[wing_shape];
+                    return ew;
                 },
-                function fcFromArFuselageSlope(ar, fuselage_shape) {
+                function fuselageEffectFromArFuselageSlope(ar, fuselage_shape) {
                     // values from http://www.xuru.org/rt/PR.asp
-                    var fuselageCorrection = {
+                    var fuselageEffect = {
                         rectangular: 0.0009810583609 * Math.pow(ar, 3) -
                             0.0152240777 * Math.pow(ar, 2) +
                             0.1597429943 * ar + 1.047025734,
@@ -2187,25 +2188,25 @@ function aircraftFormulas(constants, solvePoly) {
                             0.01325063838 * ar + 0.5558606027
                     };
                     if (fuselage_shape) {
-                        fuselageCorrection = fuselageCorrection[fuselage_shape];
+                        fuselageEffect = fuselageEffect[fuselage_shape];
                     }
-                    return fuselageCorrection;
+                    return fuselageEffect;
                 },
-                function deltafuseFromFcSfuseS(fuselageCorrection, sfuse, s) {
-                    var deltafuse = fuselageCorrection * (sfuse / s);
+                function deltafuseFromFcSfuseS(fuselageEffect, sfuse, s) {
+                    var deltafuse = fuselageEffect * (sfuse / s);
                     return deltafuse;
                 },
-                function fcFromDeltafuseSfuseS(deltafuse, sfuse, s) {
-                    var fuselageCorrection = deltafuse / (sfuse / s);
-                    return fuselageCorrection;
+                function fuselageEffectFromDeltafuseSfuseS(deltafuse, sfuse, s) {
+                    var fuselageEffect = deltafuse / (sfuse / s);
+                    return fuselageEffect;
                 },
-                function sfuseFromDeltafuseFcS(deltafuse, fuselageCorrection, s) {
-                    var sfuse = deltafuse / fuselageCorrection * s;
+                function sfuseFromDeltafuseFcS(deltafuse, fuselageEffect, s) {
+                    var sfuse = deltafuse / fuselageEffect * s;
                     return sfuse;
                 },
                 function sFromDeltafuseFcSfuse(
-                    deltafuse, fuselageCorrection, sfuse) {
-                    var s = fuselageCorrection / deltafuse * sfuse;
+                    deltafuse, fuselageEffect, sfuse) {
+                    var s = fuselageEffect / deltafuse * sfuse;
                     return s;
                 },
                 function inveFromInvewDeltafuse(invew, deltafuse) {
@@ -2224,7 +2225,7 @@ function aircraftFormulas(constants, solvePoly) {
                     var e = 1 / inve;
                     return e;
                 },
-                function eFromInve(e) {
+                function inveFromE(e) {
                     var inve = 1 / e;
                     return inve;
                 },
@@ -2270,7 +2271,7 @@ function aircraftFormulas(constants, solvePoly) {
                     var af = (ad - cdw * sw) / cdf;
                     return af;
                 },
-                function CdwFromAdCdfAfSw(ad, cdf, af, sw) {
+                function cdwFromAdCdfAfSw(ad, cdf, af, sw) {
                     var cdw = (ad - cdf * af) / sw;
                     return cdw;
                 },
