@@ -15,12 +15,11 @@ function Solver(calcs) {
     solver.getAnswer = function (calc) {
         calc = calc.toString();
         var returnIndex = calc.lastIndexOf("return");
-        var answerRx = /return (\w+)/;
-        var answer = "";
-        if (returnIndex > -1) {
-            answer = calc.substring(returnIndex).match(answerRx)[1];
+        var answerRx = /function (\w+)From/;
+        var match = calc.match(answerRx);
+        if (match) {
+            return match[1];
         }
-        return answer;
     };
     solver.getSolvable = function (calcs, params) {
         var solve = this;
