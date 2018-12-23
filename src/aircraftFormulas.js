@@ -46,7 +46,8 @@ function aircraftFormulas(constants, solvePoly) {
             },
             // Relation 3: S, be, eAR, ce
             // Wing Area, Effective Span, Effetive Aspect Ratio, Effective Chord
-            // ar function defined in formula 14
+            // ar function defined in Formula 14
+            // ear function defined in Formula 15
             function cFromSB(b, s) {
                 var c = s / b;
                 return c;
@@ -59,6 +60,10 @@ function aircraftFormulas(constants, solvePoly) {
                 var s = b * c;
                 return s;
             },
+            // Relation 4: be, W/be, W
+            // Effective Span, Effective Span Loading, Gross Weight
+            // wbe function defined in Formula 21
+
             // Relation 5: AD, Vmax, THPa
             // Drag area, maximum level speed, available thrust horsepower
             function thpaFromAdVmax(ad, vmax) {
@@ -650,6 +655,18 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 15
+            function earFromEAr(e, ar) {
+                var ear = e * ar;
+                return ear;
+            },
+            function eFromEarAr(ear, ar) {
+                var e = ear / ar;
+                return e;
+            },
+            function arFromEarE(ear, e) {
+                var ar = ear / e;
+                return ar;
+            },
             function cdFromCd0ClEar(cd0, cl, ear) {
                 var cd = cd0 + cl * cl / (Math.PI * ear);
                 return cd;
@@ -666,18 +683,6 @@ function aircraftFormulas(constants, solvePoly) {
                 var ear = cl * cl / (Math.PI * (cd - cd0));
                 return ear;
             },
-            function earFromEAr(e, ar) {
-                var ear = e * ar;
-                return ear;
-            },
-            function eFromEarAr(ear, ar) {
-                var e = ear / ar;
-                return e;
-            },
-            function arFromEarE(ear, e) {
-                var ar = ear / e;
-                return ar;
-            }
         ],
         [], // todo Formula 16 - working towards Formula 18
         [], // todo Formula 17 - working towards Formula 18
@@ -722,6 +727,18 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 20
+            function beFromBE(b, e) {
+                var be = b * Math.sqrt(e);
+                return be;
+            },
+            function bFromBeE(be, e) {
+                var b = be / Math.sqrt(e);
+                return b;
+            },
+            function eFromBeB(be, b) {
+                var e = Math.pow(be / b, 2);
+                return e;
+            },
             function rsminFromWSigmaAdBe(w, sigma, ad, be) {
                 var rsmin = 5280 / 60 * Math.sqrt(1 / airDensity) *
                     4 / Math.pow(3 * Math.PI, 3 / 4) * Math.sqrt(w / sigma) *
@@ -752,18 +769,6 @@ function aircraftFormulas(constants, solvePoly) {
                     (Math.sqrt(airDensity) * rsmin) * Math.sqrt(w / sigma) *
                     Math.pow(ad, 1 / 4), 2 / 3);
                 return be;
-            },
-            function beFromBE(b, e) {
-                var be = b * Math.sqrt(e);
-                return be;
-            },
-            function bFromBeE(be, e) {
-                var b = be / Math.sqrt(e);
-                return b;
-            },
-            function eFromBeB(be, b) {
-                var e = Math.pow(be / b, 2);
-                return e;
             }
         ],
         [ // Formula 21

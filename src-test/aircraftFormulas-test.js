@@ -170,15 +170,15 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
             it("solves aspect ratio from span and chord", function () {
                 expect(ar).toBeCloseTo(b / c);
-                testAircraftFormula(0, "ar", {b, c}, ar);
-                testAircraftFormula(0, "b", {ar, c}, b);
-                testAircraftFormula(0, "c", {ar, b}, c);
+                testAircraftFormula(14, "ar", {b, c}, ar);
+                testAircraftFormula(14, "b", {ar, c}, b);
+                testAircraftFormula(14, "c", {ar, b}, c);
             });
             it("solves aspect ratio from wing span and area", function () {
                 expect(ar).toBeCloseTo(b *  b / s);
-                testAircraftFormula(0, "ar", {b, s}, ar);
-                testAircraftFormula(0, "b", {ar, s}, b);
-                testAircraftFormula(0, "s", {ar, b}, s);
+                testAircraftFormula(14, "ar", {b, s}, ar);
+                testAircraftFormula(14, "b", {ar, s}, b);
+                testAircraftFormula(14, "s", {ar, b}, s);
             });
             it("solves for efficency", function () {
                 expect(solvedFormulas.f[8].solve(
@@ -189,9 +189,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                     {e, ar, sfuse}).s).toBeCloseTo(s);
             });
             it("solves effective aspect ratio from e and ear", function () {
-                testAircraftFormula(0, "ear", {e, ar}, ear);
-                testAircraftFormula(0, "e", {ear, ar}, e);
-                testAircraftFormula(0, "ar", {e, ear}, ar);
+                testAircraftFormula(15, "ear", {e, ar}, ear);
+                testAircraftFormula(15, "e", {ear, ar}, e);
+                testAircraftFormula(15, "ar", {e, ear}, ar);
             });
             it("solves effective span from efficiency and span", function () {
                 testAircraftFormula(20, "be", {e, b}, be);
@@ -199,16 +199,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(20, "b", {e, be}, b);
             });
             it("solves effective chord from efficiency and chord", function () {
-                testAircraftFormula(0, "ce", {e, c}, ce);
-                testAircraftFormula(0, "e", {c, ce}, e);
-                testAircraftFormula(0, "c", {e, ce}, c);
+                testAircraftFormula(19, "ce", {e, c}, ce);
+                testAircraftFormula(19, "e", {c, ce}, e);
+                testAircraftFormula(19, "c", {e, ce}, c);
             });
         });
         describe("4: be, W/be, W", function () {
             it("solves for effective span loading", function () {
-                testAircraftFormula(0, "wbe", {w, be}, wbe);
-                testAircraftFormula(0, "be", {w, wbe}, be);
-                testAircraftFormula(0, "w", {be, wbe}, w);
+                testAircraftFormula(21, "wbe", {w, be}, wbe);
+                testAircraftFormula(21, "be", {w, wbe}, be);
+                testAircraftFormula(21, "w", {be, wbe}, w);
             });
         });
         describe("5: AD, Vmax, THPa", function () {
