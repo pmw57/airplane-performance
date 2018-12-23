@@ -767,34 +767,6 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 21
-            function vminsFromWBeSigmaAd(w, be, sigma, ad) {
-                var vmins = Math.sqrt(1 / airDensity) /
-                    Math.pow(3 * Math.PI, 1 / 4) *
-                    Math.sqrt(w / be) / Math.sqrt(sigma) /
-                    Math.pow(ad, 1 / 4);
-                return vmins;
-            },
-            function wFromVminsBeSigmaAd(vmins, be, sigma, ad) {
-                var w = Math.pow(Math.pow(3 * Math.PI, 1 / 4) *
-                    Math.sqrt(airDensity) * vmins * Math.sqrt(be) *
-                    Math.sqrt(sigma) * Math.pow(ad, 1 / 4), 2);
-                return w;
-            },
-            function beFromVminsWSigmaAd(vmins, w, sigma, ad) {
-                var be = w / (airDensity * Math.sqrt(3 * Math.PI) *
-                    Math.pow(vmins, 2) * sigma * Math.sqrt(ad));
-                return be;
-            },
-            function sigmaFromvMinsWBeAd(vmins, w, be, ad) {
-                var sigma = w / (airDensity * Math.sqrt(3 * Math.PI) *
-                    Math.pow(vmins, 2) * be * Math.sqrt(ad));
-                return sigma;
-            },
-            function adFromVminsWBeSigma(vmins, w, be, sigma) {
-                var ad = Math.pow(1 / (airDensity * sigma *
-                    Math.sqrt(3 * Math.PI) * Math.pow(vmins, 2)) * w / be, 2);
-                return ad;
-            },
             function wbeFromWBe(w, be) {
                 var wbe = w / be;
                 return wbe;
@@ -806,6 +778,29 @@ function aircraftFormulas(constants, solvePoly) {
             function beFromWbeW(wbe, w) {
                 var be = w / wbe;
                 return be;
+            },
+            function vminsFromWbeSigmaAd(wbe, sigma, ad) {
+                var vmins = Math.sqrt(1 / airDensity) /
+                    Math.pow(3 * Math.PI, 1 / 4) *
+                    Math.sqrt(wbe) / Math.sqrt(sigma) /
+                    Math.pow(ad, 1 / 4);
+                return vmins;
+            },
+            function wbeFromVminsSigmaAd(vmins, sigma, ad) {
+                var wbe = Math.pow(Math.pow(3 * Math.PI, 1 / 4) *
+                    Math.sqrt(airDensity) * vmins *
+                    Math.sqrt(sigma) * Math.pow(ad, 1 / 4), 2);
+                return wbe;
+            },
+            function sigmaFromvMinsWBeAd(vmins, wbe, ad) {
+                var sigma = wbe / (airDensity * Math.sqrt(3 * Math.PI) *
+                    Math.pow(vmins, 2) * Math.sqrt(ad));
+                return sigma;
+            },
+            function adFromVminsWBeSigma(vmins, wbe, sigma) {
+                var ad = Math.pow(1 / (airDensity * sigma *
+                    Math.sqrt(3 * Math.PI) * Math.pow(vmins, 2)) * wbe, 2);
+                return ad;
             }
         ],
         [ // Formula 22

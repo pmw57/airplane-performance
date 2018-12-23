@@ -193,9 +193,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "ar", {e, ear}, ar);
             });
             it("solves effective span from efficiency and span", function () {
-                testAircraftFormula(0, "be", {e, b}, be);
-                testAircraftFormula(0, "e", {be, b}, e);
-                testAircraftFormula(0, "b", {e, be}, b);
+                testAircraftFormula(20, "be", {e, b}, be);
+                testAircraftFormula(20, "e", {be, b}, e);
+                testAircraftFormula(20, "b", {e, be}, b);
             });
             it("solves effective chord from efficiency and chord", function () {
                 testAircraftFormula(0, "ce", {e, c}, ce);
@@ -755,23 +755,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             testAircraftFormula(20, "e", {b, be: b * Math.sqrt(e)}, e);
         });
     });
-    describe("Formula 21: Velocity for minimum sink", function () {
-        it("is the same as formula 7 when solved for velocity", function () {
-            expect(vmins).toBeCloseTo(solvedFormulas[7].v(ws, sigma, clmins));
-        });
-        it("solves for weight", function () {
-            testAircraftFormula(21, "w", {vmins, be, sigma, ad}, w);
-        });
-        it("solves for effective span", function () {
-            testAircraftFormula(21, "be", {vmins, w, sigma, ad}, be);
-        });
-        it("solves for density ratio", function () {
-            testAircraftFormula(21, "sigma", {vmins, w, be, ad}, sigma);
-        });
-        it("solves for drag area", function () {
-            testAircraftFormula(21, "ad", {vmins, w, be, sigma}, ad);
-        });
-    });
     describe("Formula 21: Effective span loading", function () {
         it("solves for effective span loading", function () {
             testAircraftFormula(21, "wbe", {w, be}, wbe);
@@ -781,6 +764,23 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         it("solves for effective span", function () {
             testAircraftFormula(21, "be", {w, wbe}, be);
+        });
+    });
+    describe("Formula 21: Velocity for minimum sink", function () {
+        it("is the same as formula 7 when solved for velocity", function () {
+            expect(vmins).toBeCloseTo(solvedFormulas[7].v(ws, sigma, clmins));
+        });
+        it("solves for velocity for minimum sink", function () {
+            testAircraftFormula(21, "vmins", {wbe, sigma, ad}, vmins);
+        });
+        it("solves for span loading", function () {
+            testAircraftFormula(21, "wbe", {vmins, sigma, ad}, wbe);
+        });
+        it("solves for density ratio", function () {
+            testAircraftFormula(21, "sigma", {vmins, wbe, ad}, sigma);
+        });
+        it("solves for drag area", function () {
+            testAircraftFormula(21, "ad", {vmins, wbe, sigma}, ad);
         });
     });
     // todo, understand why the wrong values are occurring
@@ -816,7 +816,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         var vmins;
         var vhat;
         beforeEach(function () {
-            vmins = solvedFormulas[21].vmins(w, be, sigma, ad);
+            vmins = solvedFormulas[21].vmins(wbe, sigma, ad);
             vhat = v / vmins;
             rshat = solvedFormulas[25].rshat(vhat);
         });
