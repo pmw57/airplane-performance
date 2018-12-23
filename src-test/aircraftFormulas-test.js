@@ -316,9 +316,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         describe("12: Ts, BHP, Vprop, Dp", function () {
             it("solves for ts", function () {
-                testAircraftFormula(0, "ts", {dp, bhp}, ts);
-                testAircraftFormula(0, "dp", {ts, bhp}, dp);
-                testAircraftFormula(0, "bhp", {ts, dp}, bhp);
+                testAircraftFormula(61, "ts", {sigma, dp, bhp}, ts);
+                testAircraftFormula(61, "dp", {ts, sigma, bhp}, dp);
+                testAircraftFormula(61, "bhp", {ts, sigma, dp}, bhp);
             });
         });
     });
