@@ -91,7 +91,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 12: Ts, BHP, Vprop, Dp
     var vprop = t18.vprop || random(0.70, 0.75);
     var dp = t18.dp || random(4, 10);
-    var ts = solvedFormulas[0].solve({dp, bhp}).ts;
+    var ts = solvedFormulas[61].solve({sigma, dp, bhp}).ts;
     console.table({
         ldmax,
         clmins,
@@ -933,6 +933,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     describe("Formula 31: Total thrust relationship", function () {
         var thpa;
+        var bhp;
         beforeEach(function () {
             thpa = solvedFormulas[31].solve({ad, vmax: v, sigma}).thpa;
             bhp = thpa / e;
@@ -1280,6 +1281,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 50: Engine power", function () {
+        var bhp;
         beforeEach(function () {
             bhp = solvedFormulas[50].bhp(sigma, dp, v, eta);
         });
@@ -1297,7 +1299,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     describe("Formula 51: Propeller velocity", function () {
         var vprop;
         beforeEach(function () {
-            bhp = solvedFormulas[50].bhp(sigma, dp, v, eta);
             vprop = solvedFormulas[51].vprop(bhp, sigma, dp);
         });
         it("solves for engine power", function () {
@@ -1451,10 +1452,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 61: Approximation of static thrust as rpm", function () {
-        var ts;
-        beforeEach(function () {
-            ts = solvedFormulas[61].ts(sigma, dp, bhp);
-        });
         it("solves for pressure density", function () {
             testAircraftFormula(61, "sigma", {ts, dp, bhp}, sigma);
         });
