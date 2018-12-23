@@ -109,103 +109,63 @@ function aircraftFormulas(constants, solvePoly) {
                 var v = Math.sqrt(d / (cd0 * s * airDensity));
                 return v;
             },
-            function dFromSigmaCdSV(sigma, cd, s, v) {
-                var d = sigma * airDensity * cd * s * Math.pow(v, 2);
-                return d;
-            },
-            function sigmaFromDCdSV(d, cd, s, v) {
-                var sigma = d / (airDensity * cd * s * Math.pow(v, 2));
-                return sigma;
-            },
-            function cdFromSigmaCdSV(d, sigma, s, v) {
-                var cd = d / (sigma * airDensity * s * Math.pow(v, 2));
-                return cd;
-            },
-            function sFromSigmaCdSV(d, sigma, cd, v) {
-                var s = d / (sigma * airDensity * cd * Math.pow(v, 2));
-                return s;
-            },
-            function vFromSigmaCdSV(d, sigma, cd, s) {
-                var v = Math.sqrt(d / (sigma * airDensity * cd * s));
-                return v;
-            },
             // Relation 7: AD, VminS, W/be, THPmin, Dmin
             // Drag Area, Airspeed for Minimum Sink, Effective Span Loading,
             // Minimum power required for Level Flight, Minimum Drag
-            function vminsFromAdWbe(ad, wbe) {
-                var vmins = 1 / (Math.sqrt(airDensity) *
-                    Math.pow(3 * Math.PI * ad, 1 / 4) / Math.sqrt(wbe));
-                return vmins;
-            },
-            function wbeFromVminsAd(vmins, ad) {
-                var wbe = airDensity * Math.pow(3 * Math.PI * ad, 1 / 2) *
-                    Math.pow(vmins, 2);
-                return wbe;
-            },
-            function adFromVminsWbe(vmins, wbe) {
-                var ad = Math.pow(wbe, 2) / (Math.pow(airDensity, 2) *
-                    3 * Math.PI * Math.pow(vmins, 4));
-                return ad;
-            },
+            // handled by Formula 24
+
             // thpmin handled by Formula 33
             // dmin handled by Formula 30
 
             // Relation 8: RSmin, THPmin, W
             // Minimum Sink Rate, Minimum Power Required
             // for Level Flight, weight
-            function rsFromThpminW(thp, w) {
-                var rs = 33000 * thp / w;
-                return rs;
-            },
             function thpFromRsW(rs, w) {
-                var thp = rs * w / 33000;
-                return thp;
+                return rs * w / 33000;
+            },
+            function rsFromThpW(thp, w) {
+                return 33000 * thp / w;
+            },
+            function wFromThpW(rs, w) {
+                return 33000 * thp / rs;
+            },
+            function rsFromThpminW(thp, w) {
+                return 33000 * thp / w;
             },
             function wFromRsThpmin(rs, thp) {
-                var w = 33000 * thp / rs;
-                return w;
+                return 33000 * thp / rs;
             },
             function rsminFromThpminW(thpmin, w) {
-                var rsmin = 33000 * thpmin / w;
-                return rsmin;
+                return 33000 * thpmin / w;
             },
             function thpminFromRsminW(rsmin, w) {
-                var thpmin = rsmin * w / 33000;
-                return thpmin;
+                return rsmin * w / 33000;
             },
             function wFromRsminThpmin(rsmin, thpmin) {
-                var w = 33000 * thpmin / rsmin;
-                return w;
+                return 33000 * thpmin / rsmin;
             },
             function rsminFromThpminW(thp, w) {
-                var rsmin = 33000 * thp / w;
-                return rsmin;
+                return 33000 * thp / w;
             },
             function thpminFromRsminW(rsmin, w) {
-                var thpmin = rsmin * w / 33000;
-                return thpmin;
+                return rsmin * w / 33000;
             },
             function wFromRsminThpmin(rsmin, thpmin) {
-                var w = 33000 * thpmin / rsmin;
-                return w;
+                return 33000 * thpmin / rsmin;
             },
             function rcFromRsThpaW(rs, thpa, w) {
                 var rcPlusRs = 33000 * thpa / w;
-                var rc = rcPlusRs - rs;
-                return rc;
+                return rcPlusRs - rs;
             },
             function rsFromRcThpaW(rc, thpa, w) {
                 var rcPlusRs = 33000 * thpa / w;
-                var rs = rcPlusRs - rc;
-                return rs;
+                return rcPlusRs - rc;
             },
             function thpaFromRcRsW(rc, rs, w) {
-                var thpa = (rc + rs) * w / 33000;
-                return thpa;
+                return (rc + rs) * w / 33000;
             },
             function wFromRcRsThpa(rc, rs, thpa) {
-                var w = 33000 * thpa / (rc + rs);
-                return w;
+                return 33000 * thpa / (rc + rs);
             },
             // Relation 9: AD, be, (L/D)max
             // Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
@@ -255,7 +215,28 @@ function aircraftFormulas(constants, solvePoly) {
             function thetagFromDW(d, w) {
                 var thetag = Math.asin(d / w) * 360 / Math.TAU;
                 return thetag;
+            },
+            function dFromSigmaCdSV(sigma, cd, s, v) {
+                var d = sigma * airDensity * cd * s * Math.pow(v, 2);
+                return d;
+            },
+            function sigmaFromDCdSV(d, cd, s, v) {
+                var sigma = d / (airDensity * cd * s * Math.pow(v, 2));
+                return sigma;
+            },
+            function cdFromSigmaCdSV(d, sigma, s, v) {
+                var cd = d / (sigma * airDensity * s * Math.pow(v, 2));
+                return cd;
+            },
+            function sFromSigmaCdSV(d, sigma, cd, v) {
+                var s = d / (sigma * airDensity * cd * Math.pow(v, 2));
+                return s;
+            },
+            function vFromSigmaCdSV(d, sigma, cd, s) {
+                var v = Math.sqrt(d / (sigma * airDensity * cd * s));
+                return v;
             }
+            // todo: lift, airspeed, and weight
         ],
         [ // Formula 2
             function lFromWThetag(w, thetag) {
@@ -897,31 +878,26 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 24
-            function vminsFromSigmaWBeAd(sigma, w, be, ad) {
+            function vminsFromSigmaWbeAd(sigma, wbe, ad) {
                 var vmins = Math.sqrt(1 / airDensity) /
                     Math.pow(3 * Math.PI, 1 / 4) *
-                    Math.sqrt(w / be) /
+                    Math.sqrt(wbe) /
                     (Math.sqrt(sigma) * Math.pow(ad, 1 / 4));
                 return vmins;
             },
-            function wFromVminsSigmaBeAd(vmins, sigma, be, ad) {
-                var w = Math.sqrt(3 * Math.PI) * airDensity *
-                    sigma * Math.pow(vmins, 2) * be * Math.sqrt(ad);
-                return w;
+            function wbeFromVminsSigmaAd(vmins, sigma, ad) {
+                var wbe = Math.sqrt(3 * Math.PI) * airDensity *
+                    sigma * Math.pow(vmins, 2) * Math.sqrt(ad);
+                return wbe;
             },
-            function beFromVminsSigmaWAd(vmins, sigma, w, ad) {
-                var be = w / (Math.sqrt(3 * Math.PI) * airDensity *
-                    sigma * Math.pow(vmins, 2) * Math.sqrt(ad));
-                return be;
-            },
-            function sigmaFromVminsWBeAd(vmins, w, be, ad) {
-                var sigma = w / (Math.sqrt(3 * Math.PI) * airDensity *
-                    Math.pow(vmins, 2) * be * Math.sqrt(ad));
+            function sigmaFromVminsWbeAd(vmins, wbe, ad) {
+                var sigma = wbe / (Math.sqrt(3 * Math.PI) * airDensity *
+                    Math.pow(vmins, 2) * Math.sqrt(ad));
                 return sigma;
             },
-            function adFromVminsSigmaWBe(vmins, sigma, w, be) {
+            function adFromVminsSigmaWBe(vmins, sigma, wbe) {
                 var ad = 1 / (3 * Math.PI) * Math.pow(1 / vmins, 4) *
-                Math.pow(w / be / (sigma * airDensity), 2);
+                Math.pow(wbe / (sigma * airDensity), 2);
                 return ad;
             }
         ],
