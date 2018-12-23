@@ -1236,7 +1236,13 @@ function aircraftFormulas(constants, solvePoly) {
                 return be;
             }
         ],
-        [], // Formula 37 - theoretical, allowing us to obtain rate of climb
+        [ // Formula 37 - theoretical, allowing us to obtain rate of climb
+            // todo: Why is thpa different here compared to Relation 5?
+            function thpaFromWRcThpal(w, rc, thpal) {
+                var thpa = w * rc / 33000 + thpal;
+                return thpa;
+            }
+        ],
         [ // Formula 38
             function rcFromBhpWEtaRsmin(bhp, w, eta, rsmin) {
                 // eta is the efficiency: THPa / BHP

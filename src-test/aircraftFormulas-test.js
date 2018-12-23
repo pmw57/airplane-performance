@@ -113,6 +113,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var rpm = 2700;
     var n = 60;
     var cl = random(1, 2);
+    var thpal = solvedFormulas[31].thpal(sigma, ad, v, w, be);
     function testAircraftFormula(index, prop, data, expected) {
         if (expected === undefined) {
             expected = data[prop];
@@ -911,13 +912,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 31: Available hp to maintain level flight", function () {
-        var thpal;
-        var rs;
-        beforeEach(function () {
-            thpal = solvedFormulas[31].thpal(sigma, ad, v, w, be);
-        });
         it("should be formula 22 times weight over 33000", function () {
-            rs = solvedFormulas[22].rs(sigma, ad, v, w, be);
+            var rs = solvedFormulas[22].rs(sigma, ad, v, w, be);
             expect(thpal).toBeCloseTo(rs * w / 33000);
         });
         // todo, understand why this isn't behaving
@@ -963,11 +959,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 32: Available horsepower for level flight", function () {
-        var thpal;
         var rs;
         beforeEach(function () {
             rs = solvedFormulas[22].rs(sigma, ad, v, w, be);
-            thpal = solvedFormulas[32].thpal(rs, w);
         });
         it("should be equivalent to formula 31", function () {
             var expected = solvedFormulas[31].thpal(sigma, ad, v, w, be);
@@ -1060,6 +1054,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("solves for effective span", function () {
             testAircraftFormula(36, "be", {t, thetac, sigma, ad, v, w}, be);
         });
+    });
+    describe("Formula 37: Thrust Horsepower Available", function () {
+        // Can't test this yet as I don't understand why
+        // thpa is different from Relation 5 formula
+        // it("solves for thrust horsepower available", function () {
+        //     testAircraftFormula(37, "thpa", {w, rc, thpal}, thpa);
+        // });
     });
     describe("Formula 38: Rate of climb", function () {
         var rc;
