@@ -32,6 +32,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 1: cl, v, w/s
     var v = t18.vs0 || random(50, 100);
     var clmax = t18.clmax || random(1, 2);
+    // todo: What breaks when sigma is not 1?
     var sigma = 1; // sealevel
     var ws = solvedFormulas[7].solve({sigma, cl: clmax, v}).ws;
     var vmax = t18.vmax || random(80, 120);
@@ -70,6 +71,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var thpmin = solvedFormulas[33].solve({ad, sigma, wbe}).thpmin;
     var dmin = solvedFormulas[0].solve({ad, wbe}).dmin;
     // Relation 8: RSmin, THPmin, W
+    // todo: fix the thp problems
     var thp = thpmin * 2; // a random increase
     var rs = solvedFormulas[0].solve({thp, w}).rs;
     var rsmin = solvedFormulas[0].solve({thpmin, w}).rsmin;
@@ -229,17 +231,17 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
         describe("6: CD0, AD, S", function () {
+            it("solves for drag area from zero-lift coefficient", function () {
+                testAircraftFormula(19, "ad", {cd0, s}, ad);
+                testAircraftFormula(19, "cd0", {ad, s}, cd0);
+                testAircraftFormula(19, "s", {ad, cd0}, s);
+            });
             it("solves for drag", function () {
                 testAircraftFormula(1, "d", {sigma, cd, s, v}, d);
                 testAircraftFormula(1, "sigma", {d, cd, s, v}, sigma);
                 testAircraftFormula(1, "cd", {d, sigma, s, v}, cd);
                 testAircraftFormula(1, "s", {d, sigma, cd, v}, s);
                 testAircraftFormula(1, "v", {d, sigma, cd, s}, v);
-            });
-            it("solves for drag area from zero-lift coefficient", function () {
-                testAircraftFormula(0, "ad", {cd0, s}, ad);
-                testAircraftFormula(0, "cd0", {ad, s}, cd0);
-                testAircraftFormula(0, "s", {ad, cd0}, s);
             });
             it("solves for drag using drag area", function () {
                 testAircraftFormula(0, "d", {ad, v}, d);
@@ -272,6 +274,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
         describe("8: RSmin, THPmin, W", function () {
+            // thp = W RS / 33000 (Relation 8)
+            // thpal = RS W / 33000 (Formula 33)
+            // Both can't be right, and thp isn't used anywhere.
+            // Only thpa, thpal, and thpmin are used.
             it("solves for RS", function () {
                 testAircraftFormula(0, "thp", {rs, w}, thp);
                 testAircraftFormula(0, "rs", {thp, w}, rs);

@@ -33,16 +33,13 @@ function aircraftFormulas(constants, solvePoly) {
             // Relation 2: S, W/S, W
             // Wing Area, Wing Loading, Gross Weight
             function sFromWsW(ws, w) {
-                var s = w / ws;
-                return s;
+                return w / ws;
             },
             function wsFromWS(w, s) {
-                var ws = w / s;
-                return ws;
+                return w / s;
             },
             function wFromWsS(ws, s) {
-                var w = ws * s;
-                return w;
+                return ws * s;
             },
             // Relation 3: S, be, eAR, ce
             // Wing Area, Effective Span, Effetive Aspect Ratio, Effective Chord
@@ -682,18 +679,6 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 19
-            function ceFromCE(c, e) {
-                var ce = c / Math.sqrt(e);
-                return ce;
-            },
-            function cFromCeE(ce, e) {
-                var c = ce * Math.sqrt(e);
-                return c;
-            },
-            function eFromCeC(ce, c) {
-                var e = Math.pow(c / ce, 2);
-                return e;
-            },
             function sFromAdCd0(ad, cd0) {
                 var s = ad / cd0;
                 return s;
@@ -705,6 +690,18 @@ function aircraftFormulas(constants, solvePoly) {
             function cd0FromAdS(ad, s) {
                 var cd0 = ad / s;
                 return cd0;
+            },
+            function ceFromCE(c, e) {
+                var ce = c / Math.sqrt(e);
+                return ce;
+            },
+            function cFromCeE(ce, e) {
+                var c = ce * Math.sqrt(e);
+                return c;
+            },
+            function eFromCeC(ce, c) {
+                var e = Math.pow(c / ce, 2);
+                return e;
             }
         ],
         [ // Formula 20
@@ -1098,7 +1095,8 @@ function aircraftFormulas(constants, solvePoly) {
         [ // Formula 33
             function thpminFromAdSigmaWbe(ad, sigma, wbe) {
                 var thpmin = 5280 / 60 * 4 / 33000 *
-                1 / (Math.sqrt(sigma * airDensity) * Math.pow(3 * Math.PI, 3 / 4)) *
+                1 / (Math.sqrt(sigma * airDensity) *
+                Math.pow(3 * Math.PI, 3 / 4)) *
                 Math.pow(ad, 1 / 4) * Math.pow(wbe, 3 / 2);
                 return thpmin;
             },
