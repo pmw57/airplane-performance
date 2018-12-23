@@ -1615,28 +1615,26 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         var cdwing;
         var kwing;
         var cdfuse;
-        var sfuse;
         var kfuse;
-        var angleOfAttack;
+        var alpha;
         var cdcomp;
         var scomp;
-        var planformCorrection;
+        var k;
         beforeEach(function () {
             cdwing = random(1, 1.5);
             kwing = random(0.05, 0.2);
             cdfuse = random(1, 1.5);
-            sfuse = random(6, 20);
             kfuse = random(0.05, 0.2);
-            angleOfAttack = random(0, 10);
+            alpha = random(0, 10);
             cdcomp = random(1, 1.5);
             scomp = random(2, 5);
-            planformCorrection = random(0, 0.2);
+            k = random(0, 0.2);
         });
         describe("1: Drag coefficient of the wing area", function () {
             var cds;
             beforeEach(function () {
                 cd0 = cdwing * s * (1 + kwing * cl * cl) + cdfuse * sfuse *
-                    (1 + kfuse * angleOfAttack * angleOfAttack) +
+                    (1 + kfuse * alpha * alpha) +
                     cdcomp + scomp;
                 cds = solvedFormulas.f[1].cds(cd0, cl, ear, s);
             });
@@ -1668,14 +1666,14 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             var cdi;
             beforeEach(function () {
                 cd0 = cdwing * s * (1 + kwing * cl * cl) + cdfuse * sfuse *
-                    (1 + kfuse * angleOfAttack * angleOfAttack) +
+                    (1 + kfuse * alpha * alpha) +
                     cdcomp * scomp;
             });
             it("uses contribs from different drag components", function () {
-                cdi = cl * cl / (Math.PI * ar) * (1 + planformCorrection) * s;
+                cdi = cl * cl / (Math.PI * ar) * (1 + k) * s;
                 expect(
                     solvedFormulas.f[2].cds(cdwing, s, kwing, cl, cdfuse, sfuse,
-                    kfuse, angleOfAttack, cdcomp, scomp, ar, planformCorrection)
+                    kfuse, alpha, cdcomp, scomp, ar, k)
                 ).toBeCloseTo(cd0 + cdi);
             });
         });
@@ -1686,10 +1684,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
             it("is the same as F.2 at zero lift conditions", function () {
                 cl = 0;
-                angleOfAttack = 0;
+                alpha = 0;
                 expect(ad).toBeCloseTo(solvedFormulas.f[2].cds(cdwing, s, kwing,
-                    cl, cdfuse, sfuse, kfuse, angleOfAttack, cdcomp, scomp,
-                    ar, planformCorrection));
+                    cl, cdfuse, sfuse, kfuse, alpha, cdcomp, scomp,
+                    ar, k));
             });
         });
         describe("6: Lift slope", function () {
@@ -1705,20 +1703,20 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             var liftSlope;
             beforeEach(function () {
                 liftSlope = solvedFormulas.f[6].liftSlope(ar);
-                cl = solvedFormulas.f[7].cl(liftSlope, angleOfAttack);
+                cl = solvedFormulas.f[7].cl(liftSlope, alpha);
             });
             it("equals F.6 times angle of attack", function () {
-                expect(liftSlope * angleOfAttack).toBeCloseTo(cl);
+                expect(liftSlope * alpha).toBeCloseTo(cl);
             });
             it("solves for liftSlope", function () {
                 expect(
-                    solvedFormulas.f[7].liftSlope(cl, angleOfAttack)
+                    solvedFormulas.f[7].liftSlope(cl, alpha)
                 ).toBeCloseTo(liftSlope);
             });
             it("solves for angle of attack", function () {
                 expect(
-                    solvedFormulas.f[7].angleOfAttack(cl, liftSlope)
-                ).toBeCloseTo(angleOfAttack);
+                    solvedFormulas.f[7].alpha(cl, liftSlope)
+                ).toBeCloseTo(alpha);
             });
         });
         describe("8: Airplane efficiency factor", function () {
@@ -1728,7 +1726,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             var inve;
             beforeEach(function () {
                  invew = solvedFormulas.f[8].solve(
-                    {planformCorrection, ar, cdwing, kwing}).invew;
+                    {k, ar, cdwing, kwing}).invew;
                 cdfusekfuse = solvedFormulas.f[8].solve(
                     {ar, cdfusekfuse, sfuse, s}).cdfusekfuse;
                 deltafuse = solvedFormulas.f[8].solve(
@@ -1740,19 +1738,19 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 // todo using inve, invew, deltafuse
             });
             it("solves for planform correction", function () {
-                expect(solvedFormulas.f[8].planformCorrection(invew, ar,
-                    cdwing, kwing)).toBeCloseTo(planformCorrection);
+                expect(solvedFormulas.f[8].k(invew, ar,
+                    cdwing, kwing)).toBeCloseTo(k);
             });
             it("solves for aspect ratio from wing eff. factor", function () {
-                expect(solvedFormulas.f[8].solve({invew, planformCorrection,
+                expect(solvedFormulas.f[8].solve({invew, k,
                     cdwing, kwing}).ar).toBeCloseTo(ar);
             });
             it("solves for the wing coefficient of drag", function () {
-                expect(solvedFormulas.f[8].cdwing(invew, planformCorrection,
+                expect(solvedFormulas.f[8].cdwing(invew, k,
                     ar, kwing)).toBeCloseTo(cdwing);
             });
             it("solves for the change of wing parasite drag", function () {
-                expect(solvedFormulas.f[8].kwing(invew, planformCorrection, ar,
+                expect(solvedFormulas.f[8].kwing(invew, k, ar,
                     cdwing)).toBeCloseTo(kwing);
             });
             // we need kfuse for these tests
@@ -1785,28 +1783,28 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
         describe("End of appendix formulas", function () {
-            var fuselageCorrection;
+            var fuselageEffect;
             var inve;
             var invew;
             var deltafuse;
             beforeEach(function () {
-                fuselageCorrection = random(0, 1);
+                fuselageEffect = random(0, 1);
                 invew = random(1, 2);
                 deltafuse = solvedFormulas.f[9].solve(
-                    {fuselageCorrection, sfuse, s}).deltafuse;
+                    {fuselageEffect, sfuse, s}).deltafuse;
                 inve = solvedFormulas.f[9].solve({invew, deltafuse}).inve;
             });
-            it("solves for fuselageCorrection", function () {
-                expect(solvedFormulas.f[9].fuselageCorrection(
-                    deltafuse, sfuse, s)).toBeCloseTo(fuselageCorrection);
+            it("solves for fuselageEffect", function () {
+                expect(solvedFormulas.f[9].fuselageEffect(
+                    deltafuse, sfuse, s)).toBeCloseTo(fuselageEffect);
             });
             it("solves for fuselage area", function () {
                 expect(solvedFormulas.f[9].sfuse(
-                    deltafuse, fuselageCorrection, s)).toBeCloseTo(sfuse);
+                    deltafuse, fuselageEffect, s)).toBeCloseTo(sfuse);
             });
             it("solves for area", function () {
                 expect(solvedFormulas.f[9].s(
-                    deltafuse, fuselageCorrection, sfuse, s)).toBeCloseTo(s);
+                    deltafuse, fuselageEffect, sfuse, s)).toBeCloseTo(s);
             });
             it("can solve for invew", function () {
                 expect(solvedFormulas.f[9].solve(
