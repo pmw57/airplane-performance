@@ -24,7 +24,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         sfuse: 3 * 3,
         ad: 3,
         bhp: 150,
-        vprop: 0.741,
         dp: 6
     };
 
@@ -89,8 +88,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var bhp = t18.bhp || random(100, 300);
     var rcmax = solvedFormulas[0].solve({bhp, w}).rcmax;
     // Relation 12: Ts, BHP, Vprop, Dp
-    var vprop = t18.vprop || random(0.70, 0.75);
     var dp = t18.dp || random(4, 10);
+    var vprop = solvedFormulas[51].solve({bhp, sigma, dp}).vprop;
     var ts = solvedFormulas[61].solve({sigma, dp, bhp}).ts;
     console.table({
         ldmax,
@@ -319,6 +318,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(61, "ts", {sigma, dp, bhp}, ts);
                 testAircraftFormula(61, "dp", {ts, sigma, bhp}, dp);
                 testAircraftFormula(61, "bhp", {ts, sigma, dp}, bhp);
+            });
+            it("solves for vprop", function () {
+                testAircraftFormula(51, "vprop", {bhp, sigma, dp}, vprop);
+                testAircraftFormula(51, "bhp", {vprop, sigma, dp}, bhp);
+                testAircraftFormula(51, "sigma", {vprop, bhp, dp}, sigma);
+                testAircraftFormula(51, "dp", {vprop, bhp, sigma}, dp);
             });
         });
     });
