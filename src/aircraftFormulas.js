@@ -1579,7 +1579,7 @@ function aircraftFormulas(constants, solvePoly) {
                 return pshaft;
             }
         ],
-        [ // Formula 49: Engine power
+        [ // Formula 49: Propeller efficiency
             function pshaftFromRhoApVpV(rho, ap, vp, v) {
                 var pshaft = 2 * rho * ap * vp * vp * (vp - v);
                 return pshaft;
@@ -1636,8 +1636,8 @@ function aircraftFormulas(constants, solvePoly) {
                 return v;
             }
         ],
-        [ // Formula 51: Dimensionless velocity
-            }
+        [ // Formula 51: Propeller velocity
+            // vprop/bhp/dp formulas are found in Relation 12
         ],
         [ // Formula 52: Cubic equation for dimensionless velocity
             function vhatFromEta(eta) {
