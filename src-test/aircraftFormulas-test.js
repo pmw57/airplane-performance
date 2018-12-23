@@ -89,8 +89,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var rcmax = solvedFormulas[0].solve({bhp, w}).rcmax;
     // Relation 12: Ts, BHP, Vprop, Dp
     var dp = t18.dp || random(4, 10);
-    var vprop = solvedFormulas[51].solve({bhp, sigma, dp}).vprop;
-    var ts = solvedFormulas[61].solve({sigma, dp, bhp}).ts;
+    var vprop = solvedFormulas[0].solve({bhp, sigma, dp}).vprop;
+    var ts = solvedFormulas[0].solve({sigma, dp, bhp}).ts;
     console.table({
         ldmax,
         clmins,
@@ -315,15 +315,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         describe("12: Ts, BHP, Vprop, Dp", function () {
             it("solves for ts", function () {
-                testAircraftFormula(61, "ts", {sigma, dp, bhp}, ts);
-                testAircraftFormula(61, "dp", {ts, sigma, bhp}, dp);
-                testAircraftFormula(61, "bhp", {ts, sigma, dp}, bhp);
+                testAircraftFormula(0, "ts", {sigma, dp, bhp}, ts);
+                testAircraftFormula(0, "sigma", {ts, dp, bhp}, sigma);
+                testAircraftFormula(0, "dp", {ts, sigma, bhp}, dp);
+                testAircraftFormula(0, "bhp", {ts, sigma, dp}, bhp);
             });
             it("solves for vprop", function () {
-                testAircraftFormula(51, "vprop", {bhp, sigma, dp}, vprop);
-                testAircraftFormula(51, "bhp", {vprop, sigma, dp}, bhp);
-                testAircraftFormula(51, "sigma", {vprop, bhp, dp}, sigma);
-                testAircraftFormula(51, "dp", {vprop, bhp, sigma}, dp);
+                testAircraftFormula(0, "vprop", {bhp, sigma, dp}, vprop);
+                testAircraftFormula(0, "bhp", {vprop, sigma, dp}, bhp);
+                testAircraftFormula(0, "sigma", {vprop, bhp, dp}, sigma);
+                testAircraftFormula(0, "dp", {vprop, bhp, sigma}, dp);
             });
         });
     });
@@ -1302,19 +1303,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         // Solving for eta results are too inaccurate
     });
     describe("Formula 51: Propeller velocity", function () {
-        var vprop;
-        beforeEach(function () {
-            vprop = solvedFormulas[51].vprop(bhp, sigma, dp);
-        });
-        it("solves for engine power", function () {
-            testAircraftFormula(51, "bhp", {vprop, sigma, dp}, bhp);
-        });
-        it("solves for density ratio", function () {
-            testAircraftFormula(51, "sigma", {vprop, bhp, dp}, sigma);
-        });
-        it("solves for propeller diameter", function () {
-            testAircraftFormula(51, "dp", {vprop, bhp, sigma}, dp);
-        });
+        // Done in Relation 12
+        return;
     });
     describe("Formula 52: Dimensionless velocity", function () {
         var vhat;
@@ -1457,15 +1447,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 61: Approximation of static thrust as rpm", function () {
-        it("solves for pressure density", function () {
-            testAircraftFormula(61, "sigma", {ts, dp, bhp}, sigma);
-        });
-        it("solves for propeller diameter", function () {
-            testAircraftFormula(61, "dp", {ts, sigma, bhp}, dp);
-        });
-        it("solves for BHP", function () {
-            testAircraftFormula(61, "bhp", {ts, sigma, dp}, bhp);
-        });
+        // Done in Relation 12
+        return;
     });
     describe("Formula 62: Ideal thrust from engine-prop. combo", function () {
         var vhat;

@@ -300,10 +300,60 @@ function aircraftFormulas(constants, solvePoly) {
             function wFromBhpRcmax(bhp, rcmax) {
                 var w = bhp * 33000 / rcmax;
                 return w;
-            }
+            },
             // Relation 12: Ts, BHP, Vprop, Dp
             // Static Thrust, Engine Brake Horsepower, Reference Propeller
             // Airspeed for 74% Efficiency, Propeller Diameter
+            function tsFromSigmaDpBhp(sigma, dp, bhp) {
+                var ts = Math.pow(
+                    2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
+                    Math.pow(bhp * bhpPerSec, 2), 1 / 3);
+                return ts;
+            },
+            function sigmaFromTsDpBhp(ts, dp, bhp) {
+                var sigma = Math.pow(ts, 3) /
+                    (2 * sea_level_density * areaFromRadius(dp / 2) *
+                    Math.pow(bhp * bhpPerSec, 2));
+                return sigma;
+            },
+            function dpFromTsSigmaBhp(ts, sigma, bhp) {
+                var dp = radiusFromArea(Math.pow(ts, 3) /
+                    (2 * sigma * sea_level_density *
+                    Math.pow(bhp * bhpPerSec, 2))) * 2;
+                return dp;
+            },
+            function bhpFromTsSigmaDp(ts, sigma, dp) {
+                var bhp = Math.sqrt(Math.pow(ts, 3) /
+                    (2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
+                    Math.pow(bhpPerSec, 2)));
+                return bhp;
+            },
+            function vpropFromBhpSigmaDp(bhp, sigma, dp) {
+                var vprop = Math.pow(33000 / sea_level_density *
+                    Math.pow(60, 2) * Math.pow(60 / 5280, 3) *
+                    bhp / (sigma * dp * dp), 1 / 3);
+                return vprop;
+            },
+            function bhpFromVpropSigmaDp(vprop, sigma, dp) {
+                var bhp = sea_level_density / 33000 *
+                    Math.pow(5280 / 60, 3) / Math.pow(60, 2) *
+                    sigma * dp * dp * Math.pow(vprop, 3);
+                return bhp;
+            },
+            function sigmaFromVpropBhpDp(vprop, bhp, dp) {
+                var sigma = 33000 / sea_level_density *
+                    Math.pow(60, 2) / Math.pow(5280 / 60 * vprop, 3) *
+                    bhp / Math.pow(dp, 2);
+                return sigma;
+            },
+            function dpFromVpropBhpSigma(vprop, bhp, sigma) {
+                var dp = Math.sqrt(
+                    33000 / sea_level_density *
+                    Math.pow(60, 2) / Math.pow(5280 / 60, 3) *
+                    bhp / (Math.pow(vprop, 3) * sigma)
+                );
+                return dp;
+            }
         ],
         [ // formula 1
             function dFromWThetag(w, thetag) {
@@ -1587,31 +1637,6 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 51: Dimensionless velocity
-            function vpropFromBhpSigmaDp(bhp, sigma, dp) {
-                var vprop = Math.pow(33000 / sea_level_density *
-                    Math.pow(60, 2) * Math.pow(60 / 5280, 3) *
-                    bhp / (sigma * dp * dp), 1 / 3);
-                return vprop;
-            },
-            function bhpFromVpropSigmaDp(vprop, sigma, dp) {
-                var bhp = sea_level_density / 33000 *
-                    Math.pow(5280 / 60, 3) / Math.pow(60, 2) *
-                    sigma * dp * dp * Math.pow(vprop, 3);
-                return bhp;
-            },
-            function sigmaFromVpropBhpDp(vprop, bhp, dp) {
-                var sigma = 33000 / sea_level_density *
-                    Math.pow(60, 2) / Math.pow(5280 / 60 * vprop, 3) *
-                    bhp / Math.pow(dp, 2);
-                return sigma;
-            },
-            function dpFromVpropBhpSigma(vprop, bhp, sigma) {
-                var dp = Math.sqrt(
-                    33000 / sea_level_density *
-                    Math.pow(60, 2) / Math.pow(5280 / 60, 3) *
-                    bhp / (Math.pow(vprop, 3) * sigma)
-                );
-                return dp;
             }
         ],
         [ // Formula 52: Cubic equation for dimensionless velocity
@@ -1770,30 +1795,7 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 61: Approximation of static thrust as rpm
-            function tsFromSigmaDpBhp(sigma, dp, bhp) {
-                var ts = Math.pow(
-                    2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
-                    Math.pow(bhp * bhpPerSec, 2), 1 / 3);
-                return ts;
-            },
-            function sigmaFromTsDpBhp(ts, dp, bhp) {
-                var sigma = Math.pow(ts, 3) /
-                    (2 * sea_level_density * areaFromRadius(dp / 2) *
-                    Math.pow(bhp * bhpPerSec, 2));
-                return sigma;
-            },
-            function dpFromTsSigmaBhp(ts, sigma, bhp) {
-                var dp = radiusFromArea(Math.pow(ts, 3) /
-                    (2 * sigma * sea_level_density *
-                    Math.pow(bhp * bhpPerSec, 2))) * 2;
-                return dp;
-            },
-            function bhpFromTsSigmaDp(ts, sigma, dp) {
-                var bhp = Math.sqrt(Math.pow(ts, 3) /
-                    (2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
-                    Math.pow(bhpPerSec, 2)));
-                return bhp;
-            }
+            // ts/dp/bhp formulas are found in Relation 12
         ],
         [ // Formula 62: Ideal thrust from an engine-propeller combination
             function thatFromEtaVhat(eta, vhat) {
