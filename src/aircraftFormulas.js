@@ -1249,6 +1249,18 @@ function aircraftFormulas(constants, solvePoly) {
             }
         ],
         [ // Formula 38
+            function etaFromThpaBhp(thpa, bhp) {
+                var eta = thpa / bhp;
+                return eta;
+            },
+            function thpaFromEtaBhp(eta, bhp) {
+                var thpa = eta * bhp;
+                return thpa;
+            },
+            function bhpFromEtaThpa(eta, thpa) {
+                var bhp = thpa / eta;
+                return bhp;
+            },
             function rcFromBhpWEtaRsmin(bhp, w, eta, rsmin) {
                 // eta is the efficiency: THPa / BHP
                 var rc = (33000 * bhp / w) * eta - rsmin;

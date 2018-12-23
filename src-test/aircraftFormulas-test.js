@@ -109,7 +109,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var p2 = smaller(pd);
     var vp = larger(v);
     var ap = Math.TAU * (dp / 2);
-    var eta = smaller(1);
+    var eta = solvedFormulas[38].solve({thpa, bhp}).eta;
     var rpm = 2700;
     var n = 60;
     var cl = random(1, 2);
@@ -1068,6 +1068,15 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         beforeEach(function () {
             rsmin = solvedFormulas[22].rs(sigma, ad, v, w, be);
             rc = solvedFormulas[38].rc(bhp, w, eta, rsmin);
+        });
+        it("solves for propeller efficiency", function () {
+            testAircraftFormula(38, "eta", {thpa, bhp}, eta);
+        });
+        it("solves for total horsepower available", function () {
+            testAircraftFormula(38, "thpa", {eta, bhp}, thpa);
+        });
+        it("solves for brake horsepower", function () {
+            testAircraftFormula(38, "bhp", {eta, thpa}, bhp);
         });
         it("solves for engine brake horsepower", function () {
             testAircraftFormula(38, "bhp", {rc, w, eta, rsmin}, bhp);
