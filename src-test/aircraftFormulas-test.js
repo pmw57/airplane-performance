@@ -115,7 +115,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var rpm = 2700;
     var n = 60;
     var cl = random(1, 2);
-    var thpal = solvedFormulas[31].thpal(sigma, ad, v, w, be);
+    var thpal = solvedFormulas[31].thpal(sigma, ad, v, wbe);
     function testAircraftFormula(index, prop, data, expected) {
         if (expected === undefined) {
             expected = data[prop];
@@ -917,21 +917,18 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             expect(thpal).toBeCloseTo(rs * w / 33000);
         });
         // todo, understand why this isn't behaving
-        xit("solves for density ratio", function () {
-            testAircraftFormula(31, "sigma", {thpal, ad, v, w, be}, sigma);
+        it("solves for thpal", function () {
+            testAircraftFormula(31, "thpal", {sigma, ad, v, wbe}, thpal);
         });
         it("solves for drag area", function () {
-            testAircraftFormula(31, "ad", {thpal, sigma, v, w, be}, ad);
+            testAircraftFormula(31, "ad", {thpal, sigma, v, wbe}, ad);
         });
         // todo, understand why this isn't behaving
         xit("solves for velocity", function () {
-            testAircraftFormula(31, "v", {thpal, sigma, ad, w, be}, v);
+            testAircraftFormula(31, "v", {thpal, sigma, ad, wbe}, v);
         });
-        it("solves for weight", function () {
-            testAircraftFormula(31, "w", {thpal, sigma, ad, v, be}, w);
-        });
-        it("solves for effective span", function () {
-            testAircraftFormula(31, "be", {thpal, sigma, ad, v, w}, be);
+        it("solves for wing loading", function () {
+            testAircraftFormula(31, "wbe", {thpal, sigma, ad, v}, wbe);
         });
     });
     describe("Formula 31: Total thrust relationship", function () {
@@ -964,7 +961,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             rs = solvedFormulas[22].rs(sigma, ad, v, w, be);
         });
         it("should be equivalent to formula 31", function () {
-            var expected = solvedFormulas[31].thpal(sigma, ad, v, w, be);
+            var expected = solvedFormulas[31].thpal(sigma, ad, v, wbe);
             expect(thpal).toBeCloseTo(expected);
         });
         it("solves for rate of sink", function () {
@@ -1032,27 +1029,23 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         var t;
         beforeEach(function () {
             thetac = random(0, 20);
-            t = solvedFormulas[36].t(thetac, sigma, ad, v, w, be);
+            t = solvedFormulas[36].t(w, thetac, sigma, ad, v, wbe);
+        });
+        it("solves for weight", function () {
+            testAircraftFormula(36, "w", {t, thetac, sigma, ad, v, wbe}, w);
         });
         it("solves for climb angle", function () {
-            testAircraftFormula(36, "thetac", {t, sigma, ad, v, w, be}, thetac);
+            testAircraftFormula(36, "thetac", {t, w, sigma, ad, v, wbe}, thetac);
         });
         // todo: the following test is too unreliable
         // it("solves for density ratio", function () {
-        //     testAircraftFormula(36, "sigma", {t, thetac, ad, v, w, be}, sigma);
+        //     testAircraftFormula(36, "sigma", {t, wthetac, ad, v, wbe}, sigma);
         // });
         it("solves for drag area", function () {
-            testAircraftFormula(36, "ad", {t, thetac, sigma, v, w, be}, ad);
+            testAircraftFormula(36, "ad", {t, w, thetac, sigma, v, wbe}, ad);
         });
-        // todo: the following test is too unreliable
-        // it("solves for velocity", function () {
-        //     testAircraftFormula(36, "v", {t, thetac, sigma, ad, w, be, v}, v);
-        // });
         it("solves for weight", function () {
             testAircraftFormula(36, "w", {t, thetac, sigma, ad, v, be}, w);
-        });
-        it("solves for effective span", function () {
-            testAircraftFormula(36, "be", {t, thetac, sigma, ad, v, w}, be);
         });
     });
     describe("Formula 37: Thrust Horsepower Available", function () {
