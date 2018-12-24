@@ -27,6 +27,18 @@ function aircraftFormulas(constants, solvePoly) {
             // as altitude density ratio needs to be involved too?
             // Relation 1: CL, V, W/S
             // Lift Coefficient, Airspeed, Wing Loading
+            function weFromWWu(w, wu) {
+                var we = w - wu;
+                return we;
+            },
+            function wFromWeWu(we, wu) {
+                var w = we + wu;
+                return w;
+            },
+            function wuFromWeW(we, w) {
+                var wu = w - we;
+                return wu;
+            },
 
             // ws handled by Formula 7
 
@@ -125,13 +137,7 @@ function aircraftFormulas(constants, solvePoly) {
             function rsFromThpW(thp, w) {
                 return 33000 * thp / w;
             },
-            function wFromThpW(rs, w) {
-                return 33000 * thp / rs;
-            },
-            function rsFromThpminW(thp, w) {
-                return 33000 * thp / w;
-            },
-            function wFromRsThpmin(rs, thp) {
+            function wFromThpRs(thp, rs) {
                 return 33000 * thp / rs;
             },
             function rsminFromThpminW(thpmin, w) {
@@ -145,12 +151,6 @@ function aircraftFormulas(constants, solvePoly) {
             },
             function rsminFromThpminW(thp, w) {
                 return 33000 * thp / w;
-            },
-            function thpminFromRsminW(rsmin, w) {
-                return rsmin * w / 33000;
-            },
-            function wFromRsminThpmin(rsmin, thpmin) {
-                return 33000 * thpmin / rsmin;
             },
             function rcFromRsThpaW(rs, thpa, w) {
                 var rcPlusRs = 33000 * thpa / w;
@@ -396,51 +396,6 @@ function aircraftFormulas(constants, solvePoly) {
             function vminsFromClminsWs(clmins, ws) {
                 var vmins = Math.sqrt(ws / (clmins * airDensity));
                 return vmins;
-            },
-
-            function wsFromSigmaClmaxfVs0(sigma, clmaxf, vs0) {
-                var ws = sigma * clmaxf * vs0 * vs0 * airDensity;
-                return ws;
-            },
-            function sigmaFromWsClmaxfVs0(ws, clmaxf, vs0) {
-                var sigma = ws / (clmaxf * vs0 * vs0 * airDensity);
-                return sigma;
-            },
-            function clmaxfFromWsSigmaVs0(ws, sigma, vs0) {
-                var clmaxf = ws / (sigma * vs0 * vs0 * airDensity);
-                return clmaxf;
-            },
-            function vs0FromWsSigmaClmaxf(ws, sigma, clmaxf) {
-                var vs0 = Math.sqrt(ws / (sigma * clmaxf * airDensity));
-                return vs0;
-            },
-            function wsFromSigmaClVmax(sigma, cl, vmax) {
-                var ws = sigma * cl * vmax * vmax * airDensity;
-                return ws;
-            },
-            function sigmaFromWsClVmax(ws, cl, vmax) {
-                var sigma = ws / (cl * vmax * vmax * airDensity);
-                return sigma;
-            },
-            function clFromWSigmaVmax(ws, sigma, vmax) {
-                var cl = ws / (sigma * vmax * vmax * airDensity);
-                return cl;
-            },
-            function vmaxFromWsSigmaCl(ws, sigma, cl) {
-                var vmax = Math.sqrt(ws / (sigma * cl * airDensity));
-                return vmax;
-            },
-            function weFromWWu(w, wu) {
-                var we = w - wu;
-                return we;
-            },
-            function wFromWeWu(we, wu) {
-                var w = we + wu;
-                return w;
-            },
-            function wuFromWeW(we, w) {
-                var wu = w - we;
-                return wu;
             }
         ],
         [ // Formula 8
