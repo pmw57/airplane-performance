@@ -304,9 +304,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         describe("10: AD, CLminS, ce", function () {
             it("solves for clmins", function () {
-                testAircraftFormula(0, "clmins", {ad, ce}, clmins);
-                testAircraftFormula(0, "ad", {clmins, ce}, ad);
-                testAircraftFormula(0, "ce", {clmins, ad}, ce);
+                testAircraftFormula(19, "clmins", {ad, ce}, clmins);
+                testAircraftFormula(19, "ad", {clmins, ce}, ad);
+                testAircraftFormula(19, "ce", {clmins, ad}, ce);
             });
             it("crosschecks using wing loading", function () {
                 testAircraftFormula(7, "cl", {sigma, ws, v: vmins}, clmins);

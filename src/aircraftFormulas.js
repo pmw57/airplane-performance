@@ -166,22 +166,12 @@ function aircraftFormulas(constants, solvePoly) {
             },
             // Relation 9: AD, be, (L/D)max
             // Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
-            // handled in Formulas 19 and 29
+            // handled in Formula 29
 
             // Relation 10: CLminS, ad, ce
             // Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
-            function clminsFromAdCe(ad, ce) {
-                var clmins = Math.sqrt(3 * Math.PI) * Math.sqrt(ad) / ce;
-                return clmins;
-            },
-            function adFromClminsCe(clmins, ce) {
-                var ad = Math.pow(clmins * ce / Math.sqrt(3 * Math.PI), 2);
-                return ad;
-            },
-            function ceFromClminsAd(clmins, ad) {
-                var ce = Math.sqrt(3 * Math.PI) / clmins * Math.sqrt(ad);
-                return ce;
-            },
+            // handled in Formula 19
+
             // Relation 11: W, BHP, RCmax
             // Weight, Engine Brake Horsepower, Ideal Maximum Rate of Climb
             function bhpFromRcmaxW(rcmax, w) {
@@ -703,6 +693,18 @@ function aircraftFormulas(constants, solvePoly) {
             function eFromCeC(ce, c) {
                 var e = Math.pow(c / ce, 2);
                 return e;
+            },
+            function clminsFromAdCe(ad, ce) {
+                var clmins = Math.sqrt(3 * Math.PI) * Math.sqrt(ad) / ce;
+                return clmins;
+            },
+            function adFromClminsCe(clmins, ce) {
+                var ad = Math.pow(clmins * ce / Math.sqrt(3 * Math.PI), 2);
+                return ad;
+            },
+            function ceFromClminsAd(clmins, ad) {
+                var ce = Math.sqrt(3 * Math.PI) / clmins * Math.sqrt(ad);
+                return ce;
             }
         ],
         [ // Formula 20
