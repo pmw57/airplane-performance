@@ -71,7 +71,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var thpmin = solvedFormulas[33].solve({ad, sigma, wbe}).thpmin;
     var dmin = solvedFormulas[0].solve({ad, wbe}).dmin;
     // Relation 8: RSmin, THPmin, W
-    // todo: fix the thp problems
     var rsmin = solvedFormulas[0].solve({thpmin, w}).rsmin;
     var rs = rsmin * random(1, 2); // a random increase
     var thp = solvedFormulas[0].solve({w, rs}).thp;
