@@ -22,6 +22,7 @@ function aircraftFormulas(constants, solvePoly) {
             [
             // todo: remove the need for "custom" objects from test file
             // todo: Should formulas only with airDensity not be allowed,
+            
             // as altitude density ratio needs to be involved too?
             // Relation 1: CL, V, W/S
             // Lift Coefficient, Airspeed, Wing Loading

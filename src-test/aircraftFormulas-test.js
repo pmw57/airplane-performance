@@ -15,35 +15,40 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         return num * (1 + Math.random() / 5);
     };
 
-    var t18 = {
-        vs0: 67,
-        clmax: 1.52,
-        vmax: 180,
-        w: 1500,
-        b: 20 + 10 / 12,
-        sfuse: 3 * 3,
-        ad: 3,
-        bhp: 150,
-        dp: 6
+    var crafts = {
+        t18: {
+            vs0: 67,
+            clmax: 1.52,
+            vmax: 180,
+            w: 1500,
+            b: 20 + 10 / 12,
+            sfuse: 3 * 3,
+            ad: 3,
+            bhp: 150,
+            dp: 6,
+            rpm: 2700
+        }
     };
+    var craftType = "t18";
+    var craft = crafts[craftType];
 
     // TODO: Use formulas for **ALL** formula relationships
 
     // Relation 1: cl, v, w/s
-    var v = t18.vs0 || random(50, 100);
-    var clmax = t18.clmax || random(1, 2);
+    var v = craft.vs0 || random(50, 100);
+    var clmax = craft.clmax || random(1, 2);
     // todo: What breaks when sigma is not 1?
     var sigma = 1; // sealevel
     var ws = solvedFormulas[7].solve({sigma, cl: clmax, v}).ws;
-    var vmax = t18.vmax || random(80, 120);
+    var vmax = craft.vmax || random(80, 120);
     // Relation 2: s, w/s, w
-    var w = t18.w || random(1000, 2000);
+    var w = craft.w || random(1000, 2000);
     var s = w / ws;
     // Relation 3: S, be, eAR, ce
-    var b = t18.b || random(10, 30);
+    var b = craft.b || random(10, 30);
     var ar = b * b / s;
     var c = s / b;
-    var sfuse = t18.sfuse || random(5, 15);
+    var sfuse = craft.sfuse || random(5, 15);
     var e = solvedFormulas.f[8].solve({ar, sfuse, s}).e;
     var ear = e * ar;
     var ce = c / Math.sqrt(e);
@@ -60,7 +65,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var sea_level_density = 0.0023769;
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
     var hpMPH = 33000 * 60 / 5280;
-    var ad = t18.ad || random(5, 15);
+    var ad = craft.ad || random(5, 15);
     var thpa = solvedFormulas[0].solve({ad, vmax}).thpa;
     var cd0 = ad / s;
     // Relation 6: cd0, ad, s
@@ -86,10 +91,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 10: AD, CLminS, ce
     var clmins = solvedFormulas[0].solve({ad, ce}).clmins;
     // Relation 11: W, BHP, RCmax
-    var bhp = t18.bhp || random(100, 300);
+    var bhp = craft.bhp || random(100, 300);
     var rcmax = solvedFormulas[0].solve({bhp, w}).rcmax;
     // Relation 12: Ts, BHP, Vprop, Dp
-    var dp = t18.dp || random(4, 10);
+    var dp = craft.dp || random(4, 10);
     var vprop = solvedFormulas[0].solve({bhp, sigma, dp}).vprop;
     var ts = solvedFormulas[0].solve({sigma, dp, bhp}).ts;
     console.table({
