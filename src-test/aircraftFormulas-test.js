@@ -72,15 +72,15 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var dmin = solvedFormulas[0].solve({ad, wbe}).dmin;
     // Relation 8: RSmin, THPmin, W
     // todo: fix the thp problems
-    var thp = thpmin * 2; // a random increase
-    var rs = solvedFormulas[0].solve({thp, w}).rs;
     var rsmin = solvedFormulas[0].solve({thpmin, w}).rsmin;
+    var rs = rsmin * random(1, 2); // a random increase
+    var thp = solvedFormulas[0].solve({w, rs}).thp;
     var rc = solvedFormulas[0].solve({rs, thpa, w}).rc;
     console.table({
         airDensity, hpMPH, thpa, ad, cd0,
         d, sigma, cd,
         vmins, thpmin, dmin,
-        thp, rs, rsmin
+        rsmin, rs, thp, rc
     });
     // Relation 9: AD, be, (L/D)max
     var ldmax = solvedFormulas[0].solve({ear, cd0}).ldmax;
@@ -297,9 +297,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         describe("9: AD, be, (L/D)max", function () {
             it("solves for ldmax", function () {
-                testAircraftFormula(0, "ldmax", {ear, cd0}, ldmax);
-                testAircraftFormula(0, "ear", {ldmax, cd0}, ear);
-                testAircraftFormula(0, "cd0", {ldmax, ear}, cd0);
+                testAircraftFormula(29, "ldmax", {be, ad}, ldmax);
+                testAircraftFormula(29, "be", {ldmax, ad}, be);
+                testAircraftFormula(29, "ad", {ldmax, be}, ad);
             });
         });
         describe("10: AD, CLminS, ce", function () {
@@ -878,7 +878,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 29: Max lift-to-drag ratio", function () {
-        var ldmax;
         var ldmax28;
         beforeEach(function () {
             ldmax = solvedFormulas[29].ldmax(be, ad);
@@ -887,10 +886,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             ldmax28 = solvedFormulas[0].solve({ear, cd0}).ldmax;
             expect(ldmax).toBeCloseTo(ldmax28);
         });
-        it("should solve for effective span", function () {
+        it("solves for best glide ratio", function () {
+            testAircraftFormula(29, "ldmax", {be, ad}, ldmax);
+        });
+        it("solves for effective span", function () {
             testAircraftFormula(29, "be", {ldmax, ad}, be);
         });
-        it("should solve for drag area", function () {
+        it("solves for drag area", function () {
             testAircraftFormula(29, "ad", {ldmax, be}, ad);
         });
     });

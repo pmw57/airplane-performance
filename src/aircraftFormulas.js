@@ -167,6 +167,7 @@ function aircraftFormulas(constants, solvePoly) {
             // Relation 9: AD, be, (L/D)max
             // Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
             // handled in Formulas 19 and 29
+
             // Relation 10: CLminS, ad, ce
             // Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
             function clminsFromAdCe(ad, ce) {
