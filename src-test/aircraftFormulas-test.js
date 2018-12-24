@@ -107,7 +107,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 13: Dp, RPM, Mp
     var rpm = craft.rpm;
     var mp = solvedFormulas[64].solve({rpm, dp}).mp;
-
+    console.table({
+        rpm, mp
+    });
     var thetag = solvedFormulas[1].solve({d, w}).thetag;
     var rho = 0.0023769;
     var m = 970;
