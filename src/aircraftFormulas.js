@@ -18,6 +18,7 @@ function aircraftFormulas(constants, solvePoly) {
     var bhpPerHour = bhpPerMin * 60;
     var bhpPerSec = bhpPerMin / 60; // 550
     var hpMPH = bhpPerHour / 5280;
+    var speedOfSound = 1100; // ft/sec
     var formulas = [
             [
             // todo: remove the need for "custom" objects from test file
@@ -1756,15 +1757,15 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Formula 64: Propeller tip mach number
             function mpFromRpmDp(rpm, dp) {
-                var mp = Math.PI / (60 * 1100) * rpm * dp;
+                var mp = Math.PI / (60 * speedOfSound) * rpm * dp;
                 return mp;
             },
             function rpmFromMpDp(mp, dp) {
-                var rpm = 60 * 1100 / Math.PI * mp / dp;
+                var rpm = 60 * speedOfSound / Math.PI * mp / dp;
                 return rpm;
             },
             function dpFromMpRpm(mp, rpm) {
-                var dp = 60 * 1100 / Math.PI * mp / rpm;
+                var dp = 60 * speedOfSound / Math.PI * mp / rpm;
                 return dp;
             }
         ]

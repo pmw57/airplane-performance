@@ -104,6 +104,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         dp,
         ts
     });
+    // Relation 13: Dp, RPM, Mp
+    var rpm = craft.rpm;
+    var mp = solvedFormulas[64].solve({rpm, dp}).mp;
 
     var thetag = solvedFormulas[1].solve({d, w}).thetag;
     var rho = 0.0023769;
@@ -116,7 +119,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var vp = larger(v);
     var ap = Math.TAU * (dp / 2);
     var eta = solvedFormulas[38].solve({thpa, bhp}).eta;
-    var rpm = 2700;
     var n = 60;
     var cl = random(1, 2);
     var thpal = solvedFormulas[31].thpal(sigma, ad, v, wbe);
@@ -337,6 +339,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "bhp", {vprop, sigma, dp}, bhp);
                 testAircraftFormula(0, "sigma", {vprop, bhp, dp}, sigma);
                 testAircraftFormula(0, "dp", {vprop, bhp, sigma}, dp);
+            });
+        });
+        describe("13: Dp, RPM, Mp", function () {
+            it("solves for Mach number", function () {
+                testAircraftFormula(64, "mp", {rpm, dp}, mp);
+                testAircraftFormula(64, "rpm", {mp, dp}, rpm);
+                testAircraftFormula(64, "dp", {mp, rpm}, dp);
             });
         });
     });
