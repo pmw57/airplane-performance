@@ -116,7 +116,7 @@ function aircraftFormulas(constants, solvePoly) {
             // Relation 7: AD, VminS, W/be, THPmin, Dmin
             // Drag Area, Airspeed for Minimum Sink, Effective Span Loading,
             // Minimum power required for Level Flight, Minimum Drag
-            // handled by Formula 24
+            // vmins handled by Formula 24
 
             // thpmin handled by Formula 33
             // dmin handled by Formula 30
