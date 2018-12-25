@@ -89,6 +89,18 @@ function aircraftFormulas(constants, solvePoly) {
                 var vmax = Math.pow(thpa / ad * hpMPH / airDensity, 1 / 3);
                 return vmax;
             },
+            function thpaFromBhpEta(bhp, eta) {
+                var thpa = bhp * eta;
+                return thpa;
+            },
+            function bhpFromThpaEta(thpa, eta) {
+                var bhp = thpa / eta;
+                return bhp;
+            },
+            function etaFromThpaBhp(thpa, bhp) {
+                var eta = thpa / bhp;
+                return eta;
+            },
             // Relation 6: CD0, AD, S
             // Zero-lift drag, drag area, and wing area
             function dFromAdV(ad, v) {
@@ -990,33 +1002,27 @@ function aircraftFormulas(constants, solvePoly) {
                 );
                 return wbe;
             },
-            function thpaFromAdVmaxSigma(ad, vmax, sigma) {
+            // Density ratio version of Relation 5
+            function thpaFromSigmaAdVmax(sigma, ad, vmax) {
                 var thpa = 88 / 33000 * airDensity *
                     sigma * ad * Math.pow(vmax, 3);
                 return thpa;
             },
-            function adFromThpaVmaxSigma(thpa, vmax, sigma) {
+            function sigmaFromThpaAdVmax(thpa, ad, vmax) {
+                var sigma = thpa / (88 / 33000 * airDensity *
+                    ad * Math.pow(vmax, 3));
+                return sigma;
+            },
+            function adFromThpaSigmaVmax(thpa, sigma, vmax) {
                 var ad = 33000 / 88 / airDensity *
                     sigma * thpa / Math.pow(vmax, 3);
                 return ad;
             },
-            function vmaxFromThpaAdSigma(thpa, ad, sigma) {
+            function vmaxFromThpaSigmaAd(thpa, sigma, ad) {
                 var vmax = Math.pow(
                     33000 / 88 / airDensity * sigma * thpa / ad, 1 / 3
                 );
                 return vmax;
-            },
-            function thpaFromBhpEta(bhp, eta) {
-                var thpa = bhp * eta;
-                return thpa;
-            },
-            function bhpFromThpaEta(thpa, eta) {
-                var bhp = thpa / eta;
-                return bhp;
-            },
-            function etaFromThpaBhp(thpa, bhp) {
-                var eta = thpa / bhp;
-                return eta;
             }
         ],
         [ // Formula 32
