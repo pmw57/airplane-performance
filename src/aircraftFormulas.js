@@ -142,20 +142,18 @@ function aircraftFormulas(constants, solvePoly) {
             function wFromRsminThpmin(rsmin, thpmin) {
                 return 33000 * thpmin / rsmin;
             },
-            function rsminFromThpminW(thp, w) {
-                return 33000 * thp / w;
+            function thpaFromWRcRs(rc, rs, w) {
+                return w / 33000 * (rc + rs);
             },
-            function rcFromRsThpaW(rs, thpa, w) {
+            // the following are similar to Formula 38
+            function wFromThpaRcRs(thpa, rc, rs) {
+                return 33000 * thpa / (rc + rs);
+            },
+            function rcFromThpaWRs(thpa, w, rs) {
                 return 33000 * thpa / w - rs;
             },
-            function rsFromRcThpaW(rc, thpa, w) {
+            function rsFromThpaWR(thpa, w, rc) {
                 return 33000 * thpa / w - rc;
-            },
-            function thpaFromRcRsW(rc, rs, w) {
-                return (rc + rs) * w / 33000;
-            },
-            function wFromRcRsThpa(rc, rs, thpa) {
-                return 33000 * thpa / (rc + rs);
             },
             // Relation 9: AD, be, (L/D)max
             // Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
