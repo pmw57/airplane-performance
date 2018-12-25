@@ -846,7 +846,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("solves for velocity", function () {
             testAircraftFormula(22, "v", {rs, sigma, ad, wbe}, v);
         });
-        it("solves for wing loading", function () {
+        it("solves for span loading", function () {
             testAircraftFormula(22, "wbe", {rs, sigma, ad, v}, wbe);
         });
     });
@@ -992,7 +992,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         xit("solves for velocity", function () {
             testAircraftFormula(31, "v", {thpal, sigma, ad, wbe}, v);
         });
-        it("solves for wing loading", function () {
+        it("solves for span loading", function () {
             testAircraftFormula(31, "wbe", {thpal, sigma, ad, v}, wbe);
         });
         // from Relation 5, using density ratio
