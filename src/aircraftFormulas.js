@@ -13,6 +13,8 @@ function aircraftFormulas(constants, solvePoly) {
         return Math.sqrt(area * 2 / TAU);
     }
     var sea_level_density = 0.0023769;
+    // todo: consider using a dynamic pressure function for the velocity instead
+    // currently, airDensity provides an understanding of where 1/391 comes from.
     var airDensity = 0.5 * sea_level_density * Math.pow(5280 / 3600, 2);
     var bhpPerMin = 33000;
     var bhpPerHour = bhpPerMin * 60;
