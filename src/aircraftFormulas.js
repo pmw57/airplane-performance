@@ -22,9 +22,9 @@ function aircraftFormulas(constants, solvePoly) {
     var formulas = [
             [
             // todo: remove the need for "custom" objects from test file
-            // todo: Should formulas only with airDensity not be allowed,
-            
-            // as altitude density ratio needs to be involved too?
+            // todo: Should formulas with density ratio result in removing
+            // simplified formulas without density ratio?
+
             // Relation 1: CL, V, W/S
             // Lift Coefficient, Airspeed, Wing Loading
             function weFromWWu(w, wu) {
@@ -38,7 +38,6 @@ function aircraftFormulas(constants, solvePoly) {
             },
 
             // ws handled by Formula 7
-
             // Crosschecks for relation 11 use Formula 7 too
 
             // Relation 2: S, W/S, W
@@ -161,7 +160,8 @@ function aircraftFormulas(constants, solvePoly) {
 
             // Relation 10: CLminS, ad, ce
             // Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
-            // handled in Formula 19
+            // clmins handled in Formula 19
+            // clmaxld handled in Formula 27
 
             // Relation 11: W, BHP, RCmax
             // Weight, Engine Brake Horsepower, Ideal Maximum Rate of Climb

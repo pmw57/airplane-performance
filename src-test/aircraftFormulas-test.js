@@ -335,9 +335,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(19, "ce", {clmins, ad}, ce);
             });
             it("crosschecks using wing loading", function () {
-                testAircraftFormula(7, "cl", {sigma, ws, v: vmins}, clmins);
-                testAircraftFormula(7, "ws", {sigma, cl: clmins, v: vmins}, ws);
-                testAircraftFormula(7, "v", {sigma, cl: clmins, ws}, vmins);
+                testAircraftFormula(7, "clmins", {sigma, ws, vmins}, clmins);
+                testAircraftFormula(7, "ws", {sigma, clmins, vmins}, ws);
+                testAircraftFormula(7, "vmins", {sigma, clmins, ws}, vmins);
             });
         });
         describe("11: W, BHP, RCmax", function () {
