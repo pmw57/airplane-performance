@@ -314,12 +314,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "w", {rsmin, thpmin}, w);
             });
             it("solves for rc", function () {
-                // convert thpa to bhp using Relation 5, to use Formula 38
                 testAircraftFormula(0, "rc", {rs, thpa, w}, rc);
                 testAircraftFormula(0, "rs", {rc, thpa, w}, rs);
                 testAircraftFormula(0, "thpa", {rc, rs, w}, thpa);
                 testAircraftFormula(0, "w", {rc, rs, thpa}, w);
             });
+            // Can also use Formula 38 with bhp and eta
         });
         describe("9: AD, be, (L/D)max", function () {
             it("solves for ldmax", function () {
