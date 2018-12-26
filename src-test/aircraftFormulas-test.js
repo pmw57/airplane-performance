@@ -84,21 +84,22 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var dmin = solvedFormulas[0].solve({ad, wbe}).dmin;
     // Relation 8: RSmin, THPmin, W
     var rsmin = solvedFormulas[0].solve({thpmin, w}).rsmin;
-    var rs = rsmin * random(1, 2); // a random increase
+    var rs = solvedFormulas[22].solve({sigma, ad, v, w, be}).rs;
     var thp = solvedFormulas[0].solve({w, rs}).thp;
-    var rc = solvedFormulas[0].solve({rs, thpa, w}).rc;
+    var bhp = craft.bhp || random(100, 300);
+    var eta = solvedFormulas[38].solve({thpa, bhp}).eta; // Formula 38
+    var rc = solvedFormulas[38].rc(bhp, w, eta, rs);
     console.table({
         airDensity, hpMPH, thpa, ad, cd0,
         d, sigma, cd,
         vmins, thpmin, dmin,
-        rsmin, rs, thp, rc
+        rsmin, rs, thp, bhp, eta, rc
     });
     // Relation 9: AD, be, (L/D)max
     var ldmax = solvedFormulas[28].solve({ear, cd0}).ldmax;
     // Relation 10: AD, CLminS, ce
     var clmins = solvedFormulas[19].solve({ad, ce}).clmins;
     // Relation 11: W, BHP, RCmax
-    var bhp = craft.bhp || random(100, 300);
     var rcmax = solvedFormulas[0].solve({bhp, w}).rcmax;
     // Relation 12: Ts, BHP, Vprop, Dp
     var dp = craft.dp || random(4, 10);
@@ -107,8 +108,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     console.table({
         ldmax,
         clmins,
-        vprop,
+        rcmax,
         dp,
+        vprop,
         ts
     });
     // Relation 13: Dp, RPM, Mp
@@ -120,7 +122,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var thetag = solvedFormulas[1].solve({d, w}).thetag;
     var vfs = v * 5280 / 3600; // Formula 3
     var cl = random(1, 2); // Formula 3
-    var eta = solvedFormulas[38].solve({thpa, bhp}).eta; // Formula 38
     var vp = larger(v); // Formula 39
     var ap = Math.TAU * (dp / 2); // Formula 39
     var m = 970; // Formula 40
@@ -313,6 +314,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "w", {rsmin, thpmin}, w);
             });
             it("solves for rc", function () {
+                // convert thpa to bhp using Relation 5, to use Formula 38
                 testAircraftFormula(0, "rc", {rs, thpa, w}, rc);
                 testAircraftFormula(0, "rs", {rc, thpa, w}, rs);
                 testAircraftFormula(0, "thpa", {rc, rs, w}, thpa);
@@ -576,7 +578,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 10: Rate of sink (ft/min)", function () {
+        // todo: why does normal rs not work here?
         var d5;
+        var rs;
         beforeEach(function () {
             cd = random(1, 1.5);
             thetag = solvedFormulas[8].thetag(cd, sigma, s, v);
@@ -603,6 +607,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 11: Rate of sink without velocity", function () {
+        // todo: why does normal rs not work here?
+        var rs;
         beforeEach(function () {
             cl = solvedFormulas[7].cl(ws, sigma, v);
             rs = solvedFormulas[11].rs(sigma, w, s, cd, cl);
@@ -1110,12 +1116,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 38: Rate of climb", function () {
-        var rc;
-        var rsmin;
-        beforeEach(function () {
-            rsmin = solvedFormulas[22].rs(sigma, ad, v, w, be);
-            rc = solvedFormulas[38].rc(bhp, w, eta, rsmin);
-        });
         it("solves for propeller efficiency", function () {
             testAircraftFormula(38, "eta", {thpa, bhp}, eta);
         });
@@ -1126,16 +1126,19 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             testAircraftFormula(38, "bhp", {eta, thpa}, bhp);
         });
         it("solves for engine brake horsepower", function () {
-            testAircraftFormula(38, "bhp", {rc, w, eta, rsmin}, bhp);
+            testAircraftFormula(38, "rc", {bhp, w, eta, rs}, rc);
+        });
+        it("solves for engine brake horsepower", function () {
+            testAircraftFormula(38, "bhp", {rc, w, eta, rs}, bhp);
         });
         it("solves for weight", function () {
-            testAircraftFormula(38, "w", {rc, bhp, eta, rsmin}, w);
+            testAircraftFormula(38, "w", {rc, bhp, eta, rs}, w);
         });
         it("solves for efficiency", function () {
-            testAircraftFormula(38, "eta", {rc, bhp, w, rsmin}, eta);
+            testAircraftFormula(38, "eta", {rc, bhp, w, rs}, eta);
         });
         it("solves for rate of sink", function () {
-            testAircraftFormula(38, "rsmin", {rc, bhp, w, eta}, rsmin);
+            testAircraftFormula(38, "rs", {rc, bhp, w, eta}, rs);
         });
     });
     describe("Formula 39: Mass conservation equation", function () {

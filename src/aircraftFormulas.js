@@ -142,10 +142,10 @@ function aircraftFormulas(constants, solvePoly) {
             function wFromRsminThpmin(rsmin, thpmin) {
                 return 33000 * thpmin / rsmin;
             },
+            // the following are similar to Formula 38
             function thpaFromWRcRs(rc, rs, w) {
                 return w / 33000 * (rc + rs);
             },
-            // the following are similar to Formula 38
             function wFromThpaRcRs(thpa, rc, rs) {
                 return 33000 * thpa / (rc + rs);
             },
@@ -1009,20 +1009,20 @@ function aircraftFormulas(constants, solvePoly) {
             function bhpFromEtaThpa(eta, thpa) {
                 return thpa / eta;
             },
-            function rcFromBhpWEtaRsmin(bhp, w, eta, rsmin) {
+            function rcFromBhpWEtaRs(bhp, w, eta, rs) {
                 // eta is the efficiency: THPa / BHP
-                return (33000 * bhp / w) * eta - rsmin;
+                return (33000 * bhp / w) * eta - rs;
             },
-            function bhpFromRcWEtaRsmin(rc, w, eta, rsmin) {
-                return w / 33000 * (rc + rsmin) / eta;
+            function bhpFromRcWEtaRs(rc, w, eta, rs) {
+                return w / 33000 * (rc + rs) / eta;
             },
-            function wFromRcBhpEtaRsmin(rc, bhp, eta, rsmin) {
-                return 33000 * eta * bhp / (rc + rsmin);
+            function wFromRcBhpEtaRs(rc, bhp, eta, rs) {
+                return 33000 * eta * bhp / (rc + rs);
             },
-            function etaFromRcBhpWRsmin(rc, bhp, w, rsmin) {
-                return (rc + rsmin) / (33000 * bhp / w);
+            function etaFromRcBhpWRs(rc, bhp, w, rs) {
+                return (rc + rs) / (33000 * bhp / w);
             },
-            function rsminFromRcBhpWEta(rc, bhp, w, eta) {
+            function rsFromRcBhpWEta(rc, bhp, w, eta) {
                 return (33000 * bhp / w) * eta - rc;
             }
         ],
