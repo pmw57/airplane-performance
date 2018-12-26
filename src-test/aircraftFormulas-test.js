@@ -300,7 +300,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         describe("8: RSmin, THPmin, W", function () {
             // thp = W RS / 33000 (Relation 8)
-            // thpal = RS W / 33000 (Formula 33)
+            // thpal = RS W / 33000 (Formula 32)
             // Both can't be right, and thp isn't used anywhere.
             // Only thpa, thpal, and thpmin are used.
             it("solves for RS", function () {
