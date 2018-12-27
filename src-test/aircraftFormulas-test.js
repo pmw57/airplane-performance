@@ -53,13 +53,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var clmax = craft.clmax;
     // todo: What breaks when sigma is not 1?
     var sigma = 1; // sealevel
-    var ws = solvedFormulas[7].solve({sigma, cl: clmax, v: vs0}).ws;
+    var ws = solvedFormulas[7].solve({sigma, clmax, vs0}).ws;
     var vmax = craft.vmax;
     // Relation 2: s, w/s, w
     var w = craft.w;
     var we = craft.we;
     var wu = solvedFormulas[0].solve({w, we}).wu;
-    var s = w / ws;
+    var s = solvedFormulas[0].solve({w, ws}).s;
     // Relation 3: S, be, eAR, ce
     var b = craft.b;
     var ar = b * b / s;
@@ -186,10 +186,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "wu", {w, we}, wu);
             });
             it("solves lift force from lift coeff. and velocity", function () {
-                testAircraftFormula(7, "ws", {sigma, clmax, v}, ws);
-                testAircraftFormula(7, "sigma", {ws, clmax, v}, sigma);
-                testAircraftFormula(7, "clmax", {ws, sigma, v}, clmax);
-                testAircraftFormula(7, "v", {ws, sigma, clmax}, v);
+                testAircraftFormula(7, "ws", {sigma, clmax, vs0}, ws);
+                testAircraftFormula(7, "sigma", {ws, clmax, vs0}, sigma);
+                testAircraftFormula(7, "clmax", {ws, sigma, vs0}, clmax);
+                testAircraftFormula(7, "vs0", {ws, sigma, clmax}, vs0);
             });
         });
         describe("2: S, W/S, W", function () {

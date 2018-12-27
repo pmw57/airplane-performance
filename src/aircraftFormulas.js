@@ -316,16 +316,16 @@ function aircraftFormulas(constants, solvePoly) {
                 return Math.sqrt(ws / (sigma * cl * airDensity));
             },
             // Relation 1 clmax
-            function wsFromSigmaClmaxVs1(sigma, clmax, v) {
-                return sigma * clmax * v * v * airDensity;
+            function wsFromSigmaClmaxVs0(sigma, clmax, vs0) {
+                return sigma * clmax * vs0 * vs0 * airDensity;
             },
-            function sigmaFromWsClmaxVs1(ws, clmax, v) {
-                return ws / (clmax * v * v * airDensity);
+            function sigmaFromWsClmaxVs0(ws, clmax, vs0) {
+                return ws / (clmax * vs0 * vs0 * airDensity);
             },
-            function clmaxFromWsSigmaVs1(ws, sigma, v) {
-                return ws / (sigma * v * v * airDensity);
+            function clmaxFromWsSigmaVs0(ws, sigma, vs0) {
+                return ws / (sigma * vs0 * vs0 * airDensity);
             },
-            function vFromWsSigmaCl(ws, sigma, clmax) {
+            function vs0FromWsSigmaCl(ws, sigma, clmax) {
                 return Math.sqrt(ws / (sigma * clmax * airDensity));
             },
             // Relation 11 crosschecks
