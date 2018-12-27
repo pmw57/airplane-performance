@@ -109,6 +109,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     console.table({
         ldmax,
         clmins,
+        clmaxld,
         rcmax,
         dp,
         vprop,
