@@ -791,6 +791,12 @@ function aircraftFormulas(constants, solvePoly) {
             },
             function cd0FromClmaxldEar(clmaxld, ear) {
                 return Math.pow(clmaxld, 2) / (Math.PI * ear);
+            },
+            function clmaxldFromClmins(clmins) {
+                return clmins / Math.sqrt(3);
+            },
+            function clminsFromClmaxld(clmaxld) {
+                return clmaxld * Math.sqrt(3);
             }
         ],
         [ // Formula 28

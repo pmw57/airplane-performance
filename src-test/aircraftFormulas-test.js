@@ -99,6 +99,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var ldmax = solvedFormulas[28].solve({ear, cd0}).ldmax;
     // Relation 10: AD, CLminS, ce
     var clmins = solvedFormulas[19].solve({ad, ce}).clmins;
+    var clmaxld = solvedFormulas[27].solve({clmins}).clmaxld;
     // Relation 11: W, BHP, RCmax
     var rcmax = solvedFormulas[0].solve({bhp, w}).rcmax;
     // Relation 12: Ts, BHP, Vprop, Dp
@@ -338,6 +339,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(7, "clmins", {sigma, ws, vmins}, clmins);
                 testAircraftFormula(7, "ws", {sigma, clmins, vmins}, ws);
                 testAircraftFormula(7, "vmins", {sigma, clmins, ws}, vmins);
+            });
+            it("solves for clmaxld", function () {
+                testAircraftFormula(27, "clmaxld", {clmins}, clmaxld);
+                testAircraftFormula(27, "clmins", {clmaxld}, clmins);
             });
         });
         describe("11: W, BHP, RCmax", function () {
