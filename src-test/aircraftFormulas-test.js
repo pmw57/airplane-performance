@@ -348,8 +348,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         describe("11: W, BHP, RCmax", function () {
             it("solves for rcmax", function () {
-                testAircraftFormula(0, "bhp", {rcmax, w}, bhp);
                 testAircraftFormula(0, "rcmax", {bhp, w}, rcmax);
+                testAircraftFormula(0, "bhp", {rcmax, w}, bhp);
                 testAircraftFormula(0, "w", {bhp, rcmax}, w);
             });
             it("solves for clmins", function () {
@@ -370,6 +370,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "bhp", {vprop, sigma, dp}, bhp);
                 testAircraftFormula(0, "sigma", {vprop, bhp, dp}, sigma);
                 testAircraftFormula(0, "dp", {vprop, bhp, sigma}, dp);
+            });
+            it("solves for idealised thrust from airspeed", function () {
+                // todo, using Figure 73 graph on page 137
             });
         });
         describe("13: Dp, RPM, Mp", function () {
