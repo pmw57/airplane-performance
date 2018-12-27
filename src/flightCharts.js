@@ -72,16 +72,49 @@ const chart = (function () {
     };
     const efuse = {
         rectangle: function invewRectFromAr(ar) {
+            if (ar < 2 || ar > 14) {
+                return;
+            }
             // attempting to use a linear/log plot to use straight line solution
             return 1.15 * Math.pow(10, ar / 35);
+            // curve matching formula, with no algebraic relevance to aircraft
+            const a = -6.6814 * Math.pow(10, 4);
+            const b = 5.8320 * Math.pow(10, 5);
+            const c = 4.5374 * Math.pow(10, 5);
+            const d = -1.8567 * Math.pow(10, 4);
+            return (a + b * ar) / (1 + c * ar + d * Math.pow(ar, 2));
         },
         round: function invewRoundFromAr(ar) {
+            if (ar < 2 || ar > 20) {
+                return;
+            }
             return 0.51 * Math.pow(10, ar / 43);
+            // curve matching formula, with no algebraic relevance to aircraft
+            const a = 5.3869 * Math.pow(10, -1);
+            const b = 1.0628;
+            const c = -5.9335 * Math.pow(10, -2);
+            const y = a * Math.pow(b, ar) * Math.pow(ar, c);
+            return y;
+        }
+    };
+    const thrustRatio = {
+        ideal: function ewTaperFromAr(vTilde) {
+            var root = Math.sqrt(1 + 2 * Math.PI / 27 * Math.pow(vTilde, 3));
+            var eta = Math.pow(Math.PI / 4, 1 / 3) * vTilde *
+                (Math.pow(1 + root, 1 / 3) - (Math.pow(-1 + root, 1 / 3)));
+            return Math.pow(1 - eta, 1 / 3);
+        },
+        optimal: function ewRectFromAr(vTilde) {
+            var root = Math.sqrt(1 + 2 * Math.PI / 27 * Math.pow(vTilde, 3));
+            var eta = Math.pow(Math.PI / 4, 1 / 3) * vTilde *
+                (Math.pow(1 + root, 1 / 3) - (Math.pow(-1 + root, 1 / 3)));
+            return Math.pow(1 - eta, 1 / 3) * 0.85;
         }
     };
     return {
         polar,
         ew,
-        efuse
+        efuse,
+        thrustRatio
     };
 }());
