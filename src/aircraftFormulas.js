@@ -791,6 +791,9 @@ function aircraftFormulas(constants, solvePoly) {
             },
             function cd0FromClmaxldEar(clmaxld, ear) {
                 return Math.pow(clmaxld, 2) / (Math.PI * ear);
+            },
+            function clmaxldFromClmins(clmins) {
+                return clmins / Math.sqrt(3);
             }
         ],
         [ // Formula 28
@@ -1641,16 +1644,18 @@ function aircraftFormulas(constants, solvePoly) {
             ],
             [
                 function cdsFromWingFuseCompCdi(cdwing, s, kwing, cl,
-                    cdfuse, sfuse, kfuse, angleOfAttack,
-                    cdcomp, scomp, ar, planformCorrection) {
+                    cdfuse, sfuse, kfuse, alpha, cdcomp, scomp, ar, k) {
+                    // debugger;
+                    // todo: k is planformCorrection and perhaps should be
+                    // called delta instead
                     var cd0 = {
                             wing: cdwing * s * (1 + kwing * cl * cl),
                             fuse: cdfuse * sfuse *
-                                (1 + kfuse * angleOfAttack * angleOfAttack),
+                                (1 + kfuse * alpha * alpha),
                             comp: cdcomp * scomp
                         };
                     var cdi = cl * cl / (Math.PI * ar) *
-                        (1 + planformCorrection) * s;
+                        (1 + k) * s;
                     return cd0.wing + cd0.fuse + cd0.comp + cdi;
                 }
             ],
@@ -1866,7 +1871,7 @@ function aircraftFormulas(constants, solvePoly) {
                 function invewFromEwing(ewing) {
                     return 1 / ewing;
                 },
-                function ewgdFromEwHB(ew, h, b) {
+                function kgdFromEwHB(h, b) {
                     // from a DataAnalysis app that
                     // results in the following Logistics formula
                     function logistics(a, b, k, x) {
@@ -1875,7 +1880,9 @@ function aircraftFormulas(constants, solvePoly) {
                     var a = 1.0869;
                     // var b = -0.9337;
                     var k = 7.6391;
-                    var kgd = logistics(a, b, k, h / b);
+                    return logistics(a, b, k, h / b);
+                },
+                function ewgdFromEwKgd(ew, kgd) {
                     return ew * kgd;
                 }
             ]

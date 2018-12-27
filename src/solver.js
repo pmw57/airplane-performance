@@ -7,10 +7,15 @@ function Solver(calcs) {
     }
     solver.all = calcs;
     solver.getArgs = function (calc) {
+        function filterNewline(arg, index, args) {
+            var ret = "\r";
+            return arg.charCodeAt(0) !== ret.charCodeAt(0);
+        }
         var argsRx = /\(([a-zA-Z0-9_,\s]+)\)/;
         var content = calc.toString();
         var matches = content.match(argsRx);
-        return matches[1].split(/[,\u0020]+/);
+        var args = matches[1].split(/[,\u0020]+/);
+        return args.filter(filterNewline);
     };
     solver.getAnswer = function (calc) {
         calc = calc.toString();
