@@ -1,7 +1,7 @@
 /*jslint browser:true */
-/*global solvePoly, Solver, aircraftFormulas, aircraftSolver, chart
+/*global solvePoly, Solver, aircraftFormulas, aircraftSolver, chart, CONSTANTS
     describe, beforeEach, it, xit, expect */
-var formulas = aircraftFormulas(window.CONSTANTS, solvePoly);
+var formulas = aircraftFormulas(CONSTANTS, solvePoly);
 var solvedFormulas = aircraftSolver(Solver, formulas);
 (function () {
     "use strict";
@@ -45,8 +45,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     };
     var craftType = "t18";
     var craft = crafts[craftType];
-
-    // TODO: Use formulas for **ALL** formula relationships
+    var rho = window.CONSTANTS.SEALEVEL_DENSITY; // sea-level air density
 
     // Relation 1: cl, v, w/s
     var vs0 = craft.vs0;
@@ -78,13 +77,11 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         wbe
     });
     // Relation 5: ad, vmax, thpa
-    var rho = 0.0023769; // sea-level air density
-    var hpMPH = 33000 * 60 / 5280;
     var ad = craft.ad;
     var thpa = solvedFormulas[0].solve({ad, vmax}).thpa;
-    var cd0 = ad / s;
+    var cd0 = solvedFormulas[19].solve({ad, s}).cd0;
     // Relation 6: cd0, ad, s
-    var v = vs0;
+    var v = craft.vs0;
     // Todo: Should velocity vary?
     // var v = random(vs0, vmax);
     var d = solvedFormulas[0].solve({ad, v}).d;
@@ -101,7 +98,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var eta = solvedFormulas[38].solve({thpa, bhp}).eta; // Formula 38
     var rc = solvedFormulas[38].solve({bhp, w, eta, rs}).rc;
     console.table({
-        hpMPH, thpa, ad, cd0,
+        thpa, ad, cd0,
         d, sigma, cd,
         vmins, thpmin, dmin,
         rsmin, rs, thp, bhp, eta, rc
@@ -133,9 +130,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         rpm, mp
     });
     var thetag = solvedFormulas[1].solve({d, w}).thetag;
-    var vfs = v * 5280 / 3600; // Formula 3
+    var vfs = solvedFormulas[3].solve({v}).vfs; // Formula 3
     var l = solvedFormulas[2].solve({w, thetag}).l;
     var cl = solvedFormulas[3].solve({l, rho, vfs, s}).cl;
+    // TODO: Use formulas for **ALL** formula relationships
     var vp = larger(v); // Formula 39
     var ap = Math.TAU * (dp / 2); // Formula 39
     var m = 970; // Formula 40
@@ -407,7 +405,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     describe("Formula 2: Lift is similar to the flight path", function () {
         it("is equivalent to drag * cos/sin of the glide angle", function () {
-            const angle = thetag * Math.TAU / 360;
+            const angle = thetag * CONSTANTS.RADIANS_TO_DEGREES;
             const drag = solvedFormulas[1].solve({w, thetag}).d;
             const expected = drag * Math.cos(angle) / Math.sin(angle);
             testAircraftFormula(2, "l", {w, thetag}, expected);
@@ -537,7 +535,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         it("should be close to drag * 360/TAU", function () {
             d = solvedFormulas[5].solve({sigma, cd, s, v}).d;
-            expect(thetag).toBeCloseTo(d * 360 / Math.TAU);
+            expect(thetag).toBeCloseTo(d * CONSTANTS.DEGREES_TO_RADIANS);
         });
         it("should solve for sigma", function () {
             testAircraftFormula(8, "sigma", {thetag, cd, s, v}, sigma);
@@ -888,7 +886,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("is the same as Formulas 26 for coefficient of lift", function () {
             var dg_dcl26 = solvedFormulas[26].solve({cl, cd0, ear}).dg_dcl;
             var clmaxld26 = Math.sqrt(1 / (-1 / (cl * cl) +
-                dg_dcl26 * Math.TAU / 360 / cd0));
+                dg_dcl26 * CONSTANTS.RADIANS_TO_DEGREES / cd0));
             expect(clmaxld26).toBeCloseTo(clmaxld);
         });
         it("solves for effective aspect ratio", function () {
@@ -1504,8 +1502,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             var g;
             beforeEach(function () {
                 dh = random(1, 100);
-                rho = 0.0023769 + random(0, 0.0023769 - 0.005);
-                g = 32.1740; // ft/sec^2
+                var airDensity = CONSTANTS.SEALEVEL_DENSITY;
+                rho = airDensity + random(0, airDensity - 0.005);
+                g = CONSTANTS.G; // ft/sec^2
                 dp = -rho * g * dh;
             });
             it("solves for dp", function () {
@@ -1524,8 +1523,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             var g;
             beforeEach(function () {
                 dh = random(1, 100);
-                rho = 0.0023769 + random(0, 0.0023769 - 0.005);
-                g = 32.1740; // ft/sec^2
+                var airDensity = CONSTANTS.SEALEVEL_DENSITY;
+                rho = airDensity + random(0, airDensity - 0.005);
+                g = CONSTANTS.G; // ft/sec^2
                 dp = -rho * g * dh;
             });
             it("solves for dp", function () {
@@ -1919,7 +1919,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         var r;
         var p;
         beforeEach(function () {
-            rho = random(0.0023769, 0.0005);
+            var airDensity = CONSTANTS.SEALEVEL_DENSITY;
+            rho = airDensity + random(0, airDensity - 0.005);
             r = random(390, 518);
             p = solvedFormulas.j[1].solve({rho, r}).p;
         });
