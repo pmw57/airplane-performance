@@ -248,10 +248,10 @@ function aircraftFormulas(constants, solvePoly) {
                 return 2 * l / (cl * rho * vfs * vfs);
             },
             function vFromVfs(vfs) {
-                return vfs * window.CONSTANTS.MPH_TO_FPS;
+                return vfs * constants.FPS_TO_MPH;
             },
             function vfsFromV(v) {
-                return v * window.CONSTANTS.FPS_TO_MPH;
+                return v * constants.MPH_TO_FPS;
             }
         ],
         [ // Formula 4
