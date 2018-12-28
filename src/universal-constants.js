@@ -1,5 +1,7 @@
 /*jslint browser:true */
 
+Math.TAU = 2 * Math.PI;
+
 // universal constants
 window.CONSTANTS = {
     GRAVITATIONAL: 32.1740, // ft/sec^2
@@ -11,7 +13,9 @@ window.CONSTANTS = {
     RADIANS_TO_DEGREES: Math.TAU / 360,
     DEGREES_TO_RADIANS: 360 / Math.TAU,
     FPS_TO_MPH: 3600 / 5280,
-    MPH_TO_FPS: 5280 / 3600
+    MPH_TO_FPS: 5280 / 3600,
+    BPH_PER_MIN: 33000,
+    SPEED_OF_SOUND: 1100
 };
 
 // standard notation

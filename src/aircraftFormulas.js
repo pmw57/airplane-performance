@@ -1,23 +1,19 @@
 /*jslint browser:true */
 /*global chart */
 
-function aircraftFormulas(constants, solvePoly) {
+function aircraftFormulas(consts, solvePoly) {
     "use strict";
 
-    Math.TAU = Math.PI * 2;
-    var TAU = Math.TAU;
     function areaFromRadius(radius) {
-        return 0.5 * TAU * radius * radius;
+        return 0.5 * Math.TAU * radius * radius;
     }
     function radiusFromArea(area) {
-        return Math.sqrt(area * 2 / TAU);
+        return Math.sqrt(area * 2 / Math.TAU);
     }
-    var sea_level_density = constants.SEALEVEL_DENSITY;
-    var bhpPerMin = 33000;
-    var bhpPerHour = bhpPerMin * 60;
-    var bhpPerSec = bhpPerMin / 60; // 550
-    var hpMPH = bhpPerHour / 5280;
-    var speedOfSound = 1100; // ft/sec
+    var bhpPerMin = consts.BPH_PER_MIN;
+    var bhpPerHour = consts.BPH_PER_MIN * 60;
+    var bhpPerSec = consts.BPH_PER_MIN / 60; // 550
+    var hpMPH = consts.BPH_PER_MIN * 60 / 5280;
     var formulas = [
             [
             // todo: remove the need for "custom" objects from test file
@@ -70,16 +66,17 @@ function aircraftFormulas(constants, solvePoly) {
             // Relation 5: AD, Vmax, THPa
             // Drag area, maximum level speed, available thrust horsepower
             function thpaFromAdVmax(ad, vmax) {
-                return 0.5 * sea_level_density * ad *
-                    Math.pow(vmax, 3) / hpMPH * Math.pow(constants.MPH_TO_FPS, 2);
+                return 0.5 * consts.SEALEVEL_DENSITY * ad *
+                    Math.pow(vmax, 3) / hpMPH * Math.pow(consts.MPH_TO_FPS, 2);
             },
             function adFromThpaVmax(thpa, vmax) {
-                return 1 / (0.5 * sea_level_density) *
-                    thpa / Math.pow(vmax, 3) * hpMPH * Math.pow(constants.FPS_TO_MPH, 2);
+                return 1 / (0.5 * consts.SEALEVEL_DENSITY) *
+                    thpa / Math.pow(vmax, 3) * hpMPH *
+                    Math.pow(consts.FPS_TO_MPH, 2);
             },
             function vmaxFromThpaAd(thpa, ad) {
-                return Math.pow(1 / (0.5 * sea_level_density) *
-                    thpa / ad * hpMPH * Math.pow(constants.FPS_TO_MPH, 2), 1 / 3);
+                return Math.pow(1 / (0.5 * consts.SEALEVEL_DENSITY) *
+                    thpa / ad * hpMPH * Math.pow(consts.FPS_TO_MPH, 2), 1 / 3);
             },
             function thpaFromBhpEta(bhp, eta) {
                 return bhp * eta;
@@ -93,33 +90,33 @@ function aircraftFormulas(constants, solvePoly) {
             // Relation 6: CD0, AD, S
             // Zero-lift drag, drag area, and wing area
             function dFromAdV(ad, v) {
-                return 0.5 * sea_level_density * ad * Math.pow(v, 2) *
-                    Math.pow(constants.MPH_TO_FPS, 2);
+                return 0.5 * consts.SEALEVEL_DENSITY * ad * Math.pow(v, 2) *
+                    Math.pow(consts.MPH_TO_FPS, 2);
             },
             function adFromDV(d, v) {
-                return d / (0.5 * sea_level_density * Math.pow(v, 2) *
-                    Math.pow(constants.MPH_TO_FPS, 2));
+                return d / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(v, 2) *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function vFromDAD(d, ad) {
-                return Math.sqrt(d / (0.5 * sea_level_density * ad *
-                    Math.pow(constants.MPH_TO_FPS, 2)));
+                return Math.sqrt(d / (0.5 * consts.SEALEVEL_DENSITY * ad *
+                    Math.pow(consts.MPH_TO_FPS, 2)));
             },
             // ad/cd0/s handled by Formula 19
             function dFromCd0SV(cd0, s, v) {
-                return 0.5 * sea_level_density * cd0 * s * Math.pow(v, 2) *
-                    Math.pow(constants.MPH_TO_FPS, 2);
+                return 0.5 * consts.SEALEVEL_DENSITY * cd0 * s *
+                    Math.pow(v, 2) * Math.pow(consts.MPH_TO_FPS, 2);
             },
             function cd0FromDSV(d, s, v) {
-                return d / (0.5 * sea_level_density * s * Math.pow(v, 2) *
-                    Math.pow(constants.MPH_TO_FPS, 2));
+                return d / (0.5 * consts.SEALEVEL_DENSITY * s * Math.pow(v, 2) *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function sFromDCd0V(d, cd0, v) {
-                return d / (0.5 * sea_level_density * cd0 * Math.pow(v, 2) *
-                    Math.pow(constants.MPH_TO_FPS, 2));
+                return d / (0.5 * consts.SEALEVEL_DENSITY * cd0 *
+                    Math.pow(v, 2) * Math.pow(consts.MPH_TO_FPS, 2));
             },
             function vFromDCd0S(d, cd0, s) {
-                return Math.sqrt(d / (0.5 * sea_level_density * cd0 * s *
-                    Math.pow(constants.MPH_TO_FPS, 2)));
+                return Math.sqrt(d / (0.5 * consts.SEALEVEL_DENSITY * cd0 * s *
+                    Math.pow(consts.MPH_TO_FPS, 2)));
             },
             // Relation 7: AD, VminS, W/be, THPmin, Dmin
             // Drag Area, Airspeed for Minimum Sink, Effective Span Loading,
@@ -190,42 +187,42 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // formula 1
             function dFromWThetag(w, thetag) {
-                return w * Math.sin(thetag * constants.RADIANS_TO_DEGREES);
+                return w * Math.sin(thetag * consts.RADIANS_TO_DEGREES);
             },
             function wFromDThetag(d, thetag) {
-                return d / Math.sin(thetag * constants.RADIANS_TO_DEGREES);
+                return d / Math.sin(thetag * consts.RADIANS_TO_DEGREES);
             },
             function thetagFromDW(d, w) {
-                return Math.asin(d / w) * constants.DEGREES_TO_RADIANS;
+                return Math.asin(d / w) * consts.DEGREES_TO_RADIANS;
             },
             function dFromSigmaCdSV(sigma, cd, s, v) {
-                return sigma * 0.5 * sea_level_density * cd * s *
-                    Math.pow(v, 2) * Math.pow(constants.MPH_TO_FPS, 2);
+                return sigma * 0.5 * consts.SEALEVEL_DENSITY * cd * s *
+                    Math.pow(v, 2) * Math.pow(consts.MPH_TO_FPS, 2);
             },
             function sigmaFromDCdSV(d, cd, s, v) {
-                return d / (0.5 * sea_level_density * cd * s *
-                    Math.pow(v, 2) * Math.pow(constants.MPH_TO_FPS, 2));
+                return d / (0.5 * consts.SEALEVEL_DENSITY * cd * s *
+                    Math.pow(v, 2) * Math.pow(consts.MPH_TO_FPS, 2));
             },
             function cdFromSigmaCdSV(d, sigma, s, v) {
-                return d / (sigma * 0.5 * sea_level_density * s *
-                    Math.pow(v, 2) * Math.pow(constants.MPH_TO_FPS, 2));
+                return d / (sigma * 0.5 * consts.SEALEVEL_DENSITY * s *
+                    Math.pow(v, 2) * Math.pow(consts.MPH_TO_FPS, 2));
             },
             function sFromSigmaCdSV(d, sigma, cd, v) {
-                return d / (sigma * 0.5 * sea_level_density * cd *
-                    Math.pow(v, 2) * Math.pow(constants.MPH_TO_FPS, 2));
+                return d / (sigma * 0.5 * consts.SEALEVEL_DENSITY * cd *
+                    Math.pow(v, 2) * Math.pow(consts.MPH_TO_FPS, 2));
             },
             function vFromSigmaCdSV(d, sigma, cd, s) {
-                return Math.sqrt(d / (sigma * 0.5 * sea_level_density *
-                    cd * s * Math.pow(constants.MPH_TO_FPS, 2)));
+                return Math.sqrt(d / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    cd * s * Math.pow(consts.MPH_TO_FPS, 2)));
             }
             // todo: lift, airspeed, and weight
         ],
         [ // Formula 2
             function lFromWThetag(w, thetag) {
-                return w * Math.cos(thetag * constants.RADIANS_TO_DEGREES);
+                return w * Math.cos(thetag * consts.RADIANS_TO_DEGREES);
             },
             function wFromLThetag(l, thetag) {
-                return l / Math.cos(thetag * constants.RADIANS_TO_DEGREES);
+                return l / Math.cos(thetag * consts.RADIANS_TO_DEGREES);
             },
             function thetagFromLW(l, w) {
                 return Math.acos(l / w) / Math.TAU * 360;
@@ -248,10 +245,10 @@ function aircraftFormulas(constants, solvePoly) {
                 return 2 * l / (cl * rho * vfs * vfs);
             },
             function vFromVfs(vfs) {
-                return vfs * constants.FPS_TO_MPH;
+                return vfs * consts.FPS_TO_MPH;
             },
             function vfsFromV(v) {
-                return v * constants.MPH_TO_FPS;
+                return v * consts.MPH_TO_FPS;
             }
         ],
         [ // Formula 4
@@ -273,36 +270,46 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Formula 5
             function dFromSigmaCdSV(sigma, cd, s, v) {
-                return sigma * cd * s * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                return sigma * 0.5 * consts.SEALEVEL_DENSITY * cd * s * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2);
             },
             function sigmaFromdCdSV(d, cd, s, v) {
-                return d / (cd * s * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return d / (0.5 * consts.SEALEVEL_DENSITY * cd * s * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function cdFromDSigmaSV(d, sigma, s, v) {
-                return d / (sigma * s * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return d / (sigma * 0.5 * consts.SEALEVEL_DENSITY * s * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function sFromDSigmaCdV(d, sigma, cd, v) {
-                return d / (sigma * cd * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return d / (sigma * 0.5 * consts.SEALEVEL_DENSITY * cd * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function vFromDSigmaCdS(d, sigma, cd, s) {
-                return Math.sqrt(d / (sigma * cd * s * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)));
+                return Math.sqrt(d / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    cd * s * Math.pow(consts.MPH_TO_FPS, 2)));
             }
         ],
         [ // Formula 6
             function lFromSigmaClSV(sigma, cl, s, v) {
-                return sigma * cl * s * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                return sigma * 0.5 * consts.SEALEVEL_DENSITY * cl * s * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2);
             },
             function sigmaFromLClSV(l, cl, s, v) {
-                return l / (cl * s * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return l / (0.5 * consts.SEALEVEL_DENSITY * cl * s * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function clFromLSigmaSV(l, sigma, s, v) {
-                return l / (sigma * s * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return l / (sigma * 0.5 * consts.SEALEVEL_DENSITY * s * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function sFromLSigmaClV(l, sigma, cl, v) {
-                return l / (sigma * cl * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return l / (sigma * 0.5 * consts.SEALEVEL_DENSITY * cl * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function vFromLSigmaClS(l, sigma, cl, s) {
-                return Math.sqrt(l / (sigma * cl * s * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)));
+                return Math.sqrt(l / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    cl * s * Math.pow(consts.MPH_TO_FPS, 2)));
             }
         ],
         [ // Formula 7
@@ -316,138 +323,147 @@ function aircraftFormulas(constants, solvePoly) {
                 return w / ws;
             },
             function wsFromSigmaClV(sigma, cl, v) {
-                return sigma * cl * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                return sigma * cl * v * v * 0.5 * consts.SEALEVEL_DENSITY *
+                    Math.pow(consts.MPH_TO_FPS, 2);
             },
             function sigmaFromWsClV(ws, cl, v) {
-                return ws / (cl * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return ws / (cl * v * v * 0.5 * consts.SEALEVEL_DENSITY *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function clFromWsSigmaV(ws, sigma, v) {
-                return ws / (sigma * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return ws / (sigma * v * v * 0.5 * consts.SEALEVEL_DENSITY *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function vFromWsSigmaCl(ws, sigma, cl) {
-                return Math.sqrt(ws / (sigma * cl * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)));
+                return Math.sqrt(ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    cl * Math.pow(consts.MPH_TO_FPS, 2)));
             },
             // Relation 1 clmax
             function wsFromSigmaClmaxVs0(sigma, clmax, vs0) {
-                return sigma * clmax * vs0 * vs0 * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                return sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    clmax * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2);
             },
             function sigmaFromWsClmaxVs0(ws, clmax, vs0) {
-                return ws / (clmax * vs0 * vs0 * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return ws / (0.5 * consts.SEALEVEL_DENSITY *
+                    clmax * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2));
             },
             function clmaxFromWsSigmaVs0(ws, sigma, vs0) {
-                return ws / (sigma * vs0 * vs0 * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2));
             },
             function vs0FromWsSigmaCl(ws, sigma, clmax) {
-                return Math.sqrt(ws / (sigma * clmax * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)));
+                return Math.sqrt(ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    clmax * Math.pow(consts.MPH_TO_FPS, 2)));
             },
             // Relation 11 crosschecks
             function clminsFromWsVmins(ws, vmins) {
-                return ws / (vmins * vmins * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                return ws / (0.5 * consts.SEALEVEL_DENSITY * vmins * vmins *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function wsFromClminsVmins(clmins, vmins) {
-                return clmins * vmins * vmins * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                return 0.5 * consts.SEALEVEL_DENSITY * clmins * vmins * vmins *
+                    Math.pow(consts.MPH_TO_FPS, 2);
             },
             function vminsFromClminsWs(clmins, ws) {
-                return Math.sqrt(ws / (clmins * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)));
+                return Math.sqrt(ws / (0.5 * consts.SEALEVEL_DENSITY * clmins *
+                    Math.pow(consts.MPH_TO_FPS, 2)));
             }
         ],
         [ // Formula 8
             function thetagFromSigmaCdSV(sigma, cd, s, v) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                return constants.DEGREES_TO_RADIANS * densityRatio * cd * s * v * v;
+                return sigma * 0.5 * consts.SEALEVEL_DENSITY * cd * s * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2) * consts.DEGREES_TO_RADIANS;
             },
             function sigmaFromThetagCdSV(thetag, cd, s, v) {
-                var sigma = constants.RADIANS_TO_DEGREES *
-                    thetag / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * cd * s * v * v);
-                return sigma;
+                return thetag / (
+                    0.5 * consts.SEALEVEL_DENSITY * cd * s * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2)) * consts.RADIANS_TO_DEGREES;
             },
             function cdFromThetagSigmaSV(thetag, sigma, s, v) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                return constants.RADIANS_TO_DEGREES * thetag / (densityRatio * s * v * v);
+                return consts.RADIANS_TO_DEGREES * thetag / (
+                    sigma * 0.5 * consts.SEALEVEL_DENSITY * s * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function sFromThetagSigmaCdV(thetag, sigma, cd, v) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                return constants.RADIANS_TO_DEGREES * thetag / (densityRatio * cd * v * v);
+                return consts.RADIANS_TO_DEGREES * thetag / (
+                    sigma * 0.5 * consts.SEALEVEL_DENSITY * cd * v * v *
+                    Math.pow(consts.MPH_TO_FPS, 2));
             },
             function vFromThetagSigmaCdS(thetag, sigma, cd, s) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                var v = Math.sqrt(constants.RADIANS_TO_DEGREES *
-                    thetag / (densityRatio * cd * s));
+                var v = Math.sqrt(consts.RADIANS_TO_DEGREES * thetag / (
+                    sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    Math.pow(consts.MPH_TO_FPS, 2) * cd * s));
                 return v;
             }
         ],
         [ // Formula 9
             function thetagFromCdCl(cd, cl) {
-                return constants.DEGREES_TO_RADIANS * cd / cl;
+                return consts.DEGREES_TO_RADIANS * cd / cl;
             },
             function cdFromThetagCl(thetag, cl) {
-                return constants.RADIANS_TO_DEGREES * thetag * cl;
+                return consts.RADIANS_TO_DEGREES * thetag * cl;
             },
             function clFromThetagCd(thetag, cd) {
-                return constants.DEGREES_TO_RADIANS * cd / thetag;
+                return consts.DEGREES_TO_RADIANS * cd / thetag;
             }
         ],
         [ // Formula 10
             function rsFromSigmaCdSVW(sigma, cd, s, v, w) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                return 5280 / 60 * v * densityRatio * cd * s * v * v / w;
+                return v * 5280 / 60 * sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    cd * s * Math.pow(v * consts.MPH_TO_FPS, 2) / w;
             },
             function sigmaFromRsCdSVW(rs, cd, s, v, w) {
-                var sigma = 60 / 5280 * rs *
-                    w / (v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * cd * s * v * v);
-                return sigma;
+                return rs * w / (0.5 * consts.SEALEVEL_DENSITY * cd * s *
+                    Math.pow(v * consts.MPH_TO_FPS, 2)) / v * 60 / 5280;
             },
             function cdFromRsSigmaSVW(rs, sigma, s, v, w) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                return 60 / 5280 * rs * w / (v * densityRatio * s * v * v);
+                return rs * w / (sigma * 0.5 * consts.SEALEVEL_DENSITY * s *
+                    Math.pow(v * consts.MPH_TO_FPS, 2)) / v * 60 / 5280;
             },
             function sFromRsSigmaCdVW(rs, sigma, cd, v, w) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                return 60 / 5280 * rs * w / (v * densityRatio * cd * v * v);
+                return rs * w / (sigma * 0.5 * consts.SEALEVEL_DENSITY * cd *
+                    Math.pow(v * consts.MPH_TO_FPS, 2)) / v * 60 / 5280;
             },
             function vFromRsSigmaCdSW(rs, sigma, cd, s, w) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                var v = Math.pow(60 / 5280 * rs *
-                    w / (densityRatio * cd * s), 1 / 3);
-                return v;
+                return Math.pow(rs * w / (
+                    sigma * 0.5 * consts.SEALEVEL_DENSITY * cd * s *
+                    Math.pow(consts.MPH_TO_FPS, 2)) * 60 / 5280, 1 / 3);
             },
             function wFromRsSigmaCdSV(rs, sigma, cd, s, v) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                return 5280 / 60 * v * densityRatio * cd * s * v * v / rs;
+                return sigma * 0.5 * consts.SEALEVEL_DENSITY * cd * s *
+                    Math.pow(v * consts.MPH_TO_FPS, 2) / rs * 5280 / 60 * v;
             }
         ],
         [ // Formula 11
             function rsFromSigmaWSCdCl(sigma, w, s, cd, cl) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
-                var rs = 5280 / 60 * Math.sqrt(1 / densityRatio * w / s) *
+                return 5280 / 60 * 1 / Math.sqrt(sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * s / w) *
                     cd / Math.pow(cl, 3 / 2);
-                return rs;
             },
             function sigmaFromRsWSCdCl(rs, w, s, cd, cl) {
-                var sigma = Math.pow(5280 / 60 * Math.sqrt(1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) *
+                var sigma = Math.pow(5280 / 60 * Math.sqrt(1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
                     w / s) / rs * cd / Math.pow(cl, 3 / 2), 2);
                 return sigma;
             },
             function wFromRsSigmaSCdCl(rs, sigma, s, cd, cl) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                var densityRatio = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2);
                 var w = Math.pow(60 / 5280 * rs * Math.sqrt(densityRatio), 2) *
                     s * Math.pow(Math.pow(cl, 3 / 2) / cd, 2);
                 return w;
             },
             function sFromRsSigmaWCdCl(rs, sigma, w, cd, cl) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                var densityRatio = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2);
                 var s = Math.pow(5280 / 60, 2) / densityRatio *
                     w / Math.pow(rs, 2) * Math.pow(cd / Math.pow(cl, 3 / 2), 2);
                 return s;
             },
             function cdFromRsSigmaWSCl(rs, sigma, w, s, cl) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                var densityRatio = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2);
                 var cd = 60 / 5280 * Math.sqrt(densityRatio) *
                     Math.sqrt(s / w) * rs * Math.pow(cl, 3 / 2);
                 return cd;
             },
             function clFromRsSigmaWSCd(rs, sigma, w, s, cd) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                var densityRatio = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2);
                 var cl = Math.pow(5280 / 60 / Math.sqrt(densityRatio) *
                     Math.sqrt(w / s) / rs * cd, 2 / 3);
                 return cl;
@@ -583,13 +599,13 @@ function aircraftFormulas(constants, solvePoly) {
                 return Math.pow(be / b, 2);
             },
             function rsminFromWSigmaAdBe(w, sigma, ad, be) {
-                var rsmin = 5280 / 60 * Math.sqrt(1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2))) *
+                var rsmin = 5280 / 60 * Math.sqrt(1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2))) *
                     4 / Math.pow(3 * Math.PI, 3 / 4) * Math.sqrt(w / sigma) *
                     Math.pow(ad, 1 / 4) / Math.pow(be, 3 / 2);
                 return rsmin;
             },
             function wFromRsminSigmaAdBe(rsmin, sigma, ad, be) {
-                var w = Math.pow(rsmin * 60 / 5280 * Math.sqrt(0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) *
+                var w = Math.pow(rsmin * 60 / 5280 * Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
                     Math.pow(3 * Math.PI, 3 / 4) / (4 * Math.pow(ad, 1 / 4)) *
                     Math.pow(be, 3 / 2), 2) * sigma;
                 return w;
@@ -597,19 +613,19 @@ function aircraftFormulas(constants, solvePoly) {
             function sigmaFromRsminWAdBe(rsmin, w, ad, be) {
                 var sigma = Math.pow(
                     5280 / 60 * 4 / (Math.pow(
-                        3 * Math.PI, 3 / 4) * Math.sqrt(0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * rsmin
+                        3 * Math.PI, 3 / 4) * Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * rsmin
                     ) * Math.pow(ad, 1 / 4) / Math.pow(be, 3 / 2), 2) * w;
                 return sigma;
             },
             function adFromRsminWSigmaBe(rsmin, w, sigma, be) {
                 var ad = Math.pow(60 / 5280 * Math.pow(3 * Math.PI, 3 / 4) / 4 *
-                    Math.sqrt(0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * rsmin * Math.sqrt(sigma / w) *
+                    Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * rsmin * Math.sqrt(sigma / w) *
                     Math.pow(be, 3 / 2), 4);
                 return ad;
             },
             function beFromRsminWSigmaAd(rsmin, w, sigma, ad) {
                 var be = Math.pow(5280 / 60 * 4 / Math.pow(3 * Math.PI, 3 / 4) /
-                    (Math.sqrt(0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * rsmin) * Math.sqrt(w / sigma) *
+                    (Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * rsmin) * Math.sqrt(w / sigma) *
                     Math.pow(ad, 1 / 4), 2 / 3);
                 return be;
             }
@@ -625,7 +641,7 @@ function aircraftFormulas(constants, solvePoly) {
                 return w / wbe;
             },
             function vminsFromWbeSigmaAd(wbe, sigma, ad) {
-                var vmins = Math.sqrt(1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2))) /
+                var vmins = Math.sqrt(1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2))) /
                     Math.pow(3 * Math.PI, 1 / 4) *
                     Math.sqrt(wbe) / Math.sqrt(sigma) /
                     Math.pow(ad, 1 / 4);
@@ -633,63 +649,63 @@ function aircraftFormulas(constants, solvePoly) {
             },
             function wbeFromVminsSigmaAd(vmins, sigma, ad) {
                 var wbe = Math.pow(Math.pow(3 * Math.PI, 1 / 4) *
-                    Math.sqrt(0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * vmins *
+                    Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * vmins *
                     Math.sqrt(sigma) * Math.pow(ad, 1 / 4), 2);
                 return wbe;
             },
             function sigmaFromvMinsWBeAd(vmins, wbe, ad) {
-                var sigma = wbe / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.sqrt(3 * Math.PI) *
+                var sigma = wbe / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.sqrt(3 * Math.PI) *
                     Math.pow(vmins, 2) * Math.sqrt(ad));
                 return sigma;
             },
             function adFromVminsWBeSigma(vmins, wbe, sigma) {
-                var ad = Math.pow(1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * sigma *
+                var ad = Math.pow(1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * sigma *
                     Math.sqrt(3 * Math.PI) * Math.pow(vmins, 2)) * wbe, 2);
                 return ad;
             }
         ],
         [ // Formula 22
             function rsFromSigmaAdVWBe(sigma, ad, v, w, be) {
-                var dragArea = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * ad * Math.pow(v, 3) / w;
-                var effectiveSpan = w / (Math.PI * sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) *
+                var dragArea = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * ad * Math.pow(v, 3) / w;
+                var effectiveSpan = w / (Math.PI * sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) *
                     v * Math.pow(be, 2));
                 return (dragArea + effectiveSpan) * 5280 / 60;
             },
             function sigmaFromRsAdVWBe(rs, ad, v, w, be) {
-                var a = 5280 / 60 * ad * Math.pow(v, 3) * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) / w;
+                var a = 5280 / 60 * ad * Math.pow(v, 3) * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) / w;
                 var b = -rs;
-                var c = 5280 / 60 * w / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.PI * v * be * be);
+                var c = 5280 / 60 * w / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.PI * v * be * be);
                 return solvePoly([a, b, c])[1];
             },
             function adFromRsSigmaVWBe(rs, sigma, v, w, be) {
                 var ad = (rs / 5280 * 60 -
-                    w / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.PI * sigma * v * Math.pow(be, 2))) /
-                    sigma / Math.pow(v, 3) / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * w;
+                    w / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.PI * sigma * v * Math.pow(be, 2))) /
+                    sigma / Math.pow(v, 3) / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * w;
                 return ad;
             },
             function vFromRsSigmaAdWBe(rs, sigma, ad, w, be) {
                 var coeffs = [
-                    sigma * ad * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) / w,
+                    sigma * ad * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) / w,
                     0,
                     0,
                     -60 / 5280 * rs,
-                    w / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.PI * sigma * be * be)
+                    w / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.PI * sigma * be * be)
                 ];
                 return solvePoly(coeffs)[1];
             },
             function wFromRsSigmaAdVBe(rs, sigma, ad, v, be) {
                 var coeffs = [
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.PI * sigma * v * be * be),
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.PI * sigma * v * be * be),
                     -60 / 5280 * rs,
-                    sigma * ad * Math.pow(v, 3) * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)
+                    sigma * ad * Math.pow(v, 3) * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)
                 ];
                 return solvePoly(coeffs)[0];
             },
             function beFromRsSigmaAdVW(rs, sigma, ad, v, w) {
                 var be = Math.sqrt(
-                    1 / (Math.PI * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * v * sigma / w *
+                    1 / (Math.PI * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * v * sigma / w *
                         (60 / 5280 * rs -
-                        0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * sigma * ad * Math.pow(v, 3) / w)
+                        0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * sigma * ad * Math.pow(v, 3) / w)
                     )
                 );
                 return be;
@@ -697,61 +713,61 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Formula 23
             function sigmasdvFromSigmaAdVWBe(sigma, ad, v, w, be) {
-                var densityRatio = sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2);
+                var densityRatio = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2);
                 var sigmasdv = 5280 / 60 * 3 * densityRatio * ad * v * v / w -
                     w / (Math.PI * densityRatio * v * v * be * be);
                 return sigmasdv;
             },
             function sigmaFromSigmasdvAdVWBe(sigmas_dv, ad, v, w, be) {
                 var sigma = sigmas_dv /
-                    (5280 / 60 * 3 * ad * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) / w -
-                        w / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.PI * v * v * be * be));
+                    (5280 / 60 * 3 * ad * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) / w -
+                        w / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.PI * v * v * be * be));
                 return sigma;
             },
             function adFromSigmasdvSigmaVWBe(sigmas_dv, sigma, v, w, be) {
-                var ad = 60 / 5280 * w / (3 * sigma * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) *
+                var ad = 60 / 5280 * w / (3 * sigma * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
                     (sigmas_dv + w /
-                        (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.PI * sigma * v * v * be * be));
+                        (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.PI * sigma * v * v * be * be));
                 return ad;
             },
             function wFromSigmasdvSigmaAdVBe(sigmas_dv, sigma, ad, v, be) {
                 var coeffs = [
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.PI * sigma * v * v * be * be),
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.PI * sigma * v * v * be * be),
                     sigmas_dv,
-                    -5280 / 60 * 3 * sigma * ad * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)
+                    -5280 / 60 * 3 * sigma * ad * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)
                 ];
                 return solvePoly(coeffs)[0];
             },
             function beFromSigmasdvSigmaAdVW(sigmas_dv, sigma, ad, v, w) {
                 var be = Math.sqrt(
-                    1 / (5280 / 60 * 3 * sigma * ad * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) / w -
+                    1 / (5280 / 60 * 3 * sigma * ad * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) / w -
                         sigmas_dv) *
-                    w / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.PI * sigma * v * v)
+                    w / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.PI * sigma * v * v)
                 );
                 return be;
             }
         ],
         [ // Formula 24
             function vminsFromSigmaWbeAd(sigma, wbe, ad) {
-                var vmins = 1 / Math.sqrt(0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) /
+                var vmins = 1 / Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) /
                     Math.pow(3 * Math.PI, 1 / 4) *
                     Math.sqrt(wbe) /
                     (Math.sqrt(sigma) * Math.pow(ad, 1 / 4));
                 return vmins;
             },
             function wbeFromVminsSigmaAd(vmins, sigma, ad) {
-                var wbe = Math.sqrt(3 * Math.PI) * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) *
+                var wbe = Math.sqrt(3 * Math.PI) * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) *
                     sigma * Math.pow(vmins, 2) * Math.sqrt(ad);
                 return wbe;
             },
             function sigmaFromVminsWbeAd(vmins, wbe, ad) {
-                var sigma = wbe / (Math.sqrt(3 * Math.PI) * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) *
+                var sigma = wbe / (Math.sqrt(3 * Math.PI) * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) *
                     Math.pow(vmins, 2) * Math.sqrt(ad));
                 return sigma;
             },
             function adFromVminsSigmaWBe(vmins, sigma, wbe) {
                 var ad = 1 / (3 * Math.PI) * Math.pow(1 / vmins, 4) *
-                Math.pow(wbe / (sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)), 2);
+                Math.pow(wbe / (sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)), 2);
                 return ad;
             }
         ],
@@ -772,7 +788,7 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Formula 26
             function dg_dclFromClCd0Ear(cl, cd0, ear) {
-                var dg_dcl = constants.DEGREES_TO_RADIANS *
+                var dg_dcl = consts.DEGREES_TO_RADIANS *
                     (cd0 / (cl * cl) + 1 / (Math.PI * ear));
                 return dg_dcl;
             },
@@ -789,7 +805,7 @@ function aircraftFormulas(constants, solvePoly) {
             },
             function earFromDgdclClCd0(dg_dcl, cl, cd0) {
                 var ear = 1 / (Math.PI * (
-                    dg_dcl * constants.RADIANS_TO_DEGREES - cd0 / Math.pow(cl, 2)
+                    dg_dcl * consts.RADIANS_TO_DEGREES - cd0 / Math.pow(cl, 2)
                 ));
                 return ear;
             }
@@ -847,56 +863,56 @@ function aircraftFormulas(constants, solvePoly) {
         [ // Formula 31
             function thpalFromSigmaAdVWBe(sigma, ad, v, wbe) {
                 var thpal = (5280 / 60) / 33000 *
-                    (sigma * ad * Math.pow(v, 3) * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) +
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) *
+                    (sigma * ad * Math.pow(v, 3) * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) +
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
                     Math.pow(wbe, 2) / (Math.PI * sigma * v));
                 return thpal;
             },
             function adFromThpalSigmaVWBe(thpal, sigma, v, wbe) {
-                var ad = 1 / (Math.pow(v, 3) * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * sigma) * (
+                var ad = 1 / (Math.pow(v, 3) * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * sigma) * (
                     33000 * 60 / 5280 * thpal -
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) *
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
                     Math.pow(wbe, 2) / (Math.PI * sigma * v)
                 );
                 return ad;
             },
             function vFromThpalSigmaAdWBe(thpal, sigma, ad, wbe) {
                 var coeffs = [
-                    ad * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * sigma,
+                    ad * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * sigma,
                     0,
                     0,
                     33000 / (5280 / 60) * thpal,
-                    Math.pow(wbe, 2) / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) * Math.PI)
+                    Math.pow(wbe, 2) / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.PI)
                 ];
                 return -solvePoly(coeffs)[1];
             },
             function wbeFromThpalSigmaAdV(thpal, sigma, ad, v) {
                 var wbe = Math.sqrt(
                     (thpal / 5280 * 60 * 33000 -
-                        sigma * ad * Math.pow(v, 3) * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) *
-                    Math.PI * sigma * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)
+                        sigma * ad * Math.pow(v, 3) * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
+                    Math.PI * sigma * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)
                 );
                 return wbe;
             },
             // Density ratio version of Relation 5
             function thpaFromSigmaAdVmax(sigma, ad, vmax) {
-                var thpa = 88 / 33000 * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) *
+                var thpa = 88 / 33000 * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) *
                     sigma * ad * Math.pow(vmax, 3);
                 return thpa;
             },
             function sigmaFromThpaAdVmax(thpa, ad, vmax) {
-                var sigma = thpa / (88 / 33000 * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) *
+                var sigma = thpa / (88 / 33000 * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) *
                     ad * Math.pow(vmax, 3));
                 return sigma;
             },
             function adFromThpaSigmaVmax(thpa, sigma, vmax) {
-                var ad = 33000 / 88 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) *
+                var ad = 33000 / 88 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
                     sigma * thpa / Math.pow(vmax, 3);
                 return ad;
             },
             function vmaxFromThpaSigmaAd(thpa, sigma, ad) {
                 var vmax = Math.pow(
-                    33000 / 88 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * sigma * thpa / ad, 1 / 3
+                    33000 / 88 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * sigma * thpa / ad, 1 / 3
                 );
                 return vmax;
             }
@@ -915,21 +931,21 @@ function aircraftFormulas(constants, solvePoly) {
         [ // Formula 33
             function thpminFromAdSigmaWbe(ad, sigma, wbe) {
                 var thpmin = 5280 / 60 * 4 / 33000 *
-                1 / (Math.sqrt(sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) *
+                1 / (Math.sqrt(sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
                 Math.pow(3 * Math.PI, 3 / 4)) *
                 Math.pow(ad, 1 / 4) * Math.pow(wbe, 3 / 2);
                 return thpmin;
             },
             function adFromThpminSigmaWbe(thpmin, sigma, wbe) {
                 var ad = Math.pow(33000 / 4 * 60 / 5280 *
-                    Math.sqrt(0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * Math.pow(3 * Math.PI, 3 / 4) *
+                    Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * Math.pow(3 * Math.PI, 3 / 4) *
                     thpmin * Math.sqrt(sigma) / Math.pow(wbe, 3 / 2), 4);
                 return ad;
             },
             function sigmaFromThpminAdWbe(thpmin, ad, wbe) {
                 var sigma = Math.pow(
                     5280 / 60 * 4 *
-                    Math.sqrt(1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2))) * Math.pow(ad, 1 / 4) *
+                    Math.sqrt(1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2))) * Math.pow(ad, 1 / 4) *
                     Math.pow(wbe, 3 / 2) / (
                         33000 * Math.pow(3 * Math.PI, 3 / 4) * thpmin
                     ), 2
@@ -939,7 +955,7 @@ function aircraftFormulas(constants, solvePoly) {
             function wbeFromThpminAdSigma(thpmin, ad, sigma) {
                 var wbe = Math.pow(
                     Math.pow(60 / 5280 * 33000 / 4 * thpmin, 2) *
-                    sigma * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) *
+                    sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) *
                     Math.pow(Math.pow(3 * Math.PI, 3) / ad, 1 / 2)
                 , 1 / 3);
                 return wbe;
@@ -956,7 +972,7 @@ function aircraftFormulas(constants, solvePoly) {
                 return (t - d) / Math.sin(thetac / 360 * Math.TAU);
             },
             function thetacFromTDW(t, d, w) {
-                return constants.DEGREES_TO_RADIANS * Math.asin((t - d) / w);
+                return consts.DEGREES_TO_RADIANS * Math.asin((t - d) / w);
             }
         ],
         [ // Formula 35
@@ -967,48 +983,48 @@ function aircraftFormulas(constants, solvePoly) {
                 return l / Math.cos(thetac / 360 * Math.TAU);
             },
             function thetacFromLW(l, w) {
-                return constants.DEGREES_TO_RADIANS * Math.acos(l / w);
+                return consts.DEGREES_TO_RADIANS * Math.acos(l / w);
             }
         ],
         [ // Formula 36
             function tFromThetacSigmaAdVWbe(w, thetac, sigma, ad, v, wbe) {
                 var t = w * Math.sin(thetac / 360 * Math.TAU) +
-                    sigma * ad * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) +
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * Math.pow(wbe, 2) / (sigma * v * v);
+                    sigma * ad * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) +
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * Math.pow(wbe, 2) / (sigma * v * v);
                 return t;
             },
             function wFromTThetacSigmaAdVWbe(t, thetac, sigma, ad, v, wbe) {
-                return (t - sigma * ad * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) -
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * Math.pow(wbe, 2) / (sigma * v * v)
+                return (t - sigma * ad * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) -
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * Math.pow(wbe, 2) / (sigma * v * v)
                     ) / Math.sin(thetac / 360 * Math.TAU);
             },
             function thetacFromTSigmaAdVWbe(t, w, sigma, ad, v, wbe) {
                 var thetac = Math.asin((
-                    t - sigma * ad * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) -
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * Math.pow(wbe, 2) / (sigma * v * v)
+                    t - sigma * ad * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) -
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * Math.pow(wbe, 2) / (sigma * v * v)
                 ) / w) / Math.TAU * 360;
                 return thetac;
             },
             function sigmaFromTThetacAdVWBeSigma(t, w, thetac, ad, v, wbe) {
                 var coeffs = [
-                    ad * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2),
+                    ad * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2),
                     w * Math.sin(thetac / 360 * Math.TAU) - t,
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * Math.pow(w / be, 2) / (v * v)
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * Math.pow(w / be, 2) / (v * v)
                 ];
                 return solvePoly(coeffs)[1];
             },
             function adFromTThetacSigmaVWBe(t, w, thetac, sigma, v, wbe) {
                 var ad = (
                     t - w * Math.sin(thetac / 360 * Math.TAU) -
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * Math.pow(wbe, 2) / (sigma * v * v)
-                ) / (sigma * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2));
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * Math.pow(wbe, 2) / (sigma * v * v)
+                ) / (sigma * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2));
                 return ad;
             },
             function wFromTThetaCSigmaAdVBe(t, thetac, sigma, ad, v, be) {
                 var coeffs = [
-                    1 / (0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2)) * Math.pow(1 / be, 2) / (sigma * v * v),
+                    1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * Math.pow(1 / be, 2) / (sigma * v * v),
                     Math.sin(thetac / 360 * Math.TAU),
-                    sigma * ad * v * v * 0.5 * sea_level_density * Math.pow(constants.MPH_TO_FPS, 2) - t
+                    sigma * ad * v * v * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) - t
                 ];
                 return solvePoly(coeffs)[0];
             }
@@ -1256,28 +1272,28 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Formula 50: Propeller velocity
             function bhpFromSigmaDpVEta(sigma, dp, v, eta) {
-                var bhp = Math.PI / 2 * sea_level_density / 33000 *
+                var bhp = Math.PI / 2 * consts.SEALEVEL_DENSITY / 33000 *
                     Math.pow(5280 / 60, 3) / Math.pow(60, 2) *
                     sigma * dp * dp * Math.pow(v, 3) *
                     (1 - eta) / Math.pow(eta, 3);
                 return bhp;
             },
             function sigmaFromBhpDpVEta(bhp, dp, v, eta) {
-                var sigma = 2 / Math.PI * 33000 / sea_level_density *
+                var sigma = 2 / Math.PI * 33000 / consts.SEALEVEL_DENSITY *
                     Math.pow(60, 2) / Math.pow(5280 / 60, 3) *
                     bhp / (dp * dp * Math.pow(v, 3)) *
                     Math.pow(eta, 3) / (1 - eta);
                 return sigma;
             },
             function dpFromBhpSigmaVEta(bhp, sigma, v, eta) {
-                var dp = Math.sqrt(2 / Math.PI * 33000 / sea_level_density *
+                var dp = Math.sqrt(2 / Math.PI * 33000 / consts.SEALEVEL_DENSITY *
                     Math.pow(60, 2) / Math.pow(5280 / 60, 3) *
                     bhp / (sigma * Math.pow(v, 3)) *
                     Math.pow(eta, 3) / (1 - eta));
                 return dp;
             },
             function vFromBhpSigmaDpEta(bhp, sigma, dp, eta) {
-                var v = Math.pow(2 / Math.PI * 33000 / sea_level_density *
+                var v = Math.pow(2 / Math.PI * 33000 / consts.SEALEVEL_DENSITY *
                     Math.pow(60, 2) / Math.pow(5280 / 60, 3) *
                     bhp / (sigma * dp * dp) *
                     Math.pow(eta, 3) / (1 - eta), 1 / 3);
@@ -1286,26 +1302,26 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Formula 51: Propeller velocity
             function vpropFromBhpSigmaDp(bhp, sigma, dp) {
-                var vprop = Math.pow(33000 / sea_level_density *
+                var vprop = Math.pow(33000 / consts.SEALEVEL_DENSITY *
                     Math.pow(60, 2) * Math.pow(60 / 5280, 3) *
                     bhp / (sigma * dp * dp), 1 / 3);
                 return vprop;
             },
             function bhpFromVpropSigmaDp(vprop, sigma, dp) {
-                var bhp = sea_level_density / 33000 *
+                var bhp = consts.SEALEVEL_DENSITY / 33000 *
                     Math.pow(5280 / 60, 3) / Math.pow(60, 2) *
                     sigma * dp * dp * Math.pow(vprop, 3);
                 return bhp;
             },
             function sigmaFromVpropBhpDp(vprop, bhp, dp) {
-                var sigma = 33000 / sea_level_density *
+                var sigma = 33000 / consts.SEALEVEL_DENSITY *
                     Math.pow(60, 2) / Math.pow(5280 / 60 * vprop, 3) *
                     bhp / Math.pow(dp, 2);
                 return sigma;
             },
             function dpFromVpropBhpSigma(vprop, bhp, sigma) {
                 var dp = Math.sqrt(
-                    33000 / sea_level_density *
+                    33000 / consts.SEALEVEL_DENSITY *
                     Math.pow(60, 2) / Math.pow(5280 / 60, 3) *
                     bhp / (Math.pow(vprop, 3) * sigma)
                 );
@@ -1394,24 +1410,24 @@ function aircraftFormulas(constants, solvePoly) {
         [ // Formula 58: Dimensionless power coefficient as rpm
             function cpFromBhpRpmDp(bhp, rpm, dp) {
                 var cp = 550 * bhp *
-                    Math.pow(60, 3) / (sea_level_density * Math.pow(rpm, 3) *
+                    Math.pow(60, 3) / (consts.SEALEVEL_DENSITY * Math.pow(rpm, 3) *
                     Math.pow(dp, 5));
                 return cp;
             },
             function bhpFromCpRpmDp(cp, rpm, dp) {
                 var bhp = cp * (
-                    sea_level_density * Math.pow(rpm, 3) * Math.pow(dp, 5)
+                    consts.SEALEVEL_DENSITY * Math.pow(rpm, 3) * Math.pow(dp, 5)
                 ) / (550 * Math.pow(60, 3));
                 return bhp;
             },
             function rpmFromCpBhpDp(cp, bhp, dp) {
                 var rpm = Math.pow(550 * Math.pow(60, 3) *
-                    bhp / (cp * sea_level_density * Math.pow(dp, 5)), 1 / 3);
+                    bhp / (cp * consts.SEALEVEL_DENSITY * Math.pow(dp, 5)), 1 / 3);
                 return rpm;
             },
             function dpFromCpBhpRpm(cp, bhp, rpm) {
                 var dp = Math.pow(550 * Math.pow(60, 3) *
-                    bhp / (sea_level_density * cp * Math.pow(rpm, 3)), 1 / 5);
+                    bhp / (consts.SEALEVEL_DENSITY * cp * Math.pow(rpm, 3)), 1 / 5);
                 return dp;
             }
         ],
@@ -1454,25 +1470,25 @@ function aircraftFormulas(constants, solvePoly) {
         [ // Formula 61: Approximation of static thrust as rpm
             function tsFromSigmaDpBhp(sigma, dp, bhp) {
                 var ts = Math.pow(
-                    2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
+                    2 * sigma * consts.SEALEVEL_DENSITY * areaFromRadius(dp / 2) *
                     Math.pow(bhp * bhpPerSec, 2), 1 / 3);
                 return ts;
             },
             function sigmaFromTsDpBhp(ts, dp, bhp) {
                 var sigma = Math.pow(ts, 3) /
-                    (2 * sea_level_density * areaFromRadius(dp / 2) *
+                    (2 * consts.SEALEVEL_DENSITY * areaFromRadius(dp / 2) *
                     Math.pow(bhp * bhpPerSec, 2));
                 return sigma;
             },
             function dpFromTsSigmaBhp(ts, sigma, bhp) {
                 var dp = radiusFromArea(Math.pow(ts, 3) /
-                    (2 * sigma * sea_level_density *
+                    (2 * sigma * consts.SEALEVEL_DENSITY *
                     Math.pow(bhp * bhpPerSec, 2))) * 2;
                 return dp;
             },
             function bhpFromTsSigmaDp(ts, sigma, dp) {
                 var bhp = Math.sqrt(Math.pow(ts, 3) /
-                    (2 * sigma * sea_level_density * areaFromRadius(dp / 2) *
+                    (2 * sigma * consts.SEALEVEL_DENSITY * areaFromRadius(dp / 2) *
                     Math.pow(bhpPerSec, 2)));
                 return bhp;
             }
@@ -1500,13 +1516,13 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Formula 64: Propeller tip mach number
             function mpFromRpmDp(rpm, dp) {
-                return Math.PI / (60 * speedOfSound) * rpm * dp;
+                return Math.PI / (60 * consts.SPEED_OF_SOUND) * rpm * dp;
             },
             function rpmFromMpDp(mp, dp) {
-                return 60 * speedOfSound / Math.PI * mp / dp;
+                return 60 * consts.SPEED_OF_SOUND / Math.PI * mp / dp;
             },
             function dpFromMpRpm(mp, rpm) {
-                return 60 * speedOfSound / Math.PI * mp / rpm;
+                return 60 * consts.SPEED_OF_SOUND / Math.PI * mp / rpm;
             }
         ]
     ];
@@ -1519,30 +1535,30 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // D.1: Differential of vertical momentum equation
             function dpFromRhoDh(rho, dh) {
-                return -rho * constants.G * dh;
+                return -rho * consts.G * dh;
             },
             function dhFromDpRho(dp, rho) {
-                return dp / (-rho * constants.G);
+                return dp / (-rho * consts.G);
             },
             function rhoFromDpDh(dp, dh) {
-                return -dp / (constants.G * dh);
+                return -dp / (consts.G * dh);
             }
         ],
         [ // D.2: Hydrostatic variation for water
             function pFromP0H(p0, h) {
-                return p0 - Math.pow(p0, constants.G * h);
+                return p0 - Math.pow(p0, consts.G * h);
             }
         ],
         [ // D.3: Equation of state
             function pFromRhoF(rho, f) {
-                var rankine = f + constants.FAHRENHEIT_TO_RANKINE;
-                return rho * constants.R * rankine;
+                var rankine = f + consts.FAHRENHEIT_TO_RANKINE;
+                return rho * consts.R * rankine;
             },
             function rFromF(f) {
-                return f + constants.FAHRENHEIT_TO_RANKINE;
+                return f + consts.FAHRENHEIT_TO_RANKINE;
             },
             function fFromR(r) {
-                return r - constants.FAHRENHEIT_TO_RANKINE;
+                return r - consts.FAHRENHEIT_TO_RANKINE;
             }
         ],
         [ // D.4: Substituting into D.1
@@ -1551,29 +1567,29 @@ function aircraftFormulas(constants, solvePoly) {
         [   // D.6: Expressed as a solution for p
             function pFromP0HT0(p0, h, t0) {
                 var p = p0 * Math.exp(
-                    -constants.G * h / (constants.R * t0)
+                    -consts.G * h / (consts.R * t0)
                 );
                 return p;
             },
             function hFromPP0T0(p, p0, t0) {
-                return Math.log(p / p0) * constants.R * t0 / -constants.G;
+                return Math.log(p / p0) * consts.R * t0 / -consts.G;
             },
             function t0FromPP0H(p, p0, h) {
-                var t0 = -constants.G * h / (
-                    Math.log(p / p0) * constants.R
+                var t0 = -consts.G * h / (
+                    Math.log(p / p0) * consts.R
                 );
                 return t0;
             }
         ],
         [   // D.7: Substituting in to D.3 for density ratio
             function sigmaFromHT0(h, t0) {
-                return Math.exp(-constants.G * h / (constants.R * t0));
+                return Math.exp(-consts.G * h / (consts.R * t0));
             },
             function hFromSigmaT0(sigma, t0) {
-                return Math.log(sigma) * (constants.R * t0) / -constants.G;
+                return Math.log(sigma) * (consts.R * t0) / -consts.G;
             },
             function t0FromSigmaH(sigma, h) {
-                return -constants.G * h / (Math.log(sigma) * constants.R);
+                return -consts.G * h / (Math.log(sigma) * consts.R);
             }
         ],
         [   // D.8: Defined with characteristic altitude
@@ -1597,13 +1613,13 @@ function aircraftFormulas(constants, solvePoly) {
                 var sigma;
                 var rankine;
                 densityRatioRankine = function (h, tsl_r) {
-                    var temperatureDecreaseRatio = constants.BETA / tsl_r;
+                    var temperatureDecreaseRatio = consts.BETA / tsl_r;
                     return Math.pow(1 - temperatureDecreaseRatio * h,
-                        constants.G / (constants.R * constants.BETA) - 1);
+                        consts.G / (consts.R * consts.BETA) - 1);
                 };
-                rankine = f + constants.FAHRENHEIT_TO_RANKINE;
+                rankine = f + consts.FAHRENHEIT_TO_RANKINE;
                 if (h >= 36240) {
-                    rankine = -70 + constants.FAHRENHEIT_TO_RANKINE;
+                    rankine = -70 + consts.FAHRENHEIT_TO_RANKINE;
                 }
                 sigma = densityRatioRankine(h, rankine);
                 return sigma;
@@ -1611,10 +1627,10 @@ function aircraftFormulas(constants, solvePoly) {
             function hFromSigmaF(sigma, f) {
                 var h;
                 function ratioHeight() {
-                    var tsl = f + constants.FAHRENHEIT_TO_RANKINE;
-                    var temperatureDecreaseRatio = constants.BETA / tsl;
-                    var height = (1 - Math.pow(sigma, 1 / (constants.G /
-                        (constants.R * constants.BETA) - 1))) /
+                    var tsl = f + consts.FAHRENHEIT_TO_RANKINE;
+                    var temperatureDecreaseRatio = consts.BETA / tsl;
+                    var height = (1 - Math.pow(sigma, 1 / (consts.G /
+                        (consts.R * consts.BETA) - 1))) /
                         temperatureDecreaseRatio;
                     return height;
                 }
@@ -1623,10 +1639,10 @@ function aircraftFormulas(constants, solvePoly) {
             },
             function fFromSigmaH(sigma, h) {
                 var temperatureDecreaseRatio = (1 - Math.pow(sigma, 1 /
-                    (constants.G / (constants.R * constants.BETA) - 1)
+                    (consts.G / (consts.R * consts.BETA) - 1)
                 )) / h;
-                var tsl = constants.BETA / temperatureDecreaseRatio;
-                return tsl - constants.FAHRENHEIT_TO_RANKINE;
+                var tsl = consts.BETA / temperatureDecreaseRatio;
+                return tsl - consts.FAHRENHEIT_TO_RANKINE;
             }
         ],
         [], // D.13: estimated values for variation of density
@@ -1683,13 +1699,13 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [ // Appendix F.6
             function liftSlopeFromAr(ar) {
-                var radiansToDegrees = constants.RADIANS_TO_DEGREES;
+                var radiansToDegrees = consts.RADIANS_TO_DEGREES;
                 // from lift equation at http://aancl.snu.ac.kr/aancl/lecture/up_file/_1305606276_11th%20week.pdf
                 var liftSlopePerDegree = Math.PI  / 0.5 * radiansToDegrees;
                 return liftSlopePerDegree * ar / (ar + 3);
             },
             function arFromLiftslope(liftSlope) {
-                var radiansToDegrees = constants.RADIANS_TO_DEGREES;
+                var radiansToDegrees = consts.RADIANS_TO_DEGREES;
                 var liftSlopePerDegree = Math.PI / 0.5 * radiansToDegrees;
                 return 3 * liftSlope / (liftSlopePerDegree - liftSlope);
             }
@@ -1749,7 +1765,7 @@ function aircraftFormulas(constants, solvePoly) {
             function cdfuseFromDeltafuseArJfuseSfuseS(deltafuse, ar,
                 kfuse, sfuse, s) {
                 var liftSlopePerDegree = Math.PI  / 0.5 *
-                    constants.RADIANS_TO_DEGREES;
+                    consts.RADIANS_TO_DEGREES;
                 var cdfuse = deltafuse * ar / (Math.PI * kfuse * Math.pow(
                     (ar + 3) / liftSlopePerDegree, 2)
                 ) / (sfuse / s);
@@ -1758,7 +1774,7 @@ function aircraftFormulas(constants, solvePoly) {
             function kfuseFromDeltafuseArCdfuseSfuseS(deltafuse, ar,
                 cdfuse, sfuse, s) {
                 var liftSlopePerDegree = Math.PI  / 0.5 *
-                    constants.RADIANS_TO_DEGREES;
+                    consts.RADIANS_TO_DEGREES;
                 var kfuse = deltafuse * ar / (Math.PI * cdfuse * Math.pow(
                     (ar + 3) / liftSlopePerDegree, 2
                 ) * sfuse / s);
@@ -1767,7 +1783,7 @@ function aircraftFormulas(constants, solvePoly) {
             function sfuseFromDeltafuseArCdfuseKfuseS(deltafuse, ar,
                 cdfuse, kfuse, s) {
                 var liftSlopePerDegree = Math.PI  / 0.5 *
-                    constants.RADIANS_TO_DEGREES;
+                    consts.RADIANS_TO_DEGREES;
                 var sfuse = deltafuse / (Math.PI * cdfuse * kfuse *
                     Math.pow((ar + 3) / liftSlopePerDegree, 2) / ar
                 ) * s;
@@ -1776,7 +1792,7 @@ function aircraftFormulas(constants, solvePoly) {
             function sFromDeltafuseArCdfuseKfuseSfuse(deltafuse, ar,
                 cdfuse, kfuse, sfuse) {
                 var liftSlopePerDegree = Math.PI  / 0.5 *
-                    constants.RADIANS_TO_DEGREES;
+                    consts.RADIANS_TO_DEGREES;
                 var s = Math.PI * cdfuse * kfuse * Math.pow(
                     (ar + 3) / liftSlopePerDegree, 2
                 ) / (deltafuse * ar) * sfuse;
@@ -1952,13 +1968,13 @@ function aircraftFormulas(constants, solvePoly) {
         [
             function muFromF(f) {
                 // μ = 2.270 * (T^(3/2) / T + 198.6) * 10^-8
-                var rankine = f + constants.FAHRENHEIT_TO_RANKINE;
+                var rankine = f + consts.FAHRENHEIT_TO_RANKINE;
                 var mu = 2.270 * Math.pow(rankine, 3 / 2) /
                     (rankine + 198.6) * 1e-8;
                 return mu;
             },
             function relFromRhoVMuC(rho, v, mu, c) {
-                var vfs = v * constants.MPH_TO_FPS;
+                var vfs = v * consts.MPH_TO_FPS;
                 var inertia = rho * vfs * vfs;
                 var viscous = mu * vfs / c;
                 return inertia / viscous;
@@ -1973,19 +1989,19 @@ function aircraftFormulas(constants, solvePoly) {
         ],
         [
             function pFromRhoR(rho, r) {
-                return rho * constants.R * r;
+                return rho * consts.R * r;
             },
             function rhoFromPR(p, r) {
-                return p / (constants.R * r);
+                return p / (consts.R * r);
             },
             function rFromPRho(p, rho) {
-                return p / (rho * constants.R);
+                return p / (rho * consts.R);
             },
             function sigmaFromRho(rho) {
-                return rho / constants.SEALEVEL_DENSITY;
+                return rho / consts.SEALEVEL_DENSITY;
             },
             function rhoFromSigma(sigma) {
-                return sigma * constants.SEALEVEL_DENSITY;
+                return sigma * consts.SEALEVEL_DENSITY;
             }
 
         ]
