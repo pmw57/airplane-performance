@@ -57,7 +57,7 @@ function aircraftFormulas(constants, solvePoly) {
             // Wing Area, Effective Span, Effetive Aspect Ratio, Effective Chord
             // ar function defined in Formula 14
             // ear function defined in Formula 15
-            function cFromSB(b, s) {
+            function cFromSB(s, b) {
                 return s / b;
             },
             function bFromSC(s, c) {

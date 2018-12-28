@@ -51,10 +51,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 1: cl, v, w/s
     var vs0 = craft.vs0;
     var clmax = craft.clmax;
+    var vmax = craft.vmax;
     // todo: What breaks when sigma is not 1?
     var sigma = 1; // sealevel
     var ws = solvedFormulas[7].solve({sigma, clmax, vs0}).ws;
-    var vmax = craft.vmax;
     // Relation 2: s, w/s, w
     var w = craft.w;
     var we = craft.we;
@@ -62,15 +62,15 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var s = solvedFormulas[0].solve({w, ws}).s;
     // Relation 3: S, be, eAR, ce
     var b = craft.b;
-    var ar = b * b / s;
-    var c = s / b;
     var sfuse = craft.sfuse;
+    var ar = solvedFormulas[14].solve({b, s}).ar;
+    var c = solvedFormulas[0].solve({s, b}).c;
     var e = solvedFormulas.f[8].solve({ar, sfuse, s}).e;
-    var ear = e * ar;
-    var ce = c / Math.sqrt(e);
-    var be = b * Math.sqrt(e);
+    var ear = solvedFormulas[15].solve({e, ar}).ear;
+    var ce = solvedFormulas[19].solve({c, e}).ce;
+    var be = solvedFormulas[20].solve({b, e}).be;
     // Relation 4: be, wbe, w
-    var wbe = w / be;
+    var wbe = solvedFormulas[21].solve({w, be}).wbe;
     console.table({
         vs0, clmax, ws, vmax,
         w, s,
@@ -79,7 +79,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     // Relation 5: ad, vmax, thpa
     var rho = 0.0023769; // sea-level air density
-    var airDensity = 0.5 * rho * Math.pow(5280 / 3600, 2);
     var hpMPH = 33000 * 60 / 5280;
     var ad = craft.ad;
     var thpa = solvedFormulas[0].solve({ad, vmax}).thpa;
@@ -102,7 +101,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var eta = solvedFormulas[38].solve({thpa, bhp}).eta; // Formula 38
     var rc = solvedFormulas[38].solve({bhp, w, eta, rs}).rc;
     console.table({
-        airDensity, hpMPH, thpa, ad, cd0,
+        hpMPH, thpa, ad, cd0,
         d, sigma, cd,
         vmins, thpmin, dmin,
         rsmin, rs, thp, bhp, eta, rc
