@@ -15,7 +15,7 @@ function aircraftFormulas(consts, solvePoly) {
     var bhpPerSec = consts.BPH_PER_MIN / 60; // 550
     var hpMPH = consts.BPH_PER_MIN * 60 / 5280;
     var formulas = [
-            [
+        [
             // todo: remove the need for "custom" objects from test file
             // todo: Should formulas with density ratio result in removing
             // simplified formulas without density ratio?
@@ -435,38 +435,36 @@ function aircraftFormulas(consts, solvePoly) {
             }
         ],
         [ // Formula 11
+            // todo remove the combined pow/sqrt sections of code
             function rsFromSigmaWSCdCl(sigma, w, s, cd, cl) {
-                return 5280 / 60 * 1 / Math.sqrt(sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * s / w) *
-                    cd / Math.pow(cl, 3 / 2);
+                return 1 / Math.sqrt(sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    s / w * Math.pow(consts.MPH_TO_FPS, 2)) *
+                    cd / Math.pow(cl, 3 / 2) * 5280 / 60;
             },
             function sigmaFromRsWSCdCl(rs, w, s, cd, cl) {
-                var sigma = Math.pow(5280 / 60 * Math.sqrt(1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
-                    w / s) / rs * cd / Math.pow(cl, 3 / 2), 2);
-                return sigma;
+                return 1 / (0.5 * consts.SEALEVEL_DENSITY *
+                    Math.pow(consts.MPH_TO_FPS, 2)) * w / s *
+                    Math.pow(cd / rs * 5280 / 60, 2) / Math.pow(cl, 3);
             },
             function wFromRsSigmaSCdCl(rs, sigma, s, cd, cl) {
-                var densityRatio = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2);
-                var w = Math.pow(60 / 5280 * rs * Math.sqrt(densityRatio), 2) *
+                return sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(rs, 2) *
+                    Math.pow(consts.MPH_TO_FPS, 2) * Math.pow(60 / 5280, 2) *
                     s * Math.pow(Math.pow(cl, 3 / 2) / cd, 2);
-                return w;
             },
             function sFromRsSigmaWCdCl(rs, sigma, w, cd, cl) {
-                var densityRatio = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2);
-                var s = Math.pow(5280 / 60, 2) / densityRatio *
-                    w / Math.pow(rs, 2) * Math.pow(cd / Math.pow(cl, 3 / 2), 2);
-                return s;
+                return 1 / (sigma * 0.5 * consts.SEALEVEL_DENSITY) *
+                    w * Math.pow(cd, 2) / (Math.pow(rs, 2) * Math.pow(cl, 3)) *
+                    Math.pow(5280 / 60, 2) / Math.pow(consts.MPH_TO_FPS, 2);
             },
             function cdFromRsSigmaWSCl(rs, sigma, w, s, cl) {
-                var densityRatio = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2);
-                var cd = 60 / 5280 * Math.sqrt(densityRatio) *
-                    Math.sqrt(s / w) * rs * Math.pow(cl, 3 / 2);
-                return cd;
+                return Math.sqrt(sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    s * Math.pow(cl, 3) / w) * rs *
+                    consts.MPH_TO_FPS * 60 / 5280;
             },
             function clFromRsSigmaWSCd(rs, sigma, w, s, cd) {
-                var densityRatio = sigma * 0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2);
-                var cl = Math.pow(5280 / 60 / Math.sqrt(densityRatio) *
-                    Math.sqrt(w / s) / rs * cd, 2 / 3);
-                return cl;
+                return Math.pow(1 / (sigma * 0.5 * consts.SEALEVEL_DENSITY) *
+                    w / s * Math.pow(cd / (rs * consts.MPH_TO_FPS) *
+                    5280 / 60, 2), 1 / 3);
             }
         ],
         [ // Formula 12
@@ -599,35 +597,35 @@ function aircraftFormulas(consts, solvePoly) {
                 return Math.pow(be / b, 2);
             },
             function rsminFromWSigmaAdBe(w, sigma, ad, be) {
-                var rsmin = 5280 / 60 * Math.sqrt(1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2))) *
-                    4 / Math.pow(3 * Math.PI, 3 / 4) * Math.sqrt(w / sigma) *
-                    Math.pow(ad, 1 / 4) / Math.pow(be, 3 / 2);
-                return rsmin;
+                return Math.sqrt(1 / 0.5 * consts.SEALEVEL_DENSITY) *
+                    4 / Math.sqrt(Math.sqrt(Math.pow(3 * Math.PI, 3)) *
+                    w / sigma) * Math.pow(ad, 1 / 4) / Math.pow(be, 3 / 2) *
+                    consts.MPH_TO_FPS * 5280 / 60;
             },
             function wFromRsminSigmaAdBe(rsmin, sigma, ad, be) {
-                var w = Math.pow(rsmin * 60 / 5280 * Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) *
-                    Math.pow(3 * Math.PI, 3 / 4) / (4 * Math.pow(ad, 1 / 4)) *
-                    Math.pow(be, 3 / 2), 2) * sigma;
+                var w = sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    Math.pow(Math.sqrt(3 * Math.PI) * be, 3) / (
+                    Math.pow(4, 2) * Math.sqrt(ad)) * Math.pow(rsmin *
+                    consts.MPH_TO_FPS * 60 / 5280, 2);
                 return w;
             },
             function sigmaFromRsminWAdBe(rsmin, w, ad, be) {
-                var sigma = Math.pow(
-                    5280 / 60 * 4 / (Math.pow(
-                        3 * Math.PI, 3 / 4) * Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * rsmin
-                    ) * Math.pow(ad, 1 / 4) / Math.pow(be, 3 / 2), 2) * w;
-                return sigma;
+                return 1 / (0.5 * consts.SEALEVEL_DENSITY) *
+                    Math.pow(4, 2) / Math.sqrt(Math.pow(3 * Math.PI, 3)) *
+                    w * Math.sqrt(ad) / (Math.pow(rsmin, 2) * Math.pow(be, 3)) *
+                    Math.pow(5280 / 60, 2) / Math.pow(consts.MPH_TO_FPS, 2);
             },
             function adFromRsminWSigmaBe(rsmin, w, sigma, be) {
-                var ad = Math.pow(60 / 5280 * Math.pow(3 * Math.PI, 3 / 4) / 4 *
-                    Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * rsmin * Math.sqrt(sigma / w) *
-                    Math.pow(be, 3 / 2), 4);
-                return ad;
+                return Math.pow(3 * Math.PI, 3) / Math.pow(4, 4) *
+                    Math.pow(Math.sqrt(0.5 * consts.SEALEVEL_DENSITY) *
+                    rsmin * Math.sqrt(sigma / w) * Math.sqrt(Math.pow(be, 3)) *
+                    60 / 5280 * consts.MPH_TO_FPS, 4);
             },
             function beFromRsminWSigmaAd(rsmin, w, sigma, ad) {
-                var be = Math.pow(5280 / 60 * 4 / Math.pow(3 * Math.PI, 3 / 4) /
-                    (Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * rsmin) * Math.sqrt(w / sigma) *
-                    Math.pow(ad, 1 / 4), 2 / 3);
-                return be;
+                return Math.pow(4 / Math.pow(3 * Math.PI, 3 / 4) *
+                    Math.sqrt(w / (sigma * 0.5 * consts.SEALEVEL_DENSITY)) *
+                    Math.pow(ad, 1 / 4) / rsmin *
+                    5280 / 60 / consts.MPH_TO_FPS, 2 / 3);
             }
         ],
         [ // Formula 21
@@ -641,27 +639,24 @@ function aircraftFormulas(consts, solvePoly) {
                 return w / wbe;
             },
             function vminsFromWbeSigmaAd(wbe, sigma, ad) {
-                var vmins = Math.sqrt(1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2))) /
-                    Math.pow(3 * Math.PI, 1 / 4) *
-                    Math.sqrt(wbe) / Math.sqrt(sigma) /
-                    Math.pow(ad, 1 / 4);
-                return vmins;
+                return Math.sqrt(wbe) / (Math.pow(3 * Math.PI, 1 / 4) *
+                    Math.sqrt(sigma * 0.5 * consts.SEALEVEL_DENSITY) *
+                    Math.pow(ad, 1 / 4) * consts.MPH_TO_FPS);
             },
             function wbeFromVminsSigmaAd(vmins, sigma, ad) {
-                var wbe = Math.pow(Math.pow(3 * Math.PI, 1 / 4) *
-                    Math.sqrt(0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2)) * vmins *
-                    Math.sqrt(sigma) * Math.pow(ad, 1 / 4), 2);
-                return wbe;
+                return sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    Math.sqrt(3 * Math.PI * ad) *
+                    Math.pow(vmins * consts.MPH_TO_FPS, 2);
             },
             function sigmaFromvMinsWBeAd(vmins, wbe, ad) {
-                var sigma = wbe / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * Math.sqrt(3 * Math.PI) *
-                    Math.pow(vmins, 2) * Math.sqrt(ad));
-                return sigma;
+                return wbe / (0.5 * consts.SEALEVEL_DENSITY *
+                    Math.sqrt(3 * Math.PI * ad) *
+                    Math.pow(vmins * consts.MPH_TO_FPS, 2));
             },
             function adFromVminsWBeSigma(vmins, wbe, sigma) {
-                var ad = Math.pow(1 / (0.5 * consts.SEALEVEL_DENSITY * Math.pow(consts.MPH_TO_FPS, 2) * sigma *
-                    Math.sqrt(3 * Math.PI) * Math.pow(vmins, 2)) * wbe, 2);
-                return ad;
+                return 1 / (3 * Math.PI) * Math.pow(wbe /
+                    (sigma * 0.5 * consts.SEALEVEL_DENSITY), 2) /
+                    Math.pow(vmins * consts.MPH_TO_FPS, 4);
             }
         ],
         [ // Formula 22
