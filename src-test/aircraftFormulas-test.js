@@ -820,20 +820,24 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // todo, understand why the wrong values are occurring
     xdescribe("Formula 22: Sink rate from drag area and eff. span", function () {
         it("has the same answer as for formula 11", function () {
-            testAircraftFormula(11, "rs", {sigma, w, s, cd, cl}, rs);
+            var rs11 = solvedFormulas[11].solve({sigma, w, s, cd, cl}).rs;
+            testAircraftFormula(22, "rs", {rs, ad, v, w, be}, rs11);
         });
-        it("solves for density ratio", function () {
-            testAircraftFormula(22, "sigma", {rs, ad, v, wbe}, sigma);
-        });
-        it("solves for drag area", function () {
-            testAircraftFormula(22, "ad", {rs, sigma, v, wbe}, ad);
-        });
-        it("solves for velocity", function () {
-            testAircraftFormula(22, "v", {rs, sigma, ad, wbe}, v);
-        });
-        it("solves for span loading", function () {
-            testAircraftFormula(22, "wbe", {rs, sigma, ad, v}, wbe);
-        });
+        // it("solves for density ratio", function () {
+        //     testAircraftFormula(22, "sigma", {rs, ad, v, w, be}, sigma);
+        // });
+        // it("solves for drag area", function () {
+        //     testAircraftFormula(22, "ad", {rs, sigma, v, w, be}, ad);
+        // });
+        // it("solves for velocity", function () {
+        //     testAircraftFormula(22, "v", {rs, sigma, ad, w, be}, v);
+        // });
+        // it("solves for span loading", function () {
+        //     testAircraftFormula(22, "w", {rs, sigma, ad, v, be}, w);
+        // });
+        // it("solves for span loading", function () {
+        //     testAircraftFormula(22, "be", {rs, sigma, ad, v, w}, be);
+        // });
     });
     describe("Formula 24:", function () {
         it("solves for velocity of minimum sink", function () {
