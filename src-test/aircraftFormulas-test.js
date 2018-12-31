@@ -839,6 +839,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         //     testAircraftFormula(22, "be", {rs, sigma, ad, v, w}, be);
         // });
     });
+    // todo, test Formula 23
     describe("Formula 24:", function () {
         it("solves for velocity of minimum sink", function () {
             testAircraftFormula(24, "vmins", {sigma, wbe, ad}, vmins);
@@ -1045,12 +1046,19 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             thetac = random(0, 20);
             t = solvedFormulas[36].solve({w, thetac, sigma, ad, v, wbe}).t;
         });
+        it("solves for thrust", function () {
+            testAircraftFormula(36, "t", {w, thetac, sigma, ad, v, wbe}, t);
+        });
         it("solves for weight", function () {
             testAircraftFormula(36, "w", {t, thetac, sigma, ad, v, wbe}, w);
         });
         it("solves for climb angle", function () {
             testAircraftFormula(36, "thetac",
                 {t, w, sigma, ad, v, wbe}, thetac);
+        });
+        it("solves for density ratio", function () {
+            testAircraftFormula(36, "sigma",
+                {t, w, thetac, ad, v, wbe}, sigma);
         });
         // todo: the following test is too unreliable
         xit("solves for density ratio", function () {
