@@ -93,7 +93,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 8: RSmin, THPmin, W
     var rsmin = solvedFormulas[0].solve({thpmin, w}).rsmin;
     var rs = solvedFormulas[22].solve({sigma, ad, v, w, be}).rs;
-    var thp = solvedFormulas[0].solve({w, rs}).thp;
     var bhp = craft.bhp;
     var eta = solvedFormulas[38].solve({thpa, bhp}).eta; // Formula 38
     var rc = solvedFormulas[38].solve({bhp, w, eta, rs}).rc;
@@ -101,7 +100,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         thpa, ad, cd0,
         d, sigma, cd,
         vmins, thpmin, dmin,
-        rsmin, rs, thp, bhp, eta, rc
+        rsmin, rs, bhp, eta, rc
     });
     // Relation 9: AD, be, (L/D)max
     var ldmax = solvedFormulas[28].solve({ear, cd0}).ldmax;
@@ -311,15 +310,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
         describe("8: RSmin, THPmin, W", function () {
-            // thp = W RS / 33000 (Relation 8)
-            // thpal = RS W / 33000 (Formula 32)
-            // Both can't be right, and thp isn't used anywhere.
-            // Only thpa, thpal, and thpmin are used.
-            it("solves for RS", function () {
-                testAircraftFormula(0, "thp", {rs, w}, thp);
-                testAircraftFormula(0, "rs", {thp, w}, rs);
-                testAircraftFormula(0, "w", {thp, rs}, w);
-            });
             it("solves for RSmin", function () {
                 testAircraftFormula(0, "rsmin", {thpmin, w}, rsmin);
                 testAircraftFormula(0, "thpmin", {rsmin, w}, thpmin);
