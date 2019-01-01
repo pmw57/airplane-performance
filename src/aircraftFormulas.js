@@ -1063,6 +1063,12 @@ function aircraftFormulas(consts, solvePoly) {
             }
         ],
         [ // Formula 39
+            function apFromDp(dp) {
+                return Math.TAU * (dp / 2);
+            },
+            function dpFromAp(ap) {
+                return ap * 2 / Math.TAU;
+            },
             function mdotFromRhoApVp(rho, ap, vp) {
                 return rho * ap * vp;
             },
@@ -1245,6 +1251,24 @@ function aircraftFormulas(consts, solvePoly) {
             },
             function pshaftFromEtaPthrust(eta, pthrust) {
                 return pthrust / eta;
+            },
+            function etaFromTVVp(t, v, vp) {
+                return t * v / (t * vp);
+            },
+            function vFromEtaTVp(eta, t, vp) {
+                return eta * t * vp / t;
+            },
+            function vpFromEtaTV(eta, t, v) {
+                return t * v / (t * eta);
+            },
+            function etaFromVVp(v, vp) {
+                return v / vp;
+            },
+            function vFromEtaVp(eta, vp) {
+                return eta * vp;
+            },
+            function vpFromEtaV(eta, v) {
+                return v / eta;
             }
         ],
         [ // Formula 49: Propeller efficiency

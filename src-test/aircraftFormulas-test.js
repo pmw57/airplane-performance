@@ -129,14 +129,14 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         rpm, mp
     });
     var thetag = solvedFormulas[1].solve({d, w}).thetag;
-    var vfs = solvedFormulas[3].solve({v}).vfs; // Formula 3
+    var vfs = solvedFormulas[3].solve({v}).vfs;
     var l = solvedFormulas[2].solve({w, thetag}).l;
     var cl = solvedFormulas[3].solve({l, rho, vfs, s}).cl;
+    var vp = solvedFormulas[48].solve({eta, v}).vp;
+    var ap = solvedFormulas[39].solve({dp}).ap;
     // TODO: Use formulas for **ALL** formula relationships
-    var vp = larger(v); // Formula 39
-    var ap = Math.TAU * (dp / 2); // Formula 39
-    var m = 970; // Formula 40
-    var v3 = larger(v); // Formula 40
+    var m = solvedFormulas[39].solve({rho, ap, vp}).mdot;
+    var v3 = solvedFormulas[46].solve({vp, v}).v3;
     var pinf = larger(v); // Formula 41
     var p1 = smaller(pinf); // Formula 41
     var p2 = smaller(pinf); // Formula 41
@@ -1100,6 +1100,15 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         beforeEach(function () {
             mdot = solvedFormulas[39].solve({rho, ap, vp}).mdot;
         });
+        it("solves for propeller area", function () {
+            testAircraftFormula(39, "ap", {dp}, ap);
+        });
+        it("solves for propeller diameter", function () {
+            testAircraftFormula(39, "dp", {ap}, dp);
+        });
+        it("solves for mass flow rate", function () {
+            testAircraftFormula(39, "mdot", {rho, ap, vp}, mdot);
+        });
         it("solves for air pressure", function () {
             testAircraftFormula(39, "rho", {mdot, ap, vp}, rho);
         });
@@ -1253,30 +1262,28 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         it("solves for thrust power", function() {
             testAircraftFormula(48, "pthrust", {t, v}, pthrust);
-        });
-        it("solves for thrust from thrust power", function() {
             testAircraftFormula(48, "t", {pthrust, v}, t);
-        });
-        it("solves for velocity from thrust power", function() {
             testAircraftFormula(48, "v", {pthrust, t}, v);
         });
         it("solves for shaft power", function() {
             testAircraftFormula(48, "pshaft", {t, vp}, pshaft);
-        });
-        it("solves for thrust from shaft power", function() {
             testAircraftFormula(48, "t", {pshaft, vp}, t);
-        });
-        it("solves for propeller velocity", function() {
             testAircraftFormula(48, "vp", {pshaft, t}, vp);
         });
-        it("solves for propulsive efficiency", function() {
+        it("solves for efficiency from pthrust, pshaft", function() {
             testAircraftFormula(48, "eta", {pthrust, pshaft}, eta);
-        });
-        it("solves for thrust power from efficiency", function() {
             testAircraftFormula(48, "pthrust", {eta, pshaft}, pthrust);
-        });
-        it("solves for shaft power from efficency", function() {
             testAircraftFormula(48, "pshaft", {eta, pthrust}, pshaft);
+        });
+        it("solves for efficiency from t, v, vp", function() {
+            testAircraftFormula(48, "eta", {t, v, vp}, eta);
+            testAircraftFormula(48, "v", {eta, t, vp}, v);
+            testAircraftFormula(48, "vp", {eta, t, v}, vp);
+        });
+        it("solves for efficency from v, vp", function() {
+            testAircraftFormula(48, "eta", {v, vp}, eta);
+            testAircraftFormula(48, "v", {eta, vp}, v);
+            testAircraftFormula(48, "vp", {eta, v}, vp);
         });
     });
     describe("Formula 49: Engine power at shaft", function () {
