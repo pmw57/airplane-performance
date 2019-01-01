@@ -137,9 +137,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var ap = Math.TAU * (dp / 2); // Formula 39
     var m = 970; // Formula 40
     var v3 = larger(v); // Formula 40
-    var pd = larger(v); // Formula 41
-    var p1 = smaller(pd); // Formula 41
-    var p2 = smaller(pd); // Formula 41
+    var pinf = larger(v); // Formula 41
+    var p1 = smaller(pinf); // Formula 41
+    var p2 = smaller(pinf); // Formula 41
     var n = 60; // Formula 55
     var thpal = solvedFormulas[31].solve({sigma, ad, v, wbe}).thpal;
     function testAircraftFormula(index, prop, data, expected) {
@@ -1133,17 +1133,17 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         var pdi;
         var p1i;
         beforeEach(function () {
-            pdi = solvedFormulas[41].solve({pd, rho, v}).pdi;
+            pdi = solvedFormulas[41].solve({pinf, rho, v}).pdi;
             p1i = solvedFormulas[41].solve({p1, rho, vp}).p1i;
         });
-        it("solves for pressure differential", function () {
-            testAircraftFormula(41, "pd", {pdi, rho, v}, pd);
+        it("solves for pressure distribution", function () {
+            testAircraftFormula(41, "pinf", {pdi, rho, v}, pinf);
         });
         it("solves for pressure density", function () {
-            testAircraftFormula(41, "rho", {pdi, pd, v}, rho);
+            testAircraftFormula(41, "rho", {pdi, pinf, v}, rho);
         });
         it("solves for velocity", function () {
-            testAircraftFormula(41, "v", {pdi, pd, rho}, v);
+            testAircraftFormula(41, "v", {pdi, pinf, rho}, v);
         });
         it("solves for pressure before propeller", function () {
             testAircraftFormula(41, "p1", {p1i, rho, vp}, p1);
@@ -1151,25 +1151,25 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("solves for pressure density", function () {
             testAircraftFormula(41, "rho", {p1i, p1, vp}, rho);
         });
-        it("solves for velocity from differential increase", function () {
+        it("solves for velocity from distribution increase", function () {
             testAircraftFormula(41, "vp", {p1i, p1, rho}, vp);
         });
     });
     describe("Formula 42: Downstream propeller pressure", function () {
         beforeEach(function () {
-            p2 = solvedFormulas[42].solve({pd, rho, vp, v3}).p2;
+            p2 = solvedFormulas[42].solve({pinf, rho, vp, v3}).p2;
         });
-        it("solves for pressure differential", function () {
-            testAircraftFormula(42, "pd", {p2, rho, vp, v3}, pd);
+        it("solves for pressure distribution", function () {
+            testAircraftFormula(42, "pinf", {p2, rho, vp, v3}, pinf);
         });
         it("solves for pressure density", function () {
-            testAircraftFormula(42, "rho", {p2, pd, vp, v3}, rho);
+            testAircraftFormula(42, "rho", {p2, pinf, vp, v3}, rho);
         });
         it("solves for propeller velocity", function () {
-            testAircraftFormula(42, "vp", {p2, pd, rho, v3}, vp);
+            testAircraftFormula(42, "vp", {p2, pinf, rho, v3}, vp);
         });
         it("solves for slipstream velocity", function () {
-            testAircraftFormula(42, "v3", {p2, pd, rho, vp}, v3);
+            testAircraftFormula(42, "v3", {p2, pinf, rho, vp}, v3);
         });
     });
     describe("Formula 43: Propeller pressure jump", function () {

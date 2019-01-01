@@ -1103,17 +1103,17 @@ function aircraftFormulas(consts, solvePoly) {
             }
         ],
         [ // Formula 41: Upstream propeller pressure increase
-            function pdiFromPdRhoV(pd, rho, v) {
-                return pd + 0.5 * rho * v * v;
+            function pdiFromPinfRhoV(pinf, rho, v) {
+                return pinf + 0.5 * rho * v * v;
             },
-            function pdFromPdiRhoV(pdi, rho, v) {
+            function pinfFromPdiRhoV(pdi, rho, v) {
                 return pdi - 0.5 * rho * v * v;
             },
-            function rhoFromPdiPdV(pdi, pd, v) {
-                return (pdi - pd) / (0.5 * v * v);
+            function rhoFromPdiPinfV(pdi, pinf, v) {
+                return (pdi - pinf) / (0.5 * v * v);
             },
-            function vFromPdiPdRho(pdi, pd, rho) {
-                return Math.sqrt((pdi - pd) / (0.5 * rho));
+            function vFromPdiPinfRho(pdi, pinf, rho) {
+                return Math.sqrt((pdi - pinf) / (0.5 * rho));
             },
             function p1iFromP1RhoVp(p1, rho, vp) {
                 return p1 + 0.5 * rho * vp * vp;
@@ -1129,24 +1129,24 @@ function aircraftFormulas(consts, solvePoly) {
             }
         ],
         [ // Formula 42: Downstream propeller pressure
-            function p2FromPdRhoVpV3(pd, rho, vp, v3) {
-                return pd + 0.5 * rho * v3 * v3 - 0.5 * rho * vp * vp;
+            function p2FromPinfRhoVpV3(pinf, rho, vp, v3) {
+                return pinf + 0.5 * rho * v3 * v3 - 0.5 * rho * vp * vp;
             },
-            function pdFromP2RhoVpV3(p2, rho, vp, v3) {
+            function pinfFromP2RhoVpV3(p2, rho, vp, v3) {
                 return p2 + 0.5 * rho * vp * vp - 0.5 * rho * v3 * v3;
             },
-            function rhoFromP2PdVpV3(p2, pd, vp, v3) {
-                return (p2 - pd) / (0.5 * v3 * v3 - 0.5 * vp * vp);
+            function rhoFromP2PinfVpV3(p2, pinf, vp, v3) {
+                return (p2 - pinf) / (0.5 * v3 * v3 - 0.5 * vp * vp);
             },
-            function vpFromP2PdRhoV3(p2, pd, rho, v3) {
+            function vpFromP2PinfRhoV3(p2, pinf, rho, v3) {
                 var vp = Math.sqrt(
-                    (0.5 * rho * v3 * v3 - (p2 - pd)) / (0.5 * rho)
+                    (0.5 * rho * v3 * v3 - (p2 - pinf)) / (0.5 * rho)
                 );
                 return vp;
             },
-            function v3FromP2PdRhoVp(p2, pd, rho, vp) {
+            function v3FromP2PinfRhoVp(p2, pinf, rho, vp) {
                 var v3 = Math.sqrt(
-                    ((p2 - pd) + 0.5 * rho * vp * vp) / (0.5 * rho)
+                    ((p2 - pinf) + 0.5 * rho * vp * vp) / (0.5 * rho)
                 );
                 return v3;
             }
