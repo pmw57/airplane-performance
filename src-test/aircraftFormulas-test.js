@@ -51,7 +51,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var vs0 = craft.vs0;
     var clmax = craft.clmax;
     var vmax = craft.vmax;
-    // todo: What breaks when sigma is not 1?
     var sigma = 1; // sealevel
     var ws = solvedFormulas[7].solve({sigma, clmax, vs0}).ws;
     // Relation 2: s, w/s, w
@@ -82,7 +81,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var cd0 = solvedFormulas[19].solve({ad, s}).cd0;
     // Relation 6: cd0, ad, s
     var v = craft.vs0;
-    // Todo: Should velocity vary?
     // var v = random(vs0, vmax);
     var d = solvedFormulas[0].solve({ad, v}).d;
     var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
@@ -134,7 +132,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var cl = solvedFormulas[3].solve({l, rho, vfs, s}).cl;
     var vp = solvedFormulas[48].solve({eta, v}).vp;
     var ap = solvedFormulas[39].solve({dp}).ap;
-    // TODO: Use formulas for **ALL** formula relationships
     var m = solvedFormulas[39].solve({rho, ap, vp}).mdot;
     var v3 = solvedFormulas[46].solve({vp, v}).v3;
     var pinf = larger(v); // Formula 41
@@ -149,6 +146,80 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         }
         expect(solvedFormulas[index].solve(data)[prop]).toBeCloseTo(expected);
     }
+    describe("TODO", function () {
+        describe("Use formulas for **ALL** formula relationships", function () {
+            it("");
+        });
+        describe("Formula 1: lift, airspeed, and weight", function () {
+            it("");
+        });
+        describe("remove the need for custom objects from test file", function () {
+            it("");
+        });
+        describe("removing simplified formulas without density ratio", function () {
+            it("");
+        });
+        describe("use return instead of assign then return", function () {
+            it("");
+        });
+        describe("move sigma and density to the beginning", function () {
+            it("");
+        });
+        describe("move 5280 / 60 type conversions to the end", function () {
+            it("");
+        });
+        describe("Formula 6 - what's up with cl", function () {
+            it("");
+        });
+        describe("Formula 10,11 - why does normal rs not work here?", function () {
+            it("");
+        });
+        describe("Formula 16 - working towards Formula 18", function () {
+            it("");
+        });
+        describe("Formula 17 - working towards Formula 18", function () {
+            it("");
+        });
+        describe("Formula 22 - understand why wrong values happen", function () {
+            it("");
+        });
+        describe("Formula 23 - create tests", function () {
+            it("");
+        });
+        describe("Formula 25 - why isn't vtilde behaving?", function () {
+            it("");
+        });
+        describe("Formula 31 - understand why thpal isn't behaving", function () {
+            it("");
+        });
+        describe("Formula 31 - why isn't velocity behaving", function () {
+            it("");
+        });
+        describe("Formula 36 - unreliable density ratio test", function () {
+            it("");
+        });
+        describe("Formula 37 - Why is Relation 5 thpa different?", function () {
+            it("");
+        });
+        describe("Formula 39 - test mdotFromRhoA3V3 functions", function () {
+            it("");
+        });
+        describe("Appendix D2-D5, D9-D11 - test functions", function () {
+            it("");
+        });
+        describe("Appendix F8 - test eff with inve, invew, deltafuse", function () {
+            it("");
+        });
+        describe("Appendix F8 - test kfuse formulas", function () {
+            it("");
+        });
+        describe("What breaks when sigma is not 1?", function () {
+            it("");
+        });
+        describe("What happens when the velocity varies?", function () {
+            it("");
+        });
+    });
     describe("AircraftFormulas object", function () {
         beforeEach(function () {
             solvedFormulas = aircraftSolver(Solver, formulas);
@@ -463,7 +534,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             testAircraftFormula(5, "v", {d, sigma, cd, s}, v);
         });
     });
-    // todo: something's up with the cl
     describe("Formula 6: Lift from velocity as mph", function () {
         it("is equivalent to Formula 5", function () {
             var expected = w * Math.cos(thetag / 360 * Math.TAU);
@@ -559,7 +629,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 10: Rate of sink (ft/min)", function () {
-        // todo: why does normal rs not work here?
         var d5;
         var rs;
         beforeEach(function () {
@@ -587,7 +656,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 11: Rate of sink without velocity", function () {
-        // todo: why does normal rs not work here?
         var rs;
         beforeEach(function () {
             rs = solvedFormulas[11].solve({sigma, w, s, cd, cl}).rs;
@@ -807,7 +875,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             testAircraftFormula(21, "ad", {vmins, wbe, sigma}, ad);
         });
     });
-    // todo, understand why the wrong values are occurring
     xdescribe("Formula 22: Sink rate from drag area and eff. span", function () {
         it("has the same answer as for formula 11", function () {
             var rs11 = solvedFormulas[11].solve({sigma, w, s, cd, cl}).rs;
@@ -829,7 +896,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         //     testAircraftFormula(22, "be", {rs, sigma, ad, v, w}, be);
         // });
     });
-    // todo, test Formula 23
     describe("Formula 24:", function () {
         it("solves for velocity of minimum sink", function () {
             testAircraftFormula(24, "vmins", {sigma, wbe, ad}, vmins);
@@ -854,7 +920,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("is equivalent to rate of sink over minimum sink rate", function () {
             expect(rshat).toBeCloseTo(rs / rsmin);
         });
-        // todo understand why this isn't behaving
         xit("solves for vtilde", function () {
             testAircraftFormula(25, "vtilde", {rshat}, vtilde);
         });
@@ -937,14 +1002,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("should be formula 22 times weight over 33000", function () {
             expect(thpal).toBeCloseTo(rs * w / 33000);
         });
-        // todo, understand why this isn't behaving
         it("solves for thpal", function () {
             testAircraftFormula(31, "thpal", {sigma, ad, v, wbe}, thpal);
         });
         it("solves for drag area", function () {
             testAircraftFormula(31, "ad", {thpal, sigma, v, wbe}, ad);
         });
-        // todo, understand why this isn't behaving
         xit("solves for velocity", function () {
             testAircraftFormula(31, "v", {thpal, sigma, ad, wbe}, v);
         });
@@ -1050,7 +1113,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             testAircraftFormula(36, "sigma",
                 {t, w, thetac, ad, v, wbe}, sigma);
         });
-        // todo: the following test is too unreliable
         xit("solves for density ratio", function () {
             testAircraftFormula(36, "sigma",
                 {t, thetac, ad, v, wbe}, sigma);
@@ -1118,7 +1180,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("solves for propeller velocity", function () {
             testAircraftFormula(39, "vp", {mdot, rho, ap}, vp);
         });
-        //todo: test mdotFromRhoA3V3 functions
     });
     describe("Formula 40: Change in momentum vs pressure jump", function () {
         var t;
@@ -1541,16 +1602,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 expect(solvedFormulas.d[1].solve({rho, dh}).dp).toBeCloseTo(dp);
             });
         });
-        //todo Test formulas
         describe("D.2: ", function () {
         });
-        //todo Test Appendix 3 formulas
         describe("D.3: ", function () {
         });
-        //todo Test Appendix 4 formulas
         describe("D.4: ", function () {
         });
-        //todo Test Appendix 4 formulas
         describe("D.5: ", function () {
         });
         describe("D.6: Density pressure in Isothermal atmo.", function () {
@@ -1610,13 +1667,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                     {sigma, h}).h0).toBeCloseTo(h0);
             });
         });
-        //todo Test formulas
         describe("D.9: ", function () {
         });
-        //todo Test formulas
         describe("D.10: ", function () {
         });
-        //todo Test formulas
         describe("D.11: ", function () {
         });
         describe("D.12: Variation of density ratio", function () {
@@ -1774,7 +1828,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 inve = solvedFormulas.f[8].solve({invew, deltafuse}).inve;
             });
             it("gets eff from wing eff factor and fuselage corr", function () {
-                // todo using inve, invew, deltafuse
+                return;
             });
             it("solves for planform correction", function () {
                 expect(solvedFormulas.f[8].solve({invew, ar,
@@ -1794,23 +1848,27 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
             // we need kfuse for these tests
             it("solves for aspect ratio from fuselage corr.", function () {
-                // todo: add formulas for aspect ratio from fuselage correction
+                return;
             });
             it("solves for fuselage coefficient of drag", function () {
                 // expect(solvedFormulas.f[8].solve({deltafuse, ar,
                 //     kfuse, sfuse, s}).cdfuse).toBeCloseTo(cdfuse);
+                return;
             });
             it("solves for change of fuselage parasite drag", function () {
                 // expect(solvedFormulas.f[8].solve({deltafuse, ar,
                 //     cdfuse, sfuse, s, kfuse}).kfuse).toBeCloseTo(kfuse);
+                return;
             });
             it("solves for fuselage area", function () {
                 // expect(solvedFormulas.f[8].sfuse(deltafuse, ar,
                 //     cdfuse, kfuse, s, sfuse)).toBeCloseTo(sfuse);
+                return;
             });
             it("solves for wing area", function () {
                 // expect(solvedFormulas.f[8].s(deltafuse, ar,
                 //     cdfuse, kfuse, sfuse, s)).toBeCloseTo(s);
+                return;
             });
             it("solves for wing efficiency", function () {
                 expect(solvedFormulas.f[8].solve(
