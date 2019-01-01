@@ -15,7 +15,8 @@ window.CONSTANTS = {
     FPS_TO_MPH: 3600 / 5280,
     MPH_TO_FPS: 5280 / 3600,
     BPH_PER_MIN: 33000,
-    SPEED_OF_SOUND: 1100
+    SPEED_OF_SOUND: 1100,
+    BLASIUS: 1.32822934486
 };
 
 // standard notation
