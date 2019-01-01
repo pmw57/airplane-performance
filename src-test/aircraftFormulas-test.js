@@ -1,6 +1,6 @@
 /*jslint browser:true */
 /*global solvePoly, Solver, aircraftFormulas, aircraftSolver, chart, CONSTANTS
-    describe, beforeEach, it, xit, expect */
+    describe, beforeEach, it, expect */
 var formulas = aircraftFormulas(CONSTANTS, solvePoly);
 var solvedFormulas = aircraftSolver(Solver, formulas);
 (function () {
@@ -150,13 +150,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         describe("Use formulas for **ALL** formula relationships", function () {
             it("");
         });
-        describe("Formula 1: lift, airspeed, and weight", function () {
+        describe("remove the need for custom objects from tests", function () {
             it("");
         });
-        describe("remove the need for custom objects from test file", function () {
-            it("");
-        });
-        describe("removing simplified formulas without density ratio", function () {
+        describe("remove simplified formulas w/out density ratio", function () {
             it("");
         });
         describe("use return instead of assign then return", function () {
@@ -168,10 +165,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         describe("move 5280 / 60 type conversions to the end", function () {
             it("");
         });
+        describe("Formula 1: lift, airspeed, and weight", function () {
+            it("");
+        });
         describe("Formula 6 - what's up with cl", function () {
             it("");
         });
-        describe("Formula 10,11 - why does normal rs not work here?", function () {
+        describe("Formula 10,11 - why doesn't normal rs work?", function () {
             it("");
         });
         describe("Formula 16 - working towards Formula 18", function () {
@@ -180,7 +180,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         describe("Formula 17 - working towards Formula 18", function () {
             it("");
         });
-        describe("Formula 22 - understand why wrong values happen", function () {
+        describe("Formula 22 - why do wrong values happen", function () {
             it("");
         });
         describe("Formula 23 - create tests", function () {
@@ -189,10 +189,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         describe("Formula 25 - why isn't vtilde behaving?", function () {
             it("");
         });
-        describe("Formula 31 - understand why thpal isn't behaving", function () {
+        describe("Formula 31 - why isn't thpal behaving", function () {
             it("");
         });
         describe("Formula 31 - why isn't velocity behaving", function () {
+            it("");
+        });
+        describe("Formula 33 - fix effective span test", function () {
             it("");
         });
         describe("Formula 36 - unreliable density ratio test", function () {
@@ -207,7 +210,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         describe("Appendix D2-D5, D9-D11 - test functions", function () {
             it("");
         });
-        describe("Appendix F8 - test eff with inve, invew, deltafuse", function () {
+        describe("Appendix F8 - eff with inve, invew, deltafuse", function () {
             it("");
         });
         describe("Appendix F8 - test kfuse formulas", function () {
@@ -217,6 +220,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             it("");
         });
         describe("What happens when the velocity varies?", function () {
+            it("");
+        });
+        describe("Check formulas for correctness", function () {
+            it("");
+        });
+        describe("Check appendices for correctness", function () {
             it("");
         });
     });
@@ -317,7 +326,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         describe("5: AD, Vmax, THPa", function () {
             // 1/146625 = 1/391 * 1/375
-            // source: http://acversailles.free.fr/documentation/08~Documentation_Generale_M_Suire/Conception/Calculs_de_structure/Long%20wing%20for%20short%20power.pdf
+            // source: Long Wings for Short Power pdf
             // 1/391 is air density
 
             // 1hp = 33000 ft lbf/min x 1 mile/5280 ft x 60 min/1 hour
@@ -661,6 +670,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             rs = solvedFormulas[11].solve({sigma, w, s, cd, cl}).rs;
         });
         it("has the same answer as for formula 10", function () {
+            return;
         });
         it("solves for sigma", function () {
             testAircraftFormula(11, "sigma", {rs, w, s, cd, cl}, sigma);
@@ -875,7 +885,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             testAircraftFormula(21, "ad", {vmins, wbe, sigma}, ad);
         });
     });
-    xdescribe("Formula 22: Sink rate from drag area and eff. span", function () {
+    xdescribe("Formula 22: Sink rate from drag area and eff span", function () {
         it("has the same answer as for formula 11", function () {
             var rs11 = solvedFormulas[11].solve({sigma, w, s, cd, cl}).rs;
             testAircraftFormula(22, "rs", {rs, ad, v, w, be}, rs11);
@@ -930,7 +940,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             dg_dcl = solvedFormulas[26].solve({cl, cd0, ear}).dg_dcl;
         });
         it("should be formula 9 d/dx with respect to CL", function () {
-            expect(dg_dcl).toBeCloseTo(solvedFormulas[9].solve({cd, cl}).thetag / cl);
+            expect(dg_dcl).toBeCloseTo(
+                solvedFormulas[9].solve({cd, cl}).thetag / cl);
         });
         it("solves for coefficient of lift", function () {
             testAircraftFormula(26, "cl", {dg_dcl, cd0, ear}, cl);
@@ -1052,6 +1063,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         it("solves for effective span", function () {
             // testAircraftFormula(33, "wbe", {thpmin, ad, sigma}, wbe);
+            return;
         });
     });
     describe("Formula 34: Thrust from a climbing flight", function () {
@@ -1399,7 +1411,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         beforeEach(function () {
             vtilde = solvedFormulas[52].solve({eta}).vtilde;
         });
-        it("shows that eta and vtilde are solved as close to zero", function () {
+        it("eta and vtilde are solved as close to zero", function () {
             testAircraftFormula(53, "zero", {eta, vtilde}, 0);
         });
     });
@@ -1584,7 +1596,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 expect(solvedFormulas.d[1].solve({dp, rho}).dh).toBeCloseTo(dh);
             });
             it("solves for rho", function () {
-                expect(solvedFormulas.d[1].solve({dp, dh}).rho).toBeCloseTo(rho);
+                expect(solvedFormulas.d[1].solve(
+                    {dp, dh}).rho).toBeCloseTo(rho);
             });
         });
         describe("D.1: differential form for vertical momentum", function () {
@@ -1603,12 +1616,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
         describe("D.2: ", function () {
+            return;
         });
         describe("D.3: ", function () {
+            return;
         });
         describe("D.4: ", function () {
+            return;
         });
         describe("D.5: ", function () {
+            return;
         });
         describe("D.6: Density pressure in Isothermal atmo.", function () {
             var p0;
@@ -1668,10 +1685,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             });
         });
         describe("D.9: ", function () {
+            return;
         });
         describe("D.10: ", function () {
+            return;
         });
         describe("D.11: ", function () {
+            return;
         });
         describe("D.12: Variation of density ratio", function () {
             var h;
