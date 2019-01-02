@@ -46,6 +46,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var craftType = "t18";
     var craft = crafts[craftType];
     var rho = window.CONSTANTS.SEALEVEL_DENSITY; // sea-level air density
+    var f = CONSTANTS.AVERAGE_SEALEVEL_FAHRENHEIT;
+    var r = f + CONSTANTS.FAHRENHEIT_TO_RANKINE;
 
     // Relation 1: cl, v, w/s
     var vs0 = craft.vs0;
@@ -135,12 +137,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var mdot = solvedFormulas[39].solve({rho, ap, vp}).mdot;
     var v3 = solvedFormulas[46].solve({vp, v}).v3;
     var a3 = solvedFormulas[39].solve({mdot, rho, v3}).a3;
-    var f = CONSTANTS.AVERAGE_SEALEVEL_FAHRENHEIT;
-    var r = f + CONSTANTS.FAHRENHEIT_TO_RANKINE;
     var p = solvedFormulas.d[3].solve({rho, r}).p;
     var p1 = solvedFormulas[41].solve({p, rho, vp, v}).p1;
-    var p2 = smaller(p); // Formula 41
     var n = 60; // Formula 55
+    var p2 = solvedFormulas[42].solve({p, rho, vp, v3}).p2;
     var thpal = solvedFormulas[31].solve({sigma, ad, v, wbe}).thpal;
     function testAircraftFormula(index, prop, data, expected) {
         if (expected === undefined) {
