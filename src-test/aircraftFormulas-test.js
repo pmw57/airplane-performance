@@ -1410,8 +1410,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 55: Nondimensional advance ratio (/sec)", function () {
-        var j;
         var n = solvedFormulas[55].solve({rpm}).n;
+        var j;
         beforeEach(function () {
             j = solvedFormulas[55].solve({v, n, dp}).j;
         });
@@ -1426,6 +1426,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 56: Nondimensional advance ratio (/hour)", function () {
+        var n = solvedFormulas[55].solve({rpm}).n;
         var j;
         beforeEach(function () {
             j = solvedFormulas[56].solve({v, rpm, dp}).j;
@@ -1441,10 +1442,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 57: Dimensionless power coeff. (ft-lb/sec)", function () {
-        var p;
+        var n = solvedFormulas[55].solve({rpm}).n;
         var cp;
         beforeEach(function () {
-            p = solvedFormulas[49].solve({rho, ap, vp, v}).pshaft;
             cp = solvedFormulas[57].solve({p, rho, n, dp}).cp;
         });
         it("solves for engine shaft power", function () {

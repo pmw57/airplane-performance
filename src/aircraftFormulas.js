@@ -1367,10 +1367,10 @@ function aircraftFormulas(consts, solvePoly) {
     ];
     formulas[55] = [ // Nondimensional advance ratio (per second)
         function nFromRpm(rpm) {
-            return rpm;
+            return rpm / (5280 / 60);
         },
         function rpmFromN(n) {
-            return n;
+            return n * 5280 / 60;
         },
         function jFromVNDp(v, n, dp) {
             return v / (n * dp);
