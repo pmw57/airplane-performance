@@ -8,12 +8,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var random = function (low, high) {
         return Math.random() * (high - low) + low;
     };
-    var smaller = function (num) {
-        return num * (1 - Math.random() / 5);
-    };
-    var larger = function (num) {
-        return num * (1 + Math.random() / 5);
-    };
 
     var crafts = {
         t18: {
@@ -83,7 +77,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var cd0 = solvedFormulas[19].solve({ad, s}).cd0;
     // Relation 6: cd0, ad, s
     var v = craft.vs0;
-    // var v = random(vs0, vmax);
     var d = solvedFormulas[0].solve({ad, v}).d;
     var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
     // Relation 7: AD, VminS, W/be, THPmin, Dmin
@@ -149,9 +142,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         expect(solvedFormulas[index].solve(data)[prop]).toBeCloseTo(expected);
     }
     describe("TODO", function () {
-        describe("Use formulas for **ALL** formula relationships", function () {
-            it("");
-        });
         describe("remove the need for custom objects from tests", function () {
             it("");
         });
