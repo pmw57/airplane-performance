@@ -1082,17 +1082,17 @@ function aircraftFormulas(consts, solvePoly) {
         }
     ];
     formulas[40] = [ // change in momentum vs pressure jump
-        function tFromMV3V(m, v3, v) {
-            return m * (v3 - v);
+        function tFromMdotV3V(mdot, v3, v) {
+            return mdot * (v3 - v);
         },
-        function mFromTV3V(t, v3, v) {
+        function mdotFromTV3V(t, v3, v) {
             return t / (v3 - v);
         },
-        function v3FromTMV(t, m, v) {
-            return t / m + v;
+        function v3FromTMdotV(t, mdot, v) {
+            return t / mdot + v;
         },
-        function vFromTMV3(t, m, v3) {
-            return v3 - t / m;
+        function vFromTMdotV3(t, mdot, v3) {
+            return v3 - t / mdot;
         }
     ];
     formulas[41] = [ // Upstream propeller pressure increase

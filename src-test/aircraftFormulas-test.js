@@ -132,7 +132,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var cl = solvedFormulas[3].solve({l, rho, vfs, s}).cl;
     var vp = solvedFormulas[48].solve({eta, v}).vp;
     var ap = solvedFormulas[39].solve({dp}).ap;
-    var m = solvedFormulas[39].solve({rho, ap, vp}).mdot;
+    var mdot = solvedFormulas[39].solve({rho, ap, vp}).mdot;
     var v3 = solvedFormulas[46].solve({vp, v}).v3;
     var pinf = larger(v); // Formula 41
     var p1 = smaller(pinf); // Formula 41
@@ -1196,19 +1196,19 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     describe("Formula 40: Change in momentum vs pressure jump", function () {
         var t;
         beforeEach(function () {
-            t = solvedFormulas[40].solve({m, v3, v}).t;
+            t = solvedFormulas[40].solve({mdot, v3, v}).t;
         });
         it("solves for thrust from velocity", function () {
-            testAircraftFormula(40, "t", {m, v3, v}, t);
+            testAircraftFormula(40, "t", {mdot, v3, v}, t);
         });
         it("solves for mass flow rate", function () {
-            testAircraftFormula(40, "m", {t, v3, v}, m);
+            testAircraftFormula(40, "mdot", {t, v3, v}, mdot);
         });
         it("solves for slipstream velocity", function () {
-            testAircraftFormula(40, "v3", {t, m, v}, v3);
+            testAircraftFormula(40, "v3", {t, mdot, v}, v3);
         });
         it("solves for freestream velocity", function () {
-            testAircraftFormula(40, "v", {t, m, v3}, v);
+            testAircraftFormula(40, "v", {t, mdot, v3}, v);
         });
     });
     describe("Formula 41: Upstream propeller pressure increase", function () {
