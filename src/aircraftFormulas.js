@@ -1096,29 +1096,28 @@ function aircraftFormulas(consts, solvePoly) {
         }
     ];
     formulas[41] = [ // Upstream propeller pressure increase
-        function pdiFromPRhoV(p, rho, v) {
-            return p + 0.5 * rho * v * v;
+        function pFromP1RhoVpV(p1, rho, vp, v) {
+            return p1 + 0.5 * rho * Math.pow(vp, 2) -
+                    0.5 * rho * Math.pow(v, 2);
         },
-        function pFromPdiRhoV(pdi, rho, v) {
-            return pdi - 0.5 * rho * v * v;
+        function p1FromPRhoVpV(p, rho, vp, v) {
+            return p + 0.5 * rho * Math.pow(v, 2) -
+                    0.5 * rho * Math.pow(vp, 2);
         },
-        function rhoFromPdiPV(pdi, p, v) {
-            return (pdi - p) / (0.5 * v * v);
+        function rhoFromPP1VpV(p, p1, vp, v) {
+            return (p - p1) / (
+                0.5 * Math.pow(vp, 2) - 0.5 * Math.pow(v, 2)
+            );
         },
-        function vFromPdiPRho(pdi, p, rho) {
-            return Math.sqrt((pdi - p) / (0.5 * rho));
+        function vpFromPP1RhoV(p, p1, rho, v) {
+            return Math.sqrt((
+                p - p1 + 0.5 * rho * Math.pow(v, 2)
+            ) / (0.5 * rho));
         },
-        function p1iFromP1RhoVp(p1, rho, vp) {
-            return p1 + 0.5 * rho * vp * vp;
-        },
-        function p1FromRhoVp(p1i, rho, vp) {
-            return p1i - 0.5 * rho * vp * vp;
-        },
-        function rhoFromP1iP1Vp(p1i, p1, vp) {
-            return (p1i - p1) / (0.5 + vp * vp);
-        },
-        function vpFromP1iP1Rho(p1i, p1, rho) {
-            return Math.sqrt((p1i - p1) / (0.5 * rho));
+        function vFromPP1RhoVp(p, p1, rho, vp) {
+            return Math.sqrt((
+                p1 - p + 0.5 * rho * Math.pow(vp, 2)
+            ) / (0.5 * rho));
         }
     ];
     formulas[42] = [ // Downstream propeller pressure

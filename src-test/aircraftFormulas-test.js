@@ -134,9 +134,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var ap = solvedFormulas[39].solve({dp}).ap;
     var mdot = solvedFormulas[39].solve({rho, ap, vp}).mdot;
     var v3 = solvedFormulas[46].solve({vp, v}).v3;
-    var pinf = larger(v); // Formula 41
-    var p1 = smaller(pinf); // Formula 41
-    var p2 = smaller(pinf); // Formula 41
+    var a3 = solvedFormulas[39].solve({mdot, rho, v3}).a3;
+    var f = CONSTANTS.AVERAGE_SEALEVEL_FAHRENHEIT;
+    var r = f + CONSTANTS.FAHRENHEIT_TO_RANKINE;
+    var p = solvedFormulas.d[3].solve({rho, r}).p;
+    var p1 = solvedFormulas[41].solve({p, rho, vp, v}).p1;
+    var p2 = smaller(p); // Formula 41
     var n = 60; // Formula 55
     var thpal = solvedFormulas[31].solve({sigma, ad, v, wbe}).thpal;
     function testAircraftFormula(index, prop, data, expected) {
@@ -1212,29 +1215,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 41: Upstream propeller pressure increase", function () {
-        var pdi;
-        var p1i;
-        beforeEach(function () {
-            pdi = solvedFormulas[41].solve({p, rho, v}).pdi;
-            p1i = solvedFormulas[41].solve({p1, rho, vp}).p1i;
-        });
-        it("solves for pressure distribution", function () {
-            testAircraftFormula(41, "p", {pdi, rho, v}, p);
-        });
-        it("solves for pressure density", function () {
-            testAircraftFormula(41, "rho", {pdi, p, v}, rho);
-        });
-        it("solves for velocity", function () {
-            testAircraftFormula(41, "v", {pdi, p, rho}, v);
-        });
-        it("solves for pressure before propeller", function () {
-            testAircraftFormula(41, "p1", {p1i, rho, vp}, p1);
-        });
-        it("solves for pressure density", function () {
-            testAircraftFormula(41, "rho", {p1i, p1, vp}, rho);
-        });
-        it("solves for velocity from distribution increase", function () {
-            testAircraftFormula(41, "vp", {p1i, p1, rho}, vp);
+        it("solves for freestream pressure", function () {
+            testAircraftFormula(41, "p", {p1, rho, vp, v}, p);
+            testAircraftFormula(41, "p1", {p, rho, vp, v}, p1);
+            testAircraftFormula(41, "rho", {p, p1, vp, v}, rho);
+            testAircraftFormula(41, "vp", {p, p1, rho, v}, vp);
+            testAircraftFormula(41, "v", {p, p1, rho, vp}, v);
         });
     });
     describe("Formula 42: Downstream propeller pressure", function () {
