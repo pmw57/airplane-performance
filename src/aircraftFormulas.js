@@ -1096,17 +1096,17 @@ function aircraftFormulas(consts, solvePoly) {
         }
     ];
     formulas[41] = [ // Upstream propeller pressure increase
-        function pdiFromPinfRhoV(pinf, rho, v) {
-            return pinf + 0.5 * rho * v * v;
+        function pdiFromPRhoV(p, rho, v) {
+            return p + 0.5 * rho * v * v;
         },
-        function pinfFromPdiRhoV(pdi, rho, v) {
+        function pFromPdiRhoV(pdi, rho, v) {
             return pdi - 0.5 * rho * v * v;
         },
-        function rhoFromPdiPinfV(pdi, pinf, v) {
-            return (pdi - pinf) / (0.5 * v * v);
+        function rhoFromPdiPV(pdi, p, v) {
+            return (pdi - p) / (0.5 * v * v);
         },
-        function vFromPdiPinfRho(pdi, pinf, rho) {
-            return Math.sqrt((pdi - pinf) / (0.5 * rho));
+        function vFromPdiPRho(pdi, p, rho) {
+            return Math.sqrt((pdi - p) / (0.5 * rho));
         },
         function p1iFromP1RhoVp(p1, rho, vp) {
             return p1 + 0.5 * rho * vp * vp;
@@ -1122,24 +1122,24 @@ function aircraftFormulas(consts, solvePoly) {
         }
     ];
     formulas[42] = [ // Downstream propeller pressure
-        function p2FromPinfRhoVpV3(pinf, rho, vp, v3) {
-            return pinf + 0.5 * rho * v3 * v3 - 0.5 * rho * vp * vp;
+        function p2FromPRhoVpV3(p, rho, vp, v3) {
+            return p + 0.5 * rho * v3 * v3 - 0.5 * rho * vp * vp;
         },
-        function pinfFromP2RhoVpV3(p2, rho, vp, v3) {
+        function pFromP2RhoVpV3(p2, rho, vp, v3) {
             return p2 + 0.5 * rho * vp * vp - 0.5 * rho * v3 * v3;
         },
-        function rhoFromP2PinfVpV3(p2, pinf, vp, v3) {
-            return (p2 - pinf) / (0.5 * v3 * v3 - 0.5 * vp * vp);
+        function rhoFromP2PVpV3(p2, p, vp, v3) {
+            return (p2 - p) / (0.5 * v3 * v3 - 0.5 * vp * vp);
         },
-        function vpFromP2PinfRhoV3(p2, pinf, rho, v3) {
+        function vpFromP2PRhoV3(p2, p, rho, v3) {
             var vp = Math.sqrt(
-                (0.5 * rho * v3 * v3 - (p2 - pinf)) / (0.5 * rho)
+                (0.5 * rho * v3 * v3 - (p2 - p)) / (0.5 * rho)
             );
             return vp;
         },
-        function v3FromP2PinfRhoVp(p2, pinf, rho, vp) {
+        function v3FromP2PRhoVp(p2, p, rho, vp) {
             var v3 = Math.sqrt(
-                ((p2 - pinf) + 0.5 * rho * vp * vp) / (0.5 * rho)
+                ((p2 - p) + 0.5 * rho * vp * vp) / (0.5 * rho)
             );
             return v3;
         }
@@ -1543,15 +1543,20 @@ function aircraftFormulas(consts, solvePoly) {
         }
     ];
     appendicies.d[3] = [ // D.3: Equation of state
-        function pFromRhoF(rho, f) {
-            var rankine = f + consts.FAHRENHEIT_TO_RANKINE;
-            return rho * consts.R * rankine;
-        },
-        function rFromF(f) {
+        function rFromf(f) {
             return f + consts.FAHRENHEIT_TO_RANKINE;
         },
-        function fFromR(r) {
+        function fromR(r) {
             return r - consts.FAHRENHEIT_TO_RANKINE;
+        },
+        function pFromRhoF(rho, r) {
+            return rho * consts.R * r;
+        },
+        function rhoFromPF(p, r) {
+            return p / (consts.R * r);
+        },
+        function rFromPRho(p, rho) {
+            return p / (rho * consts.R);
         }
     ];
     appendicies.d[4] = [ // D.4: Substituting into D.1
