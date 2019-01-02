@@ -134,6 +134,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var p1 = solvedFormulas[41].solve({p, rho, vp, v}).p1;
     var p2 = solvedFormulas[42].solve({p, rho, vp, v3}).p2;
     var thpal = solvedFormulas[31].solve({sigma, ad, v, wbe}).thpal;
+    console.table({thetag, vfs, l, cl,
+        ap, mdot, v3, a3, p, p1, p2,
+        thpal});
     function testAircraftFormula(index, prop, data, expected) {
         if (expected === undefined) {
             expected = data[prop];
