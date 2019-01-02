@@ -139,7 +139,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var a3 = solvedFormulas[39].solve({mdot, rho, v3}).a3;
     var p = solvedFormulas.d[3].solve({rho, r}).p;
     var p1 = solvedFormulas[41].solve({p, rho, vp, v}).p1;
-    var n = 60; // Formula 55
     var p2 = solvedFormulas[42].solve({p, rho, vp, v3}).p2;
     var thpal = solvedFormulas[31].solve({sigma, ad, v, wbe}).thpal;
     function testAircraftFormula(index, prop, data, expected) {
@@ -1412,6 +1411,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     describe("Formula 55: Nondimensional advance ratio (/sec)", function () {
         var j;
+        var n = solvedFormulas[55].solve({rpm}).n;
         beforeEach(function () {
             j = solvedFormulas[55].solve({v, n, dp}).j;
         });
