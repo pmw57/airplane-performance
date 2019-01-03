@@ -138,10 +138,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         ap, mdot, v3, a3, p, p1, p2,
         thpal});
     function testAircraftFormula(index, prop, data, expected) {
-        if (expected === undefined) {
-            expected = data[prop];
-            delete data[prop];
-        }
         expect(solvedFormulas[index].solve(data)[prop]).toBeCloseTo(expected);
     }
     describe("TODO", function () {
