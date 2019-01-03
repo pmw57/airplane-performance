@@ -78,11 +78,11 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 6: cd0, ad, s
     var v = craft.vs0;
     var d = solvedFormulas[0].solve({ad, v}).d;
-    var cd = solvedFormulas[0].solve({d, sigma, s, v}).cd;
+    var cd = solvedFormulas[1].solve({d, sigma, s, v}).cd;
     // Relation 7: AD, VminS, W/be, THPmin, Dmin
     var vmins = solvedFormulas[24].solve({sigma, ad, wbe}).vmins;
     var thpmin = solvedFormulas[33].solve({ad, sigma, wbe}).thpmin;
-    var dmin = solvedFormulas[0].solve({ad, wbe}).dmin;
+    var dmin = solvedFormulas[30].solve({ad, wbe}).dmin;
     // Relation 8: RSmin, THPmin, W
     var rsmin = solvedFormulas[0].solve({thpmin, w}).rsmin;
     var rs = solvedFormulas[22].solve({sigma, ad, v, w, be}).rs;
@@ -104,8 +104,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var rcmax = solvedFormulas[0].solve({bhp, w}).rcmax;
     // Relation 12: Ts, BHP, Vprop, Dp
     var dp = craft.dp;
-    var vprop = solvedFormulas[0].solve({bhp, sigma, dp}).vprop;
-    var ts = solvedFormulas[0].solve({sigma, dp, bhp}).ts;
+    var vprop = solvedFormulas[51].solve({bhp, sigma, dp}).vprop;
+    var ts = solvedFormulas[61].solve({sigma, dp, bhp}).ts;
     console.table({
         ldmax,
         clmins,
@@ -227,20 +227,20 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("is accessible as an object property", function () {
             expect(typeof solvedFormulas[1].d).toBe("function");
         });
-        it("uses an all function for all available formulas", function () {
-            expect(solvedFormulas[1].all[0]).toBeDefined();
-        });
-        it("uses an overall all function for all formulas", function () {
-            expect(solvedFormulas.all).toBeDefined();
-        });
-        describe("overall solver", function () {
-            it("is defined", function () {
-                expect(solvedFormulas.all.solve).toBeDefined();
-            });
-            it("is an array", function () {
-                expect(typeof solvedFormulas.all.solve).toBe("function");
-            });
-        });
+        // it("uses an all function for all available formulas", function () {
+        //     expect(solvedFormulas[1].all[0]).toBeDefined();
+        // });
+        // it("uses an overall all function for all formulas", function () {
+        //     expect(solvedFormulas.all).toBeDefined();
+        // });
+        // describe("overall solver", function () {
+        //     it("is defined", function () {
+        //         expect(solvedFormulas.all.solve).toBeDefined();
+        //     });
+        //     it("is an array", function () {
+        //         expect(typeof solvedFormulas.all.solve).toBe("function");
+        //     });
+        // });
     });
     describe("Relations", function () {
         describe("1: CL, V, W/S", function () {
@@ -428,16 +428,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         describe("12: Ts, BHP, Vprop, Dp", function () {
             it("solves for ts", function () {
-                testAircraftFormula(0, "ts", {sigma, dp, bhp}, ts);
-                testAircraftFormula(0, "sigma", {ts, dp, bhp}, sigma);
-                testAircraftFormula(0, "dp", {ts, sigma, bhp}, dp);
-                testAircraftFormula(0, "bhp", {ts, sigma, dp}, bhp);
+                testAircraftFormula(61, "ts", {sigma, dp, bhp}, ts);
+                testAircraftFormula(61, "sigma", {ts, dp, bhp}, sigma);
+                testAircraftFormula(61, "dp", {ts, sigma, bhp}, dp);
+                testAircraftFormula(61, "bhp", {ts, sigma, dp}, bhp);
             });
             it("solves for vprop", function () {
-                testAircraftFormula(0, "vprop", {bhp, sigma, dp}, vprop);
-                testAircraftFormula(0, "bhp", {vprop, sigma, dp}, bhp);
-                testAircraftFormula(0, "sigma", {vprop, bhp, dp}, sigma);
-                testAircraftFormula(0, "dp", {vprop, bhp, sigma}, dp);
+                testAircraftFormula(51, "vprop", {bhp, sigma, dp}, vprop);
+                testAircraftFormula(51, "bhp", {vprop, sigma, dp}, bhp);
+                testAircraftFormula(51, "sigma", {vprop, bhp, dp}, sigma);
+                testAircraftFormula(51, "dp", {vprop, bhp, sigma}, dp);
             });
             it("idealised thrust matches chart figures", function () {
                 const vtilde = v / vprop;
@@ -513,7 +513,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     describe("Formula 5: Drag from velocity as mph", function () {
         it("is equivalent to Formula 4", function () {
             var expected = w * Math.sin(thetag / 360 * Math.TAU);
-            testAircraftFormula(0, "d", {sigma, cd, s, v}, expected);
+            testAircraftFormula(5, "d", {sigma, cd, s, v}, expected);
         });
         it("solves for drag", function () {
             testAircraftFormula(5, "d", {sigma, cd, s, v}, d);
@@ -788,10 +788,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             expect(clmins).toBeCloseTo(clmins18);
         });
         it("solves for ad", function () {
-            testAircraftFormula(0, "ad", {clmins, ce}, ad);
+            testAircraftFormula(19, "ad", {clmins, ce}, ad);
         });
         it("solves for ce", function () {
-            testAircraftFormula(0, "ce", {clmins, ad}, ce);
+            testAircraftFormula(19, "ce", {clmins, ad}, ce);
         });
     });
     describe("Formula 19: effective chord formulas", function () {
@@ -807,13 +807,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     });
     describe("Formula 19: Drag area relationship", function () {
         it("solves for drag area", function () {
-            expect(solvedFormulas[0].solve({cd0, s}).ad).toBeCloseTo(ad);
+            expect(solvedFormulas[19].solve({cd0, s}).ad).toBeCloseTo(ad);
         });
         it("solves for parasite drag", function () {
-            testAircraftFormula(0, "cd0", {s, ad: cd0 * s}, cd0);
+            testAircraftFormula(19, "cd0", {s, ad: cd0 * s}, cd0);
         });
         it("solves for wing area", function () {
-            testAircraftFormula(0, "s", {cd0, ad: cd0 * s}, s);
+            testAircraftFormula(19, "s", {cd0, ad: cd0 * s}, s);
         });
     });
     describe("Formula 20: Minimum rate of sink", function () {
@@ -973,7 +973,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             ldmax = solvedFormulas[29].solve({be, ad}).ldmax;
         });
         it("should have the same value as for formulas 28", function () {
-            ldmax28 = solvedFormulas[0].solve({ear, cd0}).ldmax;
+            ldmax28 = solvedFormulas[28].solve({ear, cd0}).ldmax;
             expect(ldmax).toBeCloseTo(ldmax28);
         });
         it("solves for best glide ratio", function () {
@@ -991,10 +991,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
             expect(dmin).toBeCloseTo(1 / ldmax * w);
         });
         it("solves for drag area", function () {
-            testAircraftFormula(0, "ad", {dmin, wbe}, ad);
+            testAircraftFormula(30, "ad", {dmin, wbe}, ad);
         });
         it("solves for effective span loading", function () {
-            testAircraftFormula(0, "wbe", {dmin, ad}, wbe);
+            testAircraftFormula(30, "wbe", {dmin, ad}, wbe);
         });
     });
     describe("Formula 31: Available hp to maintain level flight", function () {
