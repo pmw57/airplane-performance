@@ -151,9 +151,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         describe("remove simplified formulas w/out density ratio", function () {
             it("");
         });
-        describe("use return instead of assign then return", function () {
-            it("");
-        });
         describe("move sigma and density to the beginning", function () {
             it("");
         });
