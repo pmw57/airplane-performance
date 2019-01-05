@@ -20,6 +20,14 @@ function aircraftSolver(Solver, data) {
         });
     });
 
+    solverFormulas.all = solverFormulas.reduce(function (prev, next) {
+        if (next.all) {
+            prev = prev.concat(next.all);
+        }
+        return prev;
+    }, []);
+    solverFormulas.all = new Solver(solverFormulas.all);
+
     return solverFormulas;
 }
 window.aircraftSolver = aircraftSolver;

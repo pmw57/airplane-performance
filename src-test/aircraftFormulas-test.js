@@ -11,6 +11,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
 
     var crafts = {
         t18: {
+            v: 67,
             vs0: 67,
             clmax: 1.52,
             vmax: 180,
@@ -76,7 +77,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var thpa = solvedFormulas[0].solve({ad, vmax}).thpa;
     var cd0 = solvedFormulas[19].solve({ad, s}).cd0;
     // Relation 6: cd0, ad, s
-    var v = craft.vs0;
+    var v = craft.v;
     var d = solvedFormulas[0].solve({ad, v}).d;
     var cd = solvedFormulas[1].solve({d, sigma, s, v}).cd;
     // Relation 7: AD, VminS, W/be, THPmin, Dmin
