@@ -152,7 +152,7 @@ function aircraftFormulas(consts, solvePoly) {
         function rcFromThpaWRs(thpa, w, rs) {
             return consts.BPH_PER_MIN * thpa / w - rs;
         },
-        function rsFromThpaWR(thpa, w, rc) {
+        function rsFromThpaWRc(thpa, w, rc) {
             return consts.BPH_PER_MIN * thpa / w - rc;
         },
         // Relation 9: AD, be, (L/D)max
