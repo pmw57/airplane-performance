@@ -49,11 +49,11 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 1: cl, v, w/s
     var vs1 = craft.vs1;
     var clmax = craft.clmax;
-    var clmaxf = craft.clmaxf;
     var vmax = craft.vmax;
     var sigma = 1; // sealevel
     var ws = solvedFormulas[7].solve({sigma, clmax, vs1}).ws;
-    var vs0 = craft.vs0;
+    var clmaxf = craft.clmaxf;
+    var vs0 = solvedFormulas[7].solve({ws, sigma, clmax: clmaxf}).vs1;
     // Relation 2: s, w/s, w
     var w = craft.w;
     var we = craft.we;
@@ -71,7 +71,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 4: be, wbe, w
     var wbe = solvedFormulas[21].solve({w, be}).wbe;
     console.table({
-        vs0, clmax, ws, vmax,
+        vs1, clmax, vmax, sigma, ws, clmaxf, vs0,
         w, s,
         b, ar, c, sfuse, e, ear, ce, be,
         wbe
@@ -259,6 +259,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(7, "sigma", {ws, clmax, vs1}, sigma);
                 testAircraftFormula(7, "clmax", {ws, sigma, vs1}, clmax);
                 testAircraftFormula(7, "vs1", {ws, sigma, clmax}, vs1);
+            });
+            it("solves for vs0 when given vs1 information", function () {
+                testAircraftFormula(7, "vs0", {vs1, clmax, clmaxf}, vs0);
+                testAircraftFormula(7, "vs1", {vs0, clmax, clmaxf}, vs1);
+                testAircraftFormula(7, "clmax", {vs0, vs1, clmaxf}, clmax);
+                testAircraftFormula(7, "clmaxf", {vs0, vs1, clmax}, clmaxf);
             });
         });
         describe("2: S, W/S, W", function () {
