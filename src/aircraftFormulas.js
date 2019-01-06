@@ -333,19 +333,19 @@ function aircraftFormulas(consts, solvePoly) {
                     cl * Math.pow(consts.MPH_TO_FPS, 2)));
         },
         // Relation 1 clmax
-        function wsFromSigmaClmaxVs0(sigma, clmax, vs0) {
+        function wsFromSigmaClmaxVs1(sigma, clmax, vs1) {
             return sigma * 0.5 * consts.SEALEVEL_DENSITY *
-                    clmax * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2);
+                    clmax * vs1 * vs1 * Math.pow(consts.MPH_TO_FPS, 2);
         },
-        function sigmaFromWsClmaxVs0(ws, clmax, vs0) {
+        function sigmaFromWsClmaxVs1(ws, clmax, vs1) {
             return ws / (0.5 * consts.SEALEVEL_DENSITY *
-                    clmax * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2));
+                    clmax * vs1 * vs1 * Math.pow(consts.MPH_TO_FPS, 2));
         },
-        function clmaxFromWsSigmaVs0(ws, sigma, vs0) {
+        function clmaxFromWsSigmaVs1(ws, sigma, vs1) {
             return ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
-                    vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2));
+                    vs1 * vs1 * Math.pow(consts.MPH_TO_FPS, 2));
         },
-        function vs0FromWsSigmaCl(ws, sigma, clmax) {
+        function vs1FromWsSigmaCl(ws, sigma, clmax) {
             return Math.sqrt(ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
                     clmax * Math.pow(consts.MPH_TO_FPS, 2)));
         },

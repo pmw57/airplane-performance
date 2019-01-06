@@ -11,9 +11,11 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
 
     var crafts = {
         t18: {
-            v: 67,
-            vs0: 67,
+            clmaxf: 2.1,
+            vs0: 65,
             clmax: 1.52,
+            vs1: 67,
+            v: 67,
             vmax: 180,
             w: 1506,
             we: 900,
@@ -45,11 +47,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var r = f + CONSTANTS.FAHRENHEIT_TO_RANKINE;
 
     // Relation 1: cl, v, w/s
-    var vs0 = craft.vs0;
+    var vs1 = craft.vs1;
     var clmax = craft.clmax;
+    var clmaxf = craft.clmaxf;
     var vmax = craft.vmax;
     var sigma = 1; // sealevel
-    var ws = solvedFormulas[7].solve({sigma, clmax, vs0}).ws;
+    var ws = solvedFormulas[7].solve({sigma, clmax, vs1}).ws;
+    var vs0 = craft.vs0;
     // Relation 2: s, w/s, w
     var w = craft.w;
     var we = craft.we;
@@ -251,10 +255,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "wu", {w, we}, wu);
             });
             it("solves lift force from lift coeff. and velocity", function () {
-                testAircraftFormula(7, "ws", {sigma, clmax, vs0}, ws);
-                testAircraftFormula(7, "sigma", {ws, clmax, vs0}, sigma);
-                testAircraftFormula(7, "clmax", {ws, sigma, vs0}, clmax);
-                testAircraftFormula(7, "vs0", {ws, sigma, clmax}, vs0);
+                testAircraftFormula(7, "ws", {sigma, clmax, vs1}, ws);
+                testAircraftFormula(7, "sigma", {ws, clmax, vs1}, sigma);
+                testAircraftFormula(7, "clmax", {ws, sigma, vs1}, clmax);
+                testAircraftFormula(7, "vs1", {ws, sigma, clmax}, vs1);
             });
         });
         describe("2: S, W/S, W", function () {
