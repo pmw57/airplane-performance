@@ -13,7 +13,9 @@
         thorp: {
             name: "Thorp T-18 (Default)",
             h: 0,
-            vs0: 67.00,
+            // vs0 = (vs1, clmax, clmaxf) => vs1 * sqrt(clmax / clmaxf)
+            // vs1 = (vs0, clmaxf, clmax) => vs0 * sqrt(clmaxf / clmax)
+            vs1: 67.00,
             clmax: 1.53,
             clmaxf: 2.10,
             w: 1506.00,
@@ -25,7 +27,7 @@
             rpm: 2700.00,
             eta: 85 / 100,
             wing_shape: "rectangular",
-            fuselage_shape: "rectangular",
+            // fuselage_shape: "rectangular",
             sfuse: 3 * 3
         },
         henry: {
@@ -43,7 +45,7 @@
             rpm: 2900.00,
             eta: 82 / 100,
             wing_shape: "tapered",
-            fuselage_shape: "rectangular",
+            // fuselage_shape: "rectangular",
             sfuse: 3 * 3
         }
     };
@@ -51,13 +53,14 @@
         fixed: {
             ws: 3,
             vs0: 1,
+            vs1: 1,
             cl: 2,
             we: 0,
             s: 1,
             ar: 2,
             c: 2,
             ewing: 2,
-            fuselageCorrection: 2,
+            efuse: 2,
             e: 3,
             ear: 2,
             ce: 2,
@@ -70,9 +73,10 @@
             dmin: 1,
             thpmin: 2,
             rsmin: 1,
+            rs: 1,
+            rc: 1,
             ldmax: 2,
             clmins: 2,
-            rc: 1,
             vprop: 1,
             ts: 1,
             mp: 4
@@ -96,14 +100,15 @@
         // Have the solver search all formulas for a potential solution
         [
             {field: "sigma", relation: 0, part: 0},
-            {field: "ws", relation: 1, part: 0},
+            {field: "vs0", relation: 1, part: 0},
             {field: "s", relation: 2, part: 0},
             {field: "wu", relation: 2, part: 0},
             {field: "ar", relation: 2, part: 1},
-            {field: "c", relation: 3, part: 0},
-            {field: "e", relation: 3, part: 1},
-            {field: "ear", relation: 3, part: 2},
-            {field: "ce", relation: 3, part: 3},
+            {field: "ew", relation: 3, part: 0},
+            {field: "c", relation: 3, part: 1},
+            {field: "e", relation: 3, part: 2},
+            {field: "ear", relation: 3, part: 3},
+            {field: "ce", relation: 3, part: 4},
             {field: "be", relation: 4, part: 0},
             {field: "wbe", relation: 4, part: 1},
             {field: "thpa", relation: 5, part: 0},
@@ -113,7 +118,8 @@
             {field: "dmin", relation: 7, part: 1},
             {field: "thpmin", relation: 7, part: 2},
             {field: "rsmin", relation: 8, part: 0},
-            {field: "rc", relation: 8, part: 1},
+            {field: "rs", relation: 8, part: 1},
+            {field: "rc", relation: 8, part: 2},
             {field: "ldmax", relation: 9, part: 0},
             {field: "clmins", relation: 10, part: 0},
             {field: "vprop", relation: 12, part: 0},
@@ -251,9 +257,9 @@
         var fields = getUncheckedFields(form);
 
         fields.forEach(function (field) {
-            var fieldName = field.name || field.id,
-                value = formatValue(data, fieldName);
-
+            var fieldName = field.name || field.id;
+            console.log(fieldName);
+            var value = formatValue(data, fieldName);
             field.value = value;
             field.disabled = true;
         });
@@ -416,8 +422,10 @@
     };
 
     document.querySelector("select[name=wing_shape]").onchange = checkOther;
-    document.querySelector("select[name=fuselage_shape]").onchange = checkOther;
-
+    const efuse = document.querySelector("select[name=efuse]");
+    if (efuse) {
+        efuse.onchange = checkOther;
+    }
     document.querySelector(".perf").onsubmit = function () {
         data = checkedFormElements(form);
         main(data, form);
@@ -473,6 +481,7 @@
         var el;
         var p;
         for (key in data) {
+            console.log(key);
             if (data.hasOwnProperty(key)) {
                 el = form.elements[key];
                 p = upto("P", el);

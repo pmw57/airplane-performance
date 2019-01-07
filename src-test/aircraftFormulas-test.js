@@ -53,7 +53,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var sigma = 1; // sealevel
     var ws = solvedFormulas[7].solve({sigma, clmax, vs1}).ws;
     var clmaxf = craft.clmaxf;
-    var vs0 = solvedFormulas[7].solve({ws, sigma, clmax: clmaxf}).vs1;
+    var vs0 = solvedFormulas[7].solve({vs1, clmax, clmaxf}).vs0;
     // Relation 2: s, w/s, w
     var w = craft.w;
     var we = craft.we;
@@ -147,6 +147,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     }
     describe("TODO", function () {
         describe("remove the need for custom objects from tests", function () {
+            it("");
+        });
+        describe("v:cl / vs0:clmaxf / vs1:clmax relationships", function () {
             it("");
         });
         describe("remove simplified formulas w/out density ratio", function () {

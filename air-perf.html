@@ -42,15 +42,17 @@
                 <option value="other">Other</option>
             </select>
         </label><input type="checkbox" rel="wing_shape"></p>
-        <p>Wing efficiency <span>e<sub>w</sub></span> <label class="result"><input type="number" name="ewing"></label><input type="checkbox" rel="ewing"></p>
+        <p>Wing efficiency <span>e<sub>w</sub></span> <label class="result"><input type="number" name="ew"></label><input type="checkbox" rel="ew"></p>
+        <!--
         <p>Fuselage shape <label>
-            <select name="fuselage_shape" rel="fuselageCorrection">
+            <select name="fuselage_shape" rel="efuse">
                 <option value="rectangular">Rectangular</option>
                 <option value="round">Round</option>
                 <option value="other">Other</option>
             </select>
         </label><input type="checkbox" rel="fuselage_shape"></p>
-        <p>Fuselage efficiency <span>e<sub>fuse</sub></span> <label class="result"><input type="number" name="fuselageCorrection"></label><input type="checkbox" rel="fuselageCorrection"></p>
+        <p>Fuselage efficiency <span>e<sub>fuse</sub></span> <label class="result"><input type="number" name="efuse"></label><input type="checkbox" rel="efuse"></p>
+        -->
         <p>Fuselage area <span>S<sub>fuse</sub> = </span><label><input type="number" step="0.1" name="sfuse"></label><input type="checkbox" rel="sfuse"></p>
         <p>Airplane efficiency factor <span>e</span> <label class="result"><input name="e"></label><input type="checkbox" rel="e"></p>
         <p>Effective aspect ratio <span>eAR</span> <label class="result"><input name="ear"></label><input type="checkbox" rel="ear"></p>
@@ -76,6 +78,8 @@
     </div>
     <div class="relation relation8">
         <p>Minimum sink rate <span>R<sub>S,min</sub></span> <label class="result"><input name="rsmin"> fpm</label><input type="checkbox" rel="rsmin"></p>
+        <p>Sink rate <span>R<sub>S</sub></span> <label class="result"><input name="rs"> fpm</label><input type="checkbox" rel="rs"></p>
+        <p>Climb rate <span>R<sub>C</sub></span> <label class="result"><input name="rsmin"> fpm</label><input type="checkbox" rel="rc"></p>
     </div>
     <div class="relation relation9">
         <p>Maximum lift-to-drag ratio <span>(L/D)<sub>max</sub></span> <label class="result"><input name="ldmax"></label><input type="checkbox" rel="ldmax"></p>

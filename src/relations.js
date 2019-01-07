@@ -14,6 +14,7 @@ var formulas = aircraftFormulas(window.CONSTANTS, solvePoly),
             solvedFormulas[14]
         ],
         [ // (3) Relation 3: Wing Area, Effective Span, Effective Aspect Ratio, Effective Chord - S, be, eAR, ce
+            solvedFormulas.f[9],
             solvedFormulas[14],
             solvedFormulas.f[8],
             solvedFormulas[15],
@@ -36,6 +37,7 @@ var formulas = aircraftFormulas(window.CONSTANTS, solvePoly),
         ],
         [ // (33) Relation 8: Minimum Sink Rate, Minimum Power Required for Level Flight, Weight
             solvedFormulas[20],
+            solvedFormulas[32],
             solvedFormulas[38]
         ],
         [ // Relation 9: Drag Area, Effective Span, Maximum Lift-to-Drag Ratio
