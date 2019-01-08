@@ -49,6 +49,7 @@ function Solver(calcs) {
     solver.solve = function (data) {
         var solve = this;
         var solvable;
+        var answers = {};
 
         solvable = solve.getSolvable(calcs, data);
         solvable.forEach(function (index) {
@@ -57,11 +58,9 @@ function Solver(calcs) {
             args = args.map(function collateArguments(arg) {
                 return data[arg];
             });
-            if (!data[answer]) {
-                data[answer] = calcs[index].apply(this, args);
-            }
+            answers[answer] = calcs[index].apply(null, args);
         });
-        return data;
+        return answers;
     };
     calcs.forEach(function (calc) {
         var answer = solver.getAnswer(calc);
