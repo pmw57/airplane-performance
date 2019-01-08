@@ -16,11 +16,11 @@
             // vs0 = (vs1, clmax, clmaxf) => vs1 * sqrt(clmax / clmaxf)
             // vs1 = (vs0, clmaxf, clmax) => vs0 * sqrt(clmaxf / clmax)
             vs1: 67.00,
-            clmax: 1.53,
+            b: 20 + 10 / 12,
+            clmax: 1.52,
             clmaxf: 2.10,
             w: 1506.00,
             we: 900.00,
-            b: 20.833,
             bhp: 150.00,
             vmax: 180.00,
             dp: 6,
@@ -28,7 +28,8 @@
             eta: 85 / 100,
             wing_shape: "rectangular",
             // fuselage_shape: "rectangular",
-            sfuse: 3 * 3
+            sfuse: 3 * 3,
+            ad: 3
         },
         henry: {
             name: "Henry's aircraft",
@@ -98,42 +99,43 @@
 
         // TODO
         // Have the solver search all formulas for a potential solution
-        [
+        const props = [
             {field: "sigma", relation: 0, part: 0},
             {field: "vs0", relation: 1, part: 0},
-            {field: "s", relation: 2, part: 0},
+            {field: "ws", relation: 1, part: 1},
             {field: "wu", relation: 2, part: 0},
-            {field: "ar", relation: 2, part: 1},
-            {field: "ew", relation: 3, part: 0},
-            {field: "c", relation: 3, part: 1},
-            {field: "e", relation: 3, part: 2},
-            {field: "ear", relation: 3, part: 3},
-            {field: "ce", relation: 3, part: 4},
-            {field: "be", relation: 4, part: 0},
-            {field: "wbe", relation: 4, part: 1},
-            {field: "thpa", relation: 5, part: 0},
-            {field: "ad", relation: 5, part: 0},
-            {field: "cd0", relation: 6, part: 0},
-            {field: "vmins", relation: 7, part: 0},
-            {field: "dmin", relation: 7, part: 1},
-            {field: "thpmin", relation: 7, part: 2},
-            {field: "rsmin", relation: 8, part: 0},
-            {field: "rs", relation: 8, part: 1},
-            {field: "rc", relation: 8, part: 2},
-            {field: "ldmax", relation: 9, part: 0},
-            {field: "clmins", relation: 10, part: 0},
-            {field: "vprop", relation: 12, part: 0},
-            {field: "ts", relation: 12, part: 1},
-            {field: "mp", relation: 13, part: 0},
-            {field: "cl", relation: 1, part: 0}
-        ].forEach(function (calc) {
+            {field: "s", relation: 2, part: 0},
+            // {field: "ar", relation: 2, part: 1},
+            // {field: "c", relation: 3, part: 1},
+            // {field: "e", relation: 3, part: 2},
+            // {field: "ew", relation: 3, part: 0},
+            // {field: "ear", relation: 3, part: 3},
+            // {field: "ce", relation: 3, part: 4},
+            // {field: "be", relation: 4, part: 0},
+            // {field: "wbe", relation: 4, part: 1},
+            // {field: "thpa", relation: 5, part: 0},
+            // {field: "ad", relation: 5, part: 0},
+            // {field: "cd0", relation: 6, part: 0},
+            // {field: "vmins", relation: 7, part: 0},
+            // {field: "dmin", relation: 7, part: 1},
+            // {field: "thpmin", relation: 7, part: 2},
+            // {field: "rsmin", relation: 8, part: 0},
+            // {field: "rs", relation: 8, part: 1},
+            // {field: "rc", relation: 8, part: 2},
+            // {field: "ldmax", relation: 9, part: 0},
+            // {field: "clmins", relation: 10, part: 0},
+            // {field: "vprop", relation: 12, part: 0},
+            // {field: "ts", relation: 12, part: 1},
+            // {field: "mp", relation: 13, part: 0},
+            // {field: "cl", relation: 1, part: 0}
+        ];
+        props.forEach(function (calc) {
             var formula = relation[calc.relation][calc.part];
             var field = calc.field;
             if (!fixed(field, form)) {
                 data[field] = formula.solve(data)[field];
             }
         });
-        console.table(data);
 
         return data;
     }
@@ -258,7 +260,9 @@
 
         fields.forEach(function (field) {
             var fieldName = field.name || field.id;
-            console.log(fieldName);
+            if (!data[fieldName]) {
+                return;
+            }
             var value = formatValue(data, fieldName);
             field.value = value;
             field.disabled = true;
@@ -481,7 +485,6 @@
         var el;
         var p;
         for (key in data) {
-            console.log(key);
             if (data.hasOwnProperty(key)) {
                 el = form.elements[key];
                 p = upto("P", el);

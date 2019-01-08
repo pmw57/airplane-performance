@@ -7,7 +7,8 @@ var formulas = aircraftFormulas(window.CONSTANTS, solvePoly),
             solvedFormulas.d[12]
         ],
         [ // Lift Coefficient, Airspeed, Wing Loading - CL, V, W/S
-            solvedFormulas[7]
+            solvedFormulas[7],
+            solvedFormulas[0]
         ],
         [ // Relation 2: Wing Area, Wing Loading, Gross Weight - S, W/S, W
             solvedFormulas[0],
