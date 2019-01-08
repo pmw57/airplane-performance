@@ -13,6 +13,14 @@ p {
     left: 26.5em;
     z-index: 10;
 }
+sup, sub {
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+}
+sub { 
+  top: 0.4em; 
+}
 .perf {
     width: 27.5em;
 }
@@ -29,8 +37,8 @@ p {
 }
 .perf p>span {
     position: absolute;
-    width: 4em;
-    left: 14em;
+    width: 6em;
+    left: 12.5em;
 }
 .perf label {
     position: absolute;
