@@ -58,6 +58,7 @@
             cl: 2,
             we: 0,
             s: 1,
+            b: 2,
             ar: 2,
             c: 2,
             ewing: 2,
@@ -103,18 +104,18 @@
             {field: "sigma", relation: 0, part: 0},
             {field: "vs0", relation: 1, part: 0},
             {field: "ws", relation: 1, part: 1},
+            {field: "clmaxv", relation: 1, part: 0},
             {field: "wu", relation: 2, part: 0},
             {field: "s", relation: 2, part: 0},
-            // {field: "ar", relation: 2, part: 1},
-            // {field: "c", relation: 3, part: 1},
-            // {field: "e", relation: 3, part: 2},
-            // {field: "ew", relation: 3, part: 0},
-            // {field: "ear", relation: 3, part: 3},
-            // {field: "ce", relation: 3, part: 4},
-            // {field: "be", relation: 4, part: 0},
-            // {field: "wbe", relation: 4, part: 1},
-            // {field: "thpa", relation: 5, part: 0},
-            // {field: "ad", relation: 5, part: 0},
+            {field: "ar", relation: 2, part: 1},
+            {field: "c", relation: 3, part: 1},
+            {field: "e", relation: 3, part: 2},
+            {field: "ew", relation: 3, part: 0},
+            {field: "ear", relation: 3, part: 3},
+            {field: "ce", relation: 3, part: 4},
+            {field: "be", relation: 4, part: 0},
+            {field: "wbe", relation: 4, part: 1},
+            {field: "thpa", relation: 5, part: 0},
             // {field: "cd0", relation: 6, part: 0},
             // {field: "vmins", relation: 7, part: 0},
             // {field: "dmin", relation: 7, part: 1},
@@ -134,6 +135,7 @@
             var field = calc.field;
             if (!fixed(field, form)) {
                 data[field] = formula.solve(data)[field];
+                console.log(field, data[field]);
             }
         });
 
