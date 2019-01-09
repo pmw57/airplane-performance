@@ -13,16 +13,13 @@
         thorp: {
             name: "Thorp T-18 (Default)",
             h: 0,
-            // vs0 = (vs1, clmax, clmaxf) => vs1 * sqrt(clmax / clmaxf)
-            // vs1 = (vs0, clmaxf, clmax) => vs0 * sqrt(clmaxf / clmax)
-            vs1: 67.00,
+            vs0: 67.00,
+            vmax: 180.00,
             b: 20 + 10 / 12,
             clmax: 1.52,
-            clmaxf: 2.10,
             w: 1506.00,
             we: 900.00,
             bhp: 150.00,
-            vmax: 180.00,
             dp: 6,
             rpm: 2700.00,
             eta: 85 / 100,
@@ -36,7 +33,6 @@
             h: 0,
             vs1: 30.00,
             clmax: 1.53,
-            clmaxf: 1.53,
             w: 420,
             wu: 240,
             b: 14,
@@ -53,9 +49,11 @@
     var rounding = {
         fixed: {
             ws: 3,
-            vs0: 1,
-            vs1: 1,
+            v: 1,
             cl: 2,
+            vs0: 1,
+            vmax: 1,
+            clvmax: 1,
             we: 0,
             s: 1,
             b: 2,
@@ -102,9 +100,8 @@
         // Have the solver search all formulas for a potential solution
         const props = [
             {field: "sigma", relation: 0, part: 0},
-            {field: "vs0", relation: 1, part: 0},
             {field: "ws", relation: 1, part: 1},
-            {field: "clmaxv", relation: 1, part: 0},
+            {field: "clvmax", relation: 1, part: 0},
             {field: "wu", relation: 2, part: 0},
             {field: "s", relation: 2, part: 0},
             {field: "ar", relation: 2, part: 1},

@@ -11,10 +11,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
 
     var crafts = {
         t18: {
-            clmaxf: 2.1,
-            vs0: 65,
             clmax: 1.52,
-            vs1: 67,
+            vs0: 67,
             v: 67,
             vmax: 180,
             w: 1506,
@@ -47,13 +45,12 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var r = f + CONSTANTS.FAHRENHEIT_TO_RANKINE;
 
     // Relation 1: cl, v, w/s
-    var vs1 = craft.vs1;
-    var clmax = craft.clmax;
-    var vmax = craft.vmax;
     var sigma = 1; // sealevel
-    var ws = solvedFormulas[7].solve({sigma, clmax, vs1}).ws;
-    var clmaxf = craft.clmaxf;
-    var vs0 = solvedFormulas[7].solve({vs1, clmax, clmaxf}).vs0;
+    var vs0 = craft.vs0;
+    var clmax = craft.clmax;
+    var ws = solvedFormulas[7].solve({sigma, clmax, vs0}).ws;
+    var vmax = craft.vmax;
+    var clvmax = solvedFormulas[7].solve({ws, sigma, vmax}).clvmax;
     // Relation 2: s, w/s, w
     var w = craft.w;
     var we = craft.we;
@@ -71,7 +68,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 4: be, wbe, w
     var wbe = solvedFormulas[21].solve({w, be}).wbe;
     console.table({
-        vs1, clmax, vmax, sigma, ws, clmaxf, vs0,
+        vs0, clmax, vmax, sigma, ws, clvmax,
         w, s,
         b, ar, c, sfuse, e, ear, ce, be,
         wbe
@@ -261,16 +258,16 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "wu", {w, we}, wu);
             });
             it("solves lift force from lift coeff. and velocity", function () {
-                testAircraftFormula(7, "ws", {sigma, clmax, vs1}, ws);
-                testAircraftFormula(7, "sigma", {ws, clmax, vs1}, sigma);
-                testAircraftFormula(7, "clmax", {ws, sigma, vs1}, clmax);
-                testAircraftFormula(7, "vs1", {ws, sigma, clmax}, vs1);
+                testAircraftFormula(7, "ws", {sigma, clmax, vs0}, ws);
+                testAircraftFormula(7, "sigma", {ws, clmax, vs0}, sigma);
+                testAircraftFormula(7, "clmax", {ws, sigma, vs0}, clmax);
+                testAircraftFormula(7, "vs0", {ws, sigma, clmax}, vs0);
             });
-            it("solves for vs0 when given vs1 information", function () {
-                testAircraftFormula(7, "vs0", {vs1, clmax, clmaxf}, vs0);
-                testAircraftFormula(7, "vs1", {vs0, clmax, clmaxf}, vs1);
-                testAircraftFormula(7, "clmax", {vs0, vs1, clmaxf}, clmax);
-                testAircraftFormula(7, "clmaxf", {vs0, vs1, clmax}, clmaxf);
+            it("solves clvmax from lift force and max velocity", function () {
+                testAircraftFormula(7, "clvmax", {ws, sigma, vmax}, clvmax);
+                testAircraftFormula(7, "ws", {clvmax, sigma, vmax}, ws);
+                testAircraftFormula(7, "sigma", {clvmax, ws, vmax}, sigma);
+                testAircraftFormula(7, "vmax", {clvmax, ws, sigma}, vmax);
             });
         });
         describe("2: S, W/S, W", function () {
@@ -581,23 +578,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
         it("solves for wing loading", function () {
             testAircraftFormula(7, "ws", {sigma, cl, v}, ws);
-        });
-        it("solves for density ratio", function () {
             testAircraftFormula(7, "sigma", {ws, cl, v}, sigma);
-        });
-        it("solves for coefficient of lift", function () {
             testAircraftFormula(7, "cl", {ws, sigma, v}, cl);
-        });
-        it("solves for velocity", function () {
             testAircraftFormula(7, "v", {ws, sigma, cl}, v);
         });
         it("solves for wingloading from weight and wing span", function () {
             testAircraftFormula(7, "ws", {w, s}, ws);
-        });
-        it("solves for weight from wingloading", function () {
             testAircraftFormula(7, "w", {ws, s}, w);
-        });
-        it("solves for wingloading from weight and wing span", function () {
             testAircraftFormula(7, "s", {ws, w}, s);
         });
     });
