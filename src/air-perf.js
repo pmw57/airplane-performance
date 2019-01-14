@@ -53,7 +53,7 @@
             cl: 2,
             vs0: 1,
             vmax: 1,
-            clvmax: 1,
+            clvmax: 2,
             we: 0,
             s: 1,
             b: 2,
@@ -113,11 +113,11 @@
             {field: "be", relation: 4, part: 0},
             {field: "wbe", relation: 4, part: 1},
             {field: "thpa", relation: 5, part: 0},
-            // {field: "cd0", relation: 6, part: 0},
-            // {field: "vmins", relation: 7, part: 0},
-            // {field: "dmin", relation: 7, part: 1},
-            // {field: "thpmin", relation: 7, part: 2},
             // {field: "rsmin", relation: 8, part: 0},
+            {field: "cd0", relation: 6, part: 0},
+            {field: "vmins", relation: 7, part: 0},
+            {field: "dmin", relation: 7, part: 1},
+            {field: "thpmin", relation: 7, part: 2},
             // {field: "rs", relation: 8, part: 1},
             // {field: "rc", relation: 8, part: 2},
             // {field: "ldmax", relation: 9, part: 0},
@@ -205,11 +205,11 @@
         var table = document.getElementById("results");
         var row = table.tBodies[0].insertRow(-1);
 
-        insertCell(row, stats.v.toFixed(1));
-        insertCell(row, stats.rc.toFixed(1));
-        insertCell(row, stats.eta.toFixed(4));
-        insertCell(row, stats.rs.toFixed(1));
-        insertCell(row, stats.rec.toFixed(0));
+        insertCell(row, stats.v && stats.v.toFixed(1));
+        insertCell(row, stats.rc && stats.rc.toFixed(1));
+        insertCell(row, stats.eta && stats.eta.toFixed(4));
+        insertCell(row, stats.rs && stats.rs.toFixed(1));
+        insertCell(row, stats.rec && stats.rec.toFixed(0));
     }
 
     function formatValue(data, key) {
@@ -276,8 +276,10 @@
         calculated.forEach(function (result) {
             addNewResult(result);
         });
-        fp.innerHTML = results.summaries.fp.toFixed(4);
-        wv2.innerHTML = results.summaries.wv2.toFixed(2);
+        fp.innerHTML = "";
+        wv2.innerHTML = "";
+        fp.innerHTML = results.summaries.fp && results.summaries.fp.toFixed(4);
+        wv2.innerHTML = results.summaries.wv2 && results.summaries.wv2.toFixed(2);
 
     }
 
