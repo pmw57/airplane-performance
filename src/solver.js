@@ -19,7 +19,6 @@ function Solver(calcs) {
     };
     solver.getAnswer = function (calc) {
         calc = calc.toString();
-        var returnIndex = calc.lastIndexOf("return");
         var answerRx = /function (\w+)From/;
         var match = calc.match(answerRx);
         if (match) {
