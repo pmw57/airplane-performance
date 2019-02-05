@@ -333,21 +333,38 @@ function aircraftFormulas(consts, solvePoly) {
                     cl * Math.pow(consts.MPH_TO_FPS, 2)));
         },
         // Relation 1 clmax
-        function wsFromSigmaClmaxVmax(sigma, clmax, vs0) {
+        function wsFromSigmaClmaxVs1(sigma, clmax, vs1) {
             return sigma * 0.5 * consts.SEALEVEL_DENSITY *
-                    clmax * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2);
+                    clmax * vs1 * vs1 * Math.pow(consts.MPH_TO_FPS, 2);
         },
-        function sigmaFromWsClmaxVs0(ws, clmax, vs0) {
+        function sigmaFromWsClmaxVs1(ws, clmax, vs1) {
             return ws / (0.5 * consts.SEALEVEL_DENSITY *
-                    clmax * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2));
+                    clmax * vs1 * vs1 * Math.pow(consts.MPH_TO_FPS, 2));
         },
-        function clmaxFromWsSigmaVs0(ws, sigma, vs0) {
+        function clmaxFromWsSigmaVs1(ws, sigma, vs1) {
+            return ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    vs1 * vs1 * Math.pow(consts.MPH_TO_FPS, 2));
+        },
+        function vs1FromWsSigmaClmaxf(ws, sigma, clmax) {
+            return Math.sqrt(ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    clmax * Math.pow(consts.MPH_TO_FPS, 2)));
+        },
+        // Relation 1 clmaxf
+        function wsFromSigmaClmaxfVs0(sigma, clmaxf, vs0) {
+            return sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    clmaxf * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2);
+        },
+        function sigmaFromWsClmaxfVs0(ws, clmaxf, vs0) {
+            return ws / (0.5 * consts.SEALEVEL_DENSITY *
+                    clmaxf * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2));
+        },
+        function clmaxfFromWsSigmaVs0(ws, sigma, vs0) {
             return ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
                     vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2));
         },
-        function vs0FromWsSigmaCl(ws, sigma, clmax) {
+        function vs0FromWsSigmaClmaxf(ws, sigma, clmaxf) {
             return Math.sqrt(ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
-                    clmax * Math.pow(consts.MPH_TO_FPS, 2)));
+                    clmaxf * Math.pow(consts.MPH_TO_FPS, 2)));
         },
         // Relation 1 vmax
         function wsFromSigmaClvmaxVmax(sigma, clvmax, vmax) {
@@ -363,6 +380,41 @@ function aircraftFormulas(consts, solvePoly) {
                     vmax * vmax * Math.pow(consts.MPH_TO_FPS, 2));
         },
         function vmaxFromWsSigmaClvmax(ws, sigma, clvmax) {
+            return Math.sqrt(ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    clvmax * Math.pow(consts.MPH_TO_FPS, 2)));
+        },
+        // Relation 1 clmaxf
+        function vs0FromWsSigmaClmaxf(ws, sigma, clmaxf) {
+            return Math.sqrt(ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    clmaxf * Math.pow(consts.MPH_TO_FPS, 2)));
+        },
+        function sigmaFromWsClmaxfvs0(ws, clmaxf, vs0) {
+            return ws / (0.5 * consts.SEALEVEL_DENSITY *
+                    clmaxf * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2));
+        },
+        function wsFromSigmaClmaxfvs0(sigma, clmaxf, vs0) {
+            return sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    clmaxf * vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2);
+        },
+        function clmaxfFromWsSigmaVs1(ws, sigma, vs0) {
+            return ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    vs0 * vs0 * Math.pow(consts.MPH_TO_FPS, 2));
+        },
+        // Relation 1 clvmax
+        function clvmaxFromSigmaWsVmax(sigma, ws, vmax) {
+            return ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    vmax * vmax * Math.pow(consts.MPH_TO_FPS, 2));
+        },
+        function sigmaFromClvmaxSigmaWsVmax(clvmax, ws, vmax) {
+            return ws / (clvmax * 0.5 * consts.SEALEVEL_DENSITY *
+                    vmax * vmax * Math.pow(consts.MPH_TO_FPS, 2));
+
+        },
+        function wsFromClvmaxSigmaWsVmax(clvmax, sigma, vmax) {
+            return sigma * 0.5 * consts.SEALEVEL_DENSITY *
+                    clvmax * vmax * vmax * Math.pow(consts.MPH_TO_FPS, 2);
+        },
+        function vmaxFromClvmaxSigmaClvmaxWs(clvmax, sigma, ws) {
             return Math.sqrt(ws / (sigma * 0.5 * consts.SEALEVEL_DENSITY *
                     clvmax * Math.pow(consts.MPH_TO_FPS, 2)));
         },

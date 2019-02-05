@@ -12,7 +12,8 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     var crafts = {
         t18: {
             clmax: 1.52,
-            vs0: 67,
+            clmaxf: 2.1,
+            vs1: 67,
             v: 67,
             vmax: 180,
             w: 1506,
@@ -46,11 +47,13 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
 
     // Relation 1: cl, v, w/s
     var sigma = 1; // sealevel
-    var vs0 = craft.vs0;
+    var vs1 = craft.vs1;
     var clmax = craft.clmax;
-    var ws = solvedFormulas[7].solve({sigma, clmax, vs0}).ws;
+    var ws = solvedFormulas[7].solve({sigma, clmax, vs1}).ws;
+    var clmaxf = craft.clmaxf;
+    var vs0 = solvedFormulas[7].solve({sigma, ws, clmaxf}).vs0;
     var vmax = craft.vmax;
-    var clvmax = solvedFormulas[7].solve({ws, sigma, vmax}).clvmax;
+    var clvmax = solvedFormulas[7].solve({sigma, ws, vmax}).clvmax;
     // Relation 2: s, w/s, w
     var w = craft.w;
     var we = craft.we;
@@ -68,7 +71,7 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     // Relation 4: be, wbe, w
     var wbe = solvedFormulas[21].solve({w, be}).wbe;
     console.table({
-        vs0, clmax, vmax, sigma, ws, clvmax,
+        vs1, vs0, clmax, vmax, sigma, ws, clvmax,
         w, s,
         b, ar, c, sfuse, e, ear, ce, be,
         wbe
@@ -257,17 +260,29 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
                 testAircraftFormula(0, "we", {w, wu}, we);
                 testAircraftFormula(0, "wu", {w, we}, wu);
             });
-            it("solves lift force from lift coeff. and velocity", function () {
-                testAircraftFormula(7, "ws", {sigma, clmax, vs0}, ws);
-                testAircraftFormula(7, "sigma", {ws, clmax, vs0}, sigma);
-                testAircraftFormula(7, "clmax", {ws, sigma, vs0}, clmax);
-                testAircraftFormula(7, "vs0", {ws, sigma, clmax}, vs0);
-            });
             it("solves clvmax from lift force and max velocity", function () {
                 testAircraftFormula(7, "clvmax", {ws, sigma, vmax}, clvmax);
                 testAircraftFormula(7, "ws", {clvmax, sigma, vmax}, ws);
                 testAircraftFormula(7, "sigma", {clvmax, ws, vmax}, sigma);
                 testAircraftFormula(7, "vmax", {clvmax, ws, sigma}, vmax);
+            });
+            it("solves for w/s from vs1", function () {
+                testAircraftFormula(7, "ws", {sigma, vs1, clmax}, ws);
+                testAircraftFormula(7, "sigma", {ws, vs1, clmax}, sigma);
+                testAircraftFormula(7, "vs1", {ws, sigma, clmax}, vs1);
+                testAircraftFormula(7, "clmax", {ws, sigma, vs1}, clmax);
+            });
+            it("solves for w/s from vs0", function () {
+                testAircraftFormula(7, "vs0", {sigma, ws, clmaxf}, vs0);
+                testAircraftFormula(7, "sigma", {vs0, ws, clmaxf}, sigma);
+                testAircraftFormula(7, "ws", {vs0, sigma, clmaxf}, ws);
+                testAircraftFormula(7, "clmaxf", {vs0, sigma, ws}, clmaxf);
+            });
+            it("solves for w/s from vmax", function () {
+                testAircraftFormula(7, "clvmax", {sigma, ws, vmax}, clvmax);
+                testAircraftFormula(7, "sigma", {clvmax, ws, vmax}, sigma);
+                testAircraftFormula(7, "ws", {clvmax, sigma, vmax}, ws);
+                testAircraftFormula(7, "vmax", {clvmax, sigma, ws}, vmax);
             });
         });
         describe("2: S, W/S, W", function () {
