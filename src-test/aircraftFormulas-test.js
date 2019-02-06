@@ -537,9 +537,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 5: Drag from velocity as mph", function () {
+        var wSinTheta = w * Math.sin(thetag / 360 * Math.TAU);
         it("is equivalent to Formula 4", function () {
-            var expected = w * Math.sin(thetag / 360 * Math.TAU);
-            testAircraftFormula(5, "d", {sigma, cd, s, v}, expected);
+            testAircraftFormula(5, "d", {sigma, cd, s, v}, wSinTheta);
         });
         it("solves for drag", function () {
             testAircraftFormula(5, "d", {sigma, cd, s, v}, d);
@@ -558,10 +558,10 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 6: Lift from velocity as mph", function () {
+        var wCosTheta = w * Math.cos(thetag / 360 * Math.TAU);
         it("is equivalent to Formula 5", function () {
-            var expected = w * Math.cos(thetag / 360 * Math.TAU);
             var actual = solvedFormulas[6].solve({sigma, cl, s, v}).l;
-            expect(actual).toBeCloseTo(expected);
+            expect(actual).toBeCloseTo(wCosTheta);
         });
         it("solves for density ratio", function () {
             testAircraftFormula(6, "sigma", {l, cl, s, v}, sigma);
