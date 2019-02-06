@@ -149,9 +149,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         describe("remove the need for custom objects from tests", function () {
             it("");
         });
-        describe("v:cl / vs0:clmaxf / vs1:clmax relationships", function () {
-            it("");
-        });
         describe("remove simplified formulas w/out density ratio", function () {
             it("");
         });
