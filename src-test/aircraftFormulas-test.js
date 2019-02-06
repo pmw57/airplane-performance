@@ -577,12 +577,6 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         });
     });
     describe("Formula 7: Small angle approx. for wing loading", function () {
-        var cl;
-        var ws;
-        beforeEach(function () {
-            cl = solvedFormulas[6].solve({l: w, sigma, s, v}).cl;
-            ws = solvedFormulas[7].solve({sigma, cl, v}).ws;
-        });
         it("is close to formula 6 about lift from velocity", function() {
             var liftForce = solvedFormulas[6].solve({sigma, cl, s, v}).l;
             var wingLoading = solvedFormulas[7].solve({sigma, cl, v}).ws;
