@@ -486,6 +486,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("solves for glide angle", function () {
             testAircraftFormula(1, "thetag", {d, w}, thetag);
         });
+        it("solves for drag", function () {
+            testAircraftFormula(1, "d", {w, thetag}, d);
+        });
     });
     describe("Formula 2: Lift is similar to the flight path", function () {
         it("is equivalent to drag * cos/sin of the glide angle", function () {
@@ -500,11 +503,17 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
         it("solves for glide angle", function () {
             testAircraftFormula(2, "thetag", {l, w}, thetag);
         });
+        it("solves for lift", function () {
+            testAircraftFormula(2, "l", {w, thetag}, l);
+        });
     });
     describe("Formula 3: Coeff of lift from pressure and area", function () {
         it("is lift over dynamic pressure and wing area", function () {
             var dynamicPressure = 0.5 * rho * vfs * vfs;
             expect(cl).toBe(l / (dynamicPressure * s));
+        });
+        it("solves for coefficient of lift", function () {
+            testAircraftFormula(3, "cl", {rho, l, vfs, s}, cl);
         });
         it("solves for air density", function () {
             testAircraftFormula(3, "rho", {cl, l, vfs, s}, rho);
@@ -522,6 +531,9 @@ var solvedFormulas = aircraftSolver(Solver, formulas);
     describe("Formula 4: cd is from pressure and wing area", function () {
         it("lift and drag has same ratio as their coefficients", function () {
             expect(cl / cd).toBeCloseTo(l / d);
+        });
+        it("solves for coefficient of drag", function () {
+            testAircraftFormula(4, "cd", {rho, d, vfs, s}, cd);
         });
         it("solves for air density", function () {
             testAircraftFormula(4, "rho", {cd, d, vfs, s}, rho);
